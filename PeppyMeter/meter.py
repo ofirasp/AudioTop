@@ -272,6 +272,14 @@ class MetaMeter(Meter):
 
     def updatefg(self):
 
+        if self.data_source.get_current_left_channel_data()>80:
+            self.switchcomponent(self.redleds[0],"on")
+        else:
+            self.switchcomponent(self.redleds[0], "off")
+        if self.data_source.get_current_right_channel_data()>80:
+            self.switchcomponent(self.redleds[1],"on")
+        else:
+            self.switchcomponent(self.redleds[1], "off")
         if 1 == 1:
             # time.sleep(9)
             for s in self.musicservices:
@@ -286,12 +294,13 @@ class MetaMeter(Meter):
             self.metatext.artist = "Pixies"
             self.metatext.title = "This monkey goes to heaven"
             self.progressbar.progress = 80
-            self.reset_bgr_fgr(self.bgr)
-            self.reset_bgr_fgr(self.fgr)
 
-            self.draw()
-
-            pygame.display.update()
+        self.redrawview()
+    def redrawview(self):
+        self.reset_bgr_fgr(self.bgr)
+        self.reset_bgr_fgr(self.fgr)
+        self.draw()
+        pygame.display.update()
 
     def getimagefrompath(self, path):
         try:
@@ -331,7 +340,7 @@ class CicularMetaMeter(MetaMeter):
         self.rnd = self.add_image_component('../icons/rnd-off.png', 445, 47)
         self.rpt = self.add_image_component('../icons/rpt-off.png', 485, 47)
         self.play = self.add_image_component('../icons/play-off.png', 410, 51)
-
+        self.redleds = self.add_image_component('../icons/redled-off.png', 480, 100),self.add_image_component('../icons/redled-off.png', 1217, 100)
         self.musicservices = {
             "airplay": self.add_image_component('../icons/airplay-off.png', 1215, 38),
             "tidalconnect": self.add_image_component('../icons/tidalconnect-off.png', 1185, 45),
