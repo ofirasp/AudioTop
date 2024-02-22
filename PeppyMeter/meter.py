@@ -304,19 +304,18 @@ class MetaMeter(Meter):
 
     def getimagefrompath(self, path):
         try:
-            # print(path)
-            img = self.load_image(path)
-            # img = pygame.image.load(img[1], "").convert_alpha()
-            r = img[1].get_rect()
-            if (r.w != 60 and r.h != 60):
-                img = pygame.transform.scale(img[1], (200, 200))
-                img = (path, img)
+            comp = self.load_image(path)
+            r = comp[1].get_rect()
+            if (r.w != 200 and r.h != 200):
+                img = pygame.transform.scale(comp[1], (200, 200))
+                comp = (path, img)
         except Exception as ex:
-            path = '../icons/albumartsmall.jpeg'
+            path = '../icons/albumart.jpg'
             self.coverurl = "http://127.0.0.1:3000/albumart"
-            img = self.load_image(path)
-            img = (path, img)
-        return img
+            comp = self.load_image(path)
+            r = comp[1].get_rect()
+            comp = (path, comp[1])
+        return comp
 
     def add_image_component(self, path, x, y, scale=False):
         if scale:

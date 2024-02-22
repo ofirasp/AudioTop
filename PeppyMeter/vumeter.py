@@ -14,24 +14,42 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with PeppyMeter. If not, see <http://www.gnu.org/licenses/>.
-
+import sys
 import time
 import copy
 import pygame
-
+import socketio
+import threading
 from random import randrange
 from meterfactory import MeterFactory
 from screensavermeter import ScreensaverMeter
 from configfileparser import METER, METER_NAMES, RANDOM_METER_INTERVAL, USE_CACHE, SCREEN_RECT, SCREEN_INFO, FRAME_RATE
 
 class Vumeter(ScreensaverMeter):
+
     """ VU Meter plug-in. """
-    
+    def on_message(self,data):
+        self.metadata = data
+    def startsockio(self):
+        try:
+            self.sio.connect('http://volumio.local:3000')
+            self.sio.emit('getState', {})
+            self.sio.wait()
+        except Exception as ex:
+            print(ex,file=sys.stderr)
+
+
     def __init__(self, util, data_source, timer_controlled_random_meter=True):
         """ Initializer
         
         :param util: utility class
         """
+        self.metadata = {}
+        self.sio = socketio.Client()
+        self.sio.on('pushState', self.on_message)
+        x = threading.Thread(target=self.startsockio)
+        x.start()
+
         self.util = util
         self.update_period = 1
         self.meter = None
@@ -88,10 +106,11 @@ class Vumeter(ScreensaverMeter):
     
     def set_volume(self, volume):
         """ Set volume level 
-        
+
         :param volume: new volume level
         """
-        self.current_volume = volume        
+
+        self.current_volume = volume
     
     def start(self):
         """ Start data source and meter animation. """ 
@@ -152,6 +171,9 @@ class Vumeter(ScreensaverMeter):
     def refresh(self):
         """ Refresh meter. Used to update random meter. """
         self.meter.updatefg()
+
+       # sio.emit('getState', {})
+
         if not self.timer_controlled_random_meter:
             return
                
