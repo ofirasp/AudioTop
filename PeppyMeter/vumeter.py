@@ -30,14 +30,11 @@ class Vumeter(ScreensaverMeter):
     """ VU Meter plug-in. """
     def on_message(self,data):
         self.metadata = data
+        self.updatemetadata = True
     def startsockio(self):
-        try:
-            self.sio.connect('http://volumio.local:3000')
-            self.sio.emit('getState', {})
-            self.sio.wait()
-        except Exception as ex:
-            print(ex,file=sys.stderr)
-
+        self.sio.connect('http://volumio.local:3000')
+        self.sio.emit('getState', {})
+        self.sio.wait()
 
     def __init__(self, util, data_source, timer_controlled_random_meter=True):
         """ Initializer
@@ -45,6 +42,7 @@ class Vumeter(ScreensaverMeter):
         :param util: utility class
         """
         self.metadata = {}
+        self.updatemetadata = False
         self.sio = socketio.Client()
         self.sio.on('pushState', self.on_message)
         x = threading.Thread(target=self.startsockio)
@@ -170,9 +168,12 @@ class Vumeter(ScreensaverMeter):
     
     def refresh(self):
         """ Refresh meter. Used to update random meter. """
-        self.meter.updatefg()
 
-       # sio.emit('getState', {})
+        if(self.frames%self.util.meter_config[FRAME_RATE]==0):
+            self.sio.emit('getState', {})
+
+        self.meter.updateview(self.metadata if self.updatemetadata else None)
+        self.updatemetadata=False
 
         if not self.timer_controlled_random_meter:
             return

@@ -123,15 +123,33 @@ class TextComponent(Component):
         self.artist = '---'
         self.album = '---'
         self.title = '---'
+        self.bitrate  = '---'
         self.seek = 0
         self.duration = 0
+        self.osversion = '---'
         self.bigfont = pygame.font.SysFont('Arial', 20, bold=False)
         self.smallfont = pygame.font.SysFont('Arial', 14, bold=False)
         self.tinyfont = pygame.font.SysFont('Arial', 12, bold=False)
-        self.durfont = pygame.font.SysFont('Digital-7', 32, bold=False)
+        self.durfont = pygame.font.SysFont('Digital-7 Mono', 32, bold=False)
         self.clockstart = 0
 
+    def getSeekTime(self):
+        curtime = float(self.seek / 1000)
+        mc, sc = divmod(curtime, 60)
+        totaltime = float(self.duration)
+        durationm, durations = divmod(totaltime, 60)
 
+        # wt = time.time() - self.clockstart
+        # curtime = wt
+        mc, sc = divmod(curtime, 60)
+        m = int(mc)
+        s = int(sc)
+        dm = int(durationm)
+        ds = int(durations)
+        if m * 60 + s >= dm * 60 + ds:
+            m = dm
+            s = ds
+        return (f'{m:02d}:{s:02d}', f'{dm:02d}:{ds:02d}')
     def draw(self):
 
         textsurface = self.bigfont.render(self.PyHebText(self.title)[:100], True, (106, 210, 68))
@@ -142,20 +160,20 @@ class TextComponent(Component):
         textsurface.set_colorkey((0, 0, 0))
         self.screen.blit(textsurface, textsurface.get_rect(center=(640, 43)))
 
-        textsurface = self.bigfont.render(self.PyHebText(self.album)[:12], True, (106, 210, 68))
+        textsurface = self.smallfont.render(self.PyHebText(self.album)[:20], True, (106, 210, 68))
         textsurface.set_colorkey((0, 0, 0))
         self.screen.blit(textsurface, textsurface.get_rect(center=(640,69)))
 
-        textsurface = self.smallfont.render('44.1KHz 24Bit', True, (106, 210, 68))
+        textsurface = self.smallfont.render(self.bitrate, True, (106, 210, 68))
         textsurface.set_colorkey((0, 0, 0))
         self.screen.blit(textsurface, textsurface.get_rect(center=(640, 135)))
 
-        # t = self.getSeekTime()
-        textsurface = self.durfont.render("01:20 - 05:34", True, (106, 210, 68))
+        t = self.getSeekTime()
+        textsurface = self.durfont.render(f"{t[0]} - {t[1]}", True, (106, 210, 68))
         textsurface.set_colorkey((0, 0, 0))
         self.screen.blit(textsurface, textsurface.get_rect(center=(640, 110)))
 
-        textsurface = self.tinyfont.render("OS Version: 3.611", True, (106, 210, 68))
+        textsurface = self.tinyfont.render(f"OS Version: {self.osversion}", True, (106, 210, 68))
         textsurface.set_colorkey((0, 0, 0))
         self.screen.blit(textsurface, textsurface.get_rect(center=(250, 72)))
 
@@ -171,21 +189,14 @@ class TextComponent(Component):
         return txtString
 
     def getSeekTime(self):
-
         curtime = float(self.seek / 1000)
         mc, sc = divmod(curtime, 60)
-
         totaltime = float(self.duration)
-        mt, st = divmod(totaltime, 60)
+        durationm, durations = divmod(totaltime, 60)
 
-        #print(mc,sc,mt,st)
-
-        durationm, durations = mt, st
-        seek = curtime
-
-        wt = time.time() - self.clockstart
-        seek += wt
-        mc, sc = divmod(seek, 60)
+        # wt = time.time() - self.clockstart
+        # curtime = wt
+        mc, sc = divmod(curtime, 60)
         m = int(mc)
         s = int(sc)
         dm = int(durationm)
@@ -193,7 +204,7 @@ class TextComponent(Component):
         if m * 60 + s >= dm * 60 + ds:
             m = dm
             s = ds
-        return (f'{m:02d}:{s:02d}',f'{dm:02d}:{ds:02d}')
+        return (f'{m:02d}:{s:02d}', f'{dm:02d}:{ds:02d}')
 
 class ProgressBarComponent(Component):
     def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
@@ -204,7 +215,7 @@ class ProgressBarComponent(Component):
         self.bar_color = (106, 210, 68)
         self.background_color = (255, 255, 255)
         self.corner_radius = 10
-        self.progress = 50
+        self.progress = 0
         self.y = 87
         self.x = 530
     def draw(self):

@@ -18,6 +18,11 @@
 import os
 import time
 import re
+import requests
+import io
+from netifaces import AF_INET
+import netifaces as ni
+import socket
 
 from component import Component, TextComponent, ProgressBarComponent
 from container import Container
@@ -110,14 +115,14 @@ class Meter(Container):
         r.y = self.origin_y + y
         self.add_image(img, self.origin_x + x, self.origin_y + y, r)
 
-    def load_image(self, image_name):
+    def load_image(self, path):
         """ Load image
 
         :param image_name: the image name
         """
         base_path = self.meter_config[BASE_PATH]
         folder = self.meter_config[SCREEN_INFO][METER_FOLDER]
-        path = os.path.join(base_path, folder, image_name)
+        path = os.path.join(base_path, folder, path)
         return self.util.load_pygame_image(path)
 
     def add_image(self, image, x, y, rect=None):
@@ -251,7 +256,7 @@ class Meter(Container):
             else:
                 self.mono = None
 
-    def updatefg(self):
+    def updateview(self,metadata):
         pass
 
 
@@ -270,7 +275,7 @@ class MetaMeter(Meter):
                 s = rec.sub(fr'\1{state}\3', comp.path)
             comp.content = self.load_image(s)
 
-    def updatefg(self):
+    def updateview(self,metadata):
 
         if self.data_source.get_current_left_channel_data()>80:
             self.switchcomponent(self.redleds[0],"on")
@@ -280,28 +285,103 @@ class MetaMeter(Meter):
             self.switchcomponent(self.redleds[1],"on")
         else:
             self.switchcomponent(self.redleds[1], "off")
-        if 1 == 1:
-            # time.sleep(9)
+
+        if metadata:
+            print(metadata)
+            codec='flac'
             for s in self.musicservices:
                 self.switchcomponent(self.musicservices[s], "off")
+            for c in self.codec:
+                self.switchcomponent(self.codec[c], "off")
+            if 'service' in metadata:
+                self.switchcomponent(self.musicservices[metadata['service']],"on")
+                codec = self.getcodec(metadata)
+            self.switchcomponent(self.codec[codec])
+            network = self.getnetwork()
+            self.switchcomponent(self.wifi,"on" if network[0] else "off")
+            self.switchcomponent(self.eth,"on" if network[1] else "off")
+            self.switchcomponent(self.play, "on" if metadata['status'] == 'play' else 'off')
+            self.switchcomponent(self.rnd, "on" if metadata['random']  else 'off')
+            self.switchcomponent(self.rpt, "on" if metadata['repeat']  else 'off')
+            self.switchcomponent(self.inet, "on" if self.isInternet() else 'off')
 
-            self.switchcomponent(self.musicservices['tidal'])
-            self.switchcomponent(self.codec['flac'])
-            self.switchcomponent(self.wifi)
-            self.switchcomponent(self.play, "on")
+            self.cover.content = self.getalbumartpath(metadata['albumart'])
 
-            self.metatext.album = "Doolitle"
-            self.metatext.artist = "Pixies"
-            self.metatext.title = "This monkey goes to heaven"
-            self.progressbar.progress = 80
+            self.metatext.album =  metadata['album']
+            self.metatext.artist = metadata['artist']
+            self.metatext.title = metadata['title']
+            self.metatext.seek = metadata['seek']
+            self.metatext.duration = metadata['duration']
+            self.metatext.bitrate = metadata['samplerate'] + " " + metadata['bitdepth']
+            self.metatext.osversion = self.getosversion();
+            self.progressbar.progress = self.metatext.seek/1000/self.metatext.duration*100 if self.metatext.duration!=0 else 0
+
 
         self.redrawview()
+    def isInternet(self):
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("8.8.8.8", 80))
+            ip = s.getsockname()[0]
+            s.close()
+            return True
+        except:
+            return False
+    def getnetwork(self):
+        allint = ni.interfaces()
+        net = [False,False]
+        if 'en0' in allint:
+            net[0] = AF_INET in ni.ifaddresses('en0')
+        if 'en13' in allint:
+            net[1] = AF_INET in ni.ifaddresses('en13')
+        return net
+    def getosversion(self):
+        try:
+            with open('/etc/os-release',"rt") as osinfo:
+                for line in osinfo:
+                    if 'VOLUMIO_VERSION' in line:
+                        return line.split('=')[1].strip().strip('"')
+        except:
+            pass
+        return "3.611"
+    def getcodec(self,metadata):
+        if metadata['service'] == 'airplay_emulation':
+            return  'aac'
+        if metadata['service'] == 'mpd' and 'trackType' in metadata and metadata['trackType'] != 'tidal':
+            return metadata['trackType']
+        if metadata['service'] == 'tidalconnect' and 'trackType' in metadata:
+            return metadata['codec']
+        elif 'trackType' in metadata and metadata['trackType'] == 'tidal':
+            return 'flac'
+        return 'flac'
+    def getalbumartpath(self,albumart):
+        if not "//extralarge" in albumart or "path=" in albumart:
+            if not "http" in albumart:
+                albumart = "http://volumio.local:3000" + albumart
+            if albumart != self.cover.content[0]:
+                return self.loadimagefromurl(albumart)
+        else:
+            if albumart != self.cover.content[0]:
+                return self.load_image(albumart)
+        return self.cover.content
     def redrawview(self):
         self.reset_bgr_fgr(self.bgr)
         self.reset_bgr_fgr(self.fgr)
         self.draw()
         pygame.display.update()
-
+    def loadimagefromurl(self,imageurl):
+        try:
+            r = requests.get(imageurl,timeout=4)
+            img = io.BytesIO(r.content)
+            img = pygame.image.load(img, "").convert_alpha()
+            r = img.get_rect()
+            if(r.w!=200 and r.h!=200):
+                img = pygame.transform.scale(img, (200, 200))
+            comp = (imageurl, img)
+        except Exception as ex:
+            self.coverurl = "http://volumio.local:3000/albumart"
+            comp = self.load_image('/home/volumio/PeppyMeter/icons/albumart.jpg')
+        return  comp
     def getimagefrompath(self, path):
         try:
             comp = self.load_image(path)
@@ -333,17 +413,18 @@ class CicularMetaMeter(MetaMeter):
     def add_foreground(self, image_name):
         super().add_foreground(image_name)
 
-        self.cover = self.add_image_component('../icons/pixies.jpg', 540, 150, True)
+        self.cover = self.add_image_component('../icons/albumart.jpg', 540, 150, True)
         self.eth = self.add_image_component('../icons/eth-off.png', 24, 50)
         self.wifi = self.add_image_component('../icons/wifi-off.png', 60, 50)
+        self.inet = self.add_image_component('../icons/inet-off.png', 95, 50)
         self.rnd = self.add_image_component('../icons/rnd-off.png', 445, 47)
         self.rpt = self.add_image_component('../icons/rpt-off.png', 485, 47)
         self.play = self.add_image_component('../icons/play-off.png', 410, 51)
         self.redleds = self.add_image_component('../icons/redled-off.png', 480, 100),self.add_image_component('../icons/redled-off.png', 1217, 100)
         self.musicservices = {
-            "airplay": self.add_image_component('../icons/airplay-off.png', 1215, 38),
+            "airplay_emulation": self.add_image_component('../icons/airplay-off.png', 1215, 38),
             "tidalconnect": self.add_image_component('../icons/tidalconnect-off.png', 1185, 45),
-            "hdd": self.add_image_component('../icons/hdd-off.png', 1140, 45),
+            "mpd": self.add_image_component('../icons/hdd-off.png', 1140, 45),
             "volumio": self.add_image_component('../icons/volumio-off.png', 1115, 48),
             "tidal": self.add_image_component('../icons/tidal-off.png', 1058, 33)
 
@@ -352,7 +433,7 @@ class CicularMetaMeter(MetaMeter):
             "aac": self.add_image_component('../icons/aac-off.png', 922, 43),
             "mqa": self.add_image_component('../icons/mqa-off.png', 890, 45),
             "flac": self.add_image_component('../icons/flac-off.png', 844, 52),
-            "dsd": self.add_image_component('../icons/dsd-off.png', 795, 45),
+            "dsf": self.add_image_component('../icons/dsd-off.png', 795, 45),
             "mp3": self.add_image_component('../icons/mp3-off.png', 760, 48)
 
         }
