@@ -177,11 +177,6 @@ class TextComponent(Component):
         textsurface.set_colorkey((0, 0, 0))
         self.screen.blit(textsurface, textsurface.get_rect(center=(250, 72)))
 
-        # textsurface = self.durfont.render(self.PyHebText(t[1]), True, (255, 255, 255))
-        # textsurface.set_colorkey((0, 0, 0))
-        # rect = textsurface.get_rect(center=(430, 270))
-        # self.screen.blit(textsurface, rect)
-
         pass
     def PyHebText(self,txtString = ''):
         if not type(txtString) is str: return ''
@@ -206,7 +201,42 @@ class TextComponent(Component):
             m = dm
             s = ds
         return (f'{m:02d}:{s:02d}', f'{dm:02d}:{ds:02d}')
+class BarTextComponent(TextComponent):
+    def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
+        super().__init__(util, c, x, y, bb, fgr, bgr, v)
+        self.bigfont = pygame.font.SysFont('Arial', 24, bold=False)
+        self.smallfont = pygame.font.SysFont('Arial', 18, bold=False)
+        self.tinyfont = pygame.font.SysFont('Arial', 16, bold=False)
+        self.durfont = pygame.font.SysFont('Digital-7 Mono', 36, bold=False)
+        self.clockstart = 0
+    def draw(self):
 
+        textsurface = self.bigfont.render(self.PyHebText(self.title)[:100], True, (106, 210, 68))
+        textsurface.set_colorkey((0, 0, 0))
+        self.screen.blit(textsurface, (440, 47))
+
+        textsurface = self.bigfont.render(self.PyHebText(self.artist)[:12], True, (106, 210, 68))
+        textsurface.set_colorkey((0, 0, 0))
+        self.screen.blit(textsurface, (440, 82))
+
+        textsurface = self.smallfont.render(self.PyHebText(self.album)[:20], True, (106, 210, 68))
+        textsurface.set_colorkey((0, 0, 0))
+        self.screen.blit(textsurface, (440,117))
+
+        textsurface = self.smallfont.render(self.bitrate, True, (106, 210, 68))
+        textsurface.set_colorkey((0, 0, 0))
+        self.screen.blit(textsurface, textsurface.get_rect(center=(1150, 115)))
+
+        t = self.getSeekTime()
+        textsurface = self.durfont.render(f"{t[0]} - {t[1]}", True, (106, 210, 68))
+        textsurface.set_colorkey((0, 0, 0))
+        self.screen.blit(textsurface, textsurface.get_rect(center=(1150, 85)))
+
+        textsurface = self.tinyfont.render(f"OS Version: {self.osversion}", True, (106, 210, 68))
+        textsurface.set_colorkey((0, 0, 0))
+        self.screen.blit(textsurface, textsurface.get_rect(center=(250, 72)))
+
+        pass
 class ProgressBarComponent(Component):
     def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
         super().__init__(util, c, x, y, bb, fgr, bgr, v)
@@ -226,3 +256,15 @@ class ProgressBarComponent(Component):
         pygame.draw.rect(self.screen, self.bar_color, (self.x, self.y, self.width*(self.progress/100), self.height), border_radius=self.corner_radius)
      except Exception as ex:
         pass
+class BarProgressBarComponent(ProgressBarComponent):
+    def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
+        super().__init__(util, c, x, y, bb, fgr, bgr, v)
+
+        self.width = 680
+        self.height = 5
+        self.bar_color = (106, 210, 68)
+        self.background_color = (255, 255, 255)
+        self.corner_radius = 10
+        self.progress = 0
+        self.y = 153
+        self.x = 440

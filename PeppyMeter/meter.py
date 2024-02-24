@@ -24,7 +24,7 @@ from netifaces import AF_INET
 import netifaces as ni
 import socket
 
-from component import Component, TextComponent, ProgressBarComponent
+from component import Component, TextComponent, ProgressBarComponent,BarTextComponent,BarProgressBarComponent
 from container import Container
 from configfileparser import *
 from linear import LinearAnimator
@@ -474,32 +474,38 @@ class BarMetaMeter(MetaMeter):
             super().add_foreground(image_name)
 
         self.cover = self.add_image_component('../icons/albumartbar.jpg', 10, 5, True)
-        self.eth = self.add_image_component('../icons/eth-off.png', 24, 50)
-        self.wifi = self.add_image_component('../icons/wifi-off.png', 60, 50)
-        self.inet = self.add_image_component('../icons/inet-off.png', 95, 50)
-        self.rnd = self.add_image_component('../icons/rnd-off.png', 445, 47)
-        self.rpt = self.add_image_component('../icons/rpt-off.png', 485, 47)
-        self.play = self.add_image_component('../icons/play-off.png', 410, 51)
+
+        self.eth = self.add_image_component('../icons/eth-off.png', 1240, 17)
+        self.wifi = self.add_image_component('../icons/wifi-off.png', 1207, 15)
+        self.inet = self.add_image_component('../icons/inet-off.png', 1167, 15)
+
+        self.rnd = self.add_image_component('../icons/rnd-off.png', 1190, 136)
+        self.rpt = self.add_image_component('../icons/rpt-off.png', 1230, 136)
+        self.play = self.add_image_component('../icons/play-off.png', 1150, 140)
+
         self.musicservices = {
-            "airplay_emulation": self.add_image_component('../icons/airplay-off.png', 1215, 38),
-            "tidalconnect": self.add_image_component('../icons/tidalconnect-off.png', 1185, 45),
-            "mpd": self.add_image_component('../icons/hdd-off.png', 1140, 45),
-            "volumio": self.add_image_component('../icons/volumio-off.png', 1115, 48),
-            "tidal": self.add_image_component('../icons/tidal-off.png', 1058, 33)
+            "airplay_emulation": self.add_image_component('../icons/airplay-off.png', 1098, 5),
+            "tidalconnect": self.add_image_component('../icons/tidalconnect-off.png', 1071, 10),
+            "mpd": self.add_image_component('../icons/hdd-off.png', 1027, 10),
+            "volumio": self.add_image_component('../icons/volumio-off.png', 1005, 15),
+            "tidal": self.add_image_component('../icons/tidal-off.png', 950, 0)
 
         }
+
         self.codec = {
-            "aac": self.add_image_component('../icons/aac-off.png', 922, 43),
-            "mqa": self.add_image_component('../icons/mqa-off.png', 890, 45),
-            "flac": self.add_image_component('../icons/flac-off.png', 844, 52),
-            "dsf": self.add_image_component('../icons/dsd-off.png', 795, 45),
-            "mp3": self.add_image_component('../icons/mp3-off.png', 760, 48)
+            "aac": self.add_image_component('../icons/aac-off.png', 892, 10),
+            "mqa": self.add_image_component('../icons/mqa-off.png', 860, 12),
+            "flac": self.add_image_component('../icons/flac-off.png', 814, 19),
+            "dsf": self.add_image_component('../icons/dsd-off.png', 765, 12),
+            "mp3": self.add_image_component('../icons/mp3-off.png', 735, 15)
 
         }
 
-        self.metatext = TextComponent(self.util)
+        self.metatext = BarTextComponent(self.util)
+
+
         self.components.append(self.metatext)
 
-        self.progressbar = ProgressBarComponent(self.util)
+        self.progressbar = BarProgressBarComponent(self.util)
         self.components.append(self.progressbar)
         self.progressbar.progress = 50
