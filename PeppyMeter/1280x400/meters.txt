@@ -17,6 +17,24 @@ meter.x = 0
 meter.y = 0
 screen.bgr =
 
+[metabar]
+meter.type = metalinear
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = bar-bgr.png
+indicator.filename = bar-indicator.png
+left.x = 670
+left.y = 195
+right.x = 670
+right.y = 314
+position.regular = 11
+position.overload = 3
+step.width.regular = 34
+step.width.overload = 47
+meter.x = 0
+meter.y = 0
+screen.bgr =
+
 [gold]
 meter.type = circular
 channels = 2

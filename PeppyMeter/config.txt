@@ -1,5 +1,5 @@
 [current]
-meter = audiotop
+meter = metabar
 random.meter.interval = 20
 base.folder =
 meter.folder = 1280x400
@@ -12,7 +12,7 @@ output.serial = False
 output.i2c = False
 output.pwm = False
 output.http = False
-use.logging = False
+use.logging = True
 use.cache = True
 frame.rate = 30
 

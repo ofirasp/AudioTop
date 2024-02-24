@@ -17,7 +17,7 @@
 
 import logging
 
-from meter import Meter,CicularMetaMeter
+from meter import Meter,CicularMetaMeter,BarMetaMeter
 from maskfactory import MaskFactory
 from needlefactory import NeedleFactory
 from configfileparser import *
@@ -53,36 +53,82 @@ class MeterFactory(object):
         try:
             meter_config_section = self.meter_config[meter_name]
         except:
-            logging.debug("Meter " + meter_name + " not found for size " + self.meter_config[SCREEN_INFO][METER_SIZE])
+            logging.debug("Meter " + meter_name + " not found for size " + self.meter_config[SCREEN_INFO][METER_FOLDER])
             self.util.exit_function()
 
         if meter_config_section[METER_TYPE] == TYPE_LINEAR:
             return self.create_linear_meter(meter_name)
+        if meter_config_section[METER_TYPE] == TYPE_METALINEAR:
+            return self.create_metalinear_meter(meter_name)
         elif meter_config_section[METER_TYPE] == TYPE_CIRCULAR:
             return self.create_circular_meter(meter_name)
         elif meter_config_section[METER_TYPE] == TYPE_METACIRCULAR:
             return self.create_metacircular_meter(meter_name)
 
-        
-    def create_linear_meter(self, name):
+    def create_metalinear_meter(self, name):
         """ Create linear method
-        
+
         :param name: meter name
         """
         config = self.meter_config[name]
-        
+
+        if config[CHANNELS] == 2:
+            meter = BarMetaMeter(self.util, TYPE_LINEAR, config, self.data_source)
+            meter.channels = 2
+            meter.left_x = config[LEFT_X]
+            meter.left_y = config[LEFT_Y]
+            meter.right_x = config[RIGHT_X]
+            meter.right_y = config[RIGHT_Y]
+        else:
+            meter = Meter(self.util, TYPE_LINEAR, config, self.data_source)
+            meter.x = config[MONO_X]
+            meter.y = config[MONO_Y]
+
+        meter.positions_regular = config[POSITION_REGULAR]
+        meter.step_width_regular = config[STEP_WIDTH_REGULAR]
+        if POSITION_OVERLOAD in config:
+            meter.positions_overload = config[POSITION_OVERLOAD]
+            meter.step_width_overload = config[STEP_WIDTH_OVERLOAD]
+        else:
+            meter.positions_overload = 0
+            meter.step_width_overload = 0
+        meter.total_steps = meter.positions_regular + meter.positions_overload + 1
+        meter.step = 100 / meter.total_steps
+
+        meter.add_background(config[BGR_FILENAME], config[METER_X], config[METER_Y])
+
+        if config[CHANNELS] == 2:
+            meter.add_channel(config[INDICATOR_FILENAME], meter.left_x, meter.left_y)
+            meter.add_channel(config[INDICATOR_FILENAME], meter.right_x, meter.right_y)
+        else:
+            meter.add_channel(config[INDICATOR_FILENAME], meter.x, meter.y)
+
+        meter.add_foreground(config[FGR_FILENAME])
+
+        factory = MaskFactory()
+        meter.masks = factory.create_masks(meter.positions_regular, meter.positions_overload, meter.step_width_regular,
+                                           meter.step_width_overload)
+
+        return meter
+    def create_linear_meter(self, name):
+        """ Create linear method
+
+        :param name: meter name
+        """
+        config = self.meter_config[name]
+
         if config[CHANNELS] == 2:
             meter = Meter(self.util, TYPE_LINEAR, config, self.data_source)
             meter.channels = 2
             meter.left_x = config[LEFT_X]
             meter.left_y = config[LEFT_Y]
             meter.right_x = config[RIGHT_X]
-            meter.right_y = config[RIGHT_Y]            
+            meter.right_y = config[RIGHT_Y]
         else:
             meter = Meter(self.util, TYPE_LINEAR, config, self.data_source)
             meter.x = config[MONO_X]
             meter.y = config[MONO_Y]
-        
+
         meter.positions_regular = config[POSITION_REGULAR]
         meter.step_width_regular = config[STEP_WIDTH_REGULAR]
         if POSITION_OVERLOAD in config:
@@ -93,20 +139,20 @@ class MeterFactory(object):
             meter.step_width_overload = 0
         meter.total_steps = meter.positions_regular + meter.positions_overload + 1
         meter.step = 100/meter.total_steps
-        
+
         meter.add_background(config[BGR_FILENAME], config[METER_X], config[METER_Y])
-        
+
         if config[CHANNELS] == 2:
             meter.add_channel(config[INDICATOR_FILENAME], meter.left_x, meter.left_y)
             meter.add_channel(config[INDICATOR_FILENAME], meter.right_x, meter.right_y)
         else:
             meter.add_channel(config[INDICATOR_FILENAME], meter.x, meter.y)
-        
+
         meter.add_foreground(config[FGR_FILENAME])
-        
+
         factory = MaskFactory()
         meter.masks = factory.create_masks(meter.positions_regular, meter.positions_overload, meter.step_width_regular, meter.step_width_overload)
-        
+
         return meter
 
     def create_metacircular_meter(self, name):

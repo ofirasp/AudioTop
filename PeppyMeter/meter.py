@@ -261,6 +261,7 @@ class Meter(Container):
 
 
 class MetaMeter(Meter):
+
     def switchcomponent(self, comp, state=None):
         pattern = r'/(.*-)(on|off)(.png)'
         rec = re.compile(pattern)
@@ -277,17 +278,7 @@ class MetaMeter(Meter):
 
     def updateview(self,metadata):
 
-        if self.data_source.get_current_left_channel_data()>80:
-            self.switchcomponent(self.redleds[0],"on")
-        else:
-            self.switchcomponent(self.redleds[0], "off")
-        if self.data_source.get_current_right_channel_data()>80:
-            self.switchcomponent(self.redleds[1],"on")
-        else:
-            self.switchcomponent(self.redleds[1], "off")
-
         if metadata:
-            #print(metadata)
             codec='flac'
             for s in self.musicservices:
                 self.switchcomponent(self.musicservices[s], "off")
@@ -384,8 +375,8 @@ class MetaMeter(Meter):
             img = io.BytesIO(r.content)
             img = pygame.image.load(img, "").convert_alpha()
             r = img.get_rect()
-            if(r.w!=200 and r.h!=200):
-                img = pygame.transform.scale(img, (200, 200))
+            if(r.w!=self.coversize and r.h!=self.coversize):
+                img = pygame.transform.scale(img, (self.coversize, self.coversize))
             comp = (imageurl, img)
         except Exception as ex:
             self.coverurl = "http://volumio.local:3000/albumart"
@@ -396,8 +387,8 @@ class MetaMeter(Meter):
         try:
             comp = self.load_image(path)
             r = comp[1].get_rect()
-            if (r.w != 200 and r.h != 200):
-                img = pygame.transform.scale(comp[1], (200, 200))
+            if (r.w != self.coversize and r.h != self.coversize):
+                img = pygame.transform.scale(comp[1], (200, self.coversize))
                 comp = (path, img)
         except Exception as ex:
             path = '../icons/albumart.jpg'
@@ -420,6 +411,20 @@ class MetaMeter(Meter):
 
 
 class CicularMetaMeter(MetaMeter):
+    def __init__(self, util, meter_type, meter_parameters, data_source):
+        super().__init__(util, meter_type, meter_parameters, data_source)
+        self.coversize=200
+    def updateview(self,metadata):
+
+        if self.data_source.get_current_left_channel_data()>80:
+            self.switchcomponent(self.redleds[0],"on")
+        else:
+            self.switchcomponent(self.redleds[0], "off")
+        if self.data_source.get_current_right_channel_data()>80:
+            self.switchcomponent(self.redleds[1],"on")
+        else:
+            self.switchcomponent(self.redleds[1], "off")
+        super().updateview(metadata)
     def add_foreground(self, image_name):
         super().add_foreground(image_name)
 
@@ -431,6 +436,50 @@ class CicularMetaMeter(MetaMeter):
         self.rpt = self.add_image_component('../icons/rpt-off.png', 485, 47)
         self.play = self.add_image_component('../icons/play-off.png', 410, 51)
         self.redleds = self.add_image_component('../icons/redled-off.png', 480, 100),self.add_image_component('../icons/redled-off.png', 1217, 100)
+        self.musicservices = {
+            "airplay_emulation": self.add_image_component('../icons/airplay-off.png', 1215, 38),
+            "tidalconnect": self.add_image_component('../icons/tidalconnect-off.png', 1185, 45),
+            "mpd": self.add_image_component('../icons/hdd-off.png', 1140, 45),
+            "volumio": self.add_image_component('../icons/volumio-off.png', 1115, 48),
+            "tidal": self.add_image_component('../icons/tidal-off.png', 1058, 33)
+
+        }
+        self.codec = {
+            "aac": self.add_image_component('../icons/aac-off.png', 922, 43),
+            "mqa": self.add_image_component('../icons/mqa-off.png', 890, 45),
+            "flac": self.add_image_component('../icons/flac-off.png', 844, 52),
+            "dsf": self.add_image_component('../icons/dsd-off.png', 795, 45),
+            "mp3": self.add_image_component('../icons/mp3-off.png', 760, 48)
+
+        }
+
+        self.metatext = TextComponent(self.util)
+        self.components.append(self.metatext)
+
+        self.progressbar = ProgressBarComponent(self.util)
+        self.components.append(self.progressbar)
+        self.progressbar.progress = 50
+class BarMetaMeter(MetaMeter):
+    def __init__(self, util, meter_type, meter_parameters, data_source):
+        super().__init__(util, meter_type, meter_parameters, data_source)
+        self.coversize=400
+    def redrawview(self):
+        self.reset_bgr_fgr(self.bgr)
+       # self.reset_bgr_fgr(self.fgr)
+        self.draw()
+        pygame.display.update()
+
+    def add_foreground(self, image_name):
+        if(image_name):
+            super().add_foreground(image_name)
+
+        self.cover = self.add_image_component('../icons/albumartbar.jpg', 10, 5, True)
+        self.eth = self.add_image_component('../icons/eth-off.png', 24, 50)
+        self.wifi = self.add_image_component('../icons/wifi-off.png', 60, 50)
+        self.inet = self.add_image_component('../icons/inet-off.png', 95, 50)
+        self.rnd = self.add_image_component('../icons/rnd-off.png', 445, 47)
+        self.rpt = self.add_image_component('../icons/rpt-off.png', 485, 47)
+        self.play = self.add_image_component('../icons/play-off.png', 410, 51)
         self.musicservices = {
             "airplay_emulation": self.add_image_component('../icons/airplay-off.png', 1215, 38),
             "tidalconnect": self.add_image_component('../icons/tidalconnect-off.png', 1185, 45),
