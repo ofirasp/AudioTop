@@ -287,32 +287,37 @@ class MetaMeter(Meter):
             self.switchcomponent(self.redleds[1], "off")
 
         if metadata:
-            print(metadata)
+            #print(metadata)
             codec='flac'
             for s in self.musicservices:
                 self.switchcomponent(self.musicservices[s], "off")
             for c in self.codec:
                 self.switchcomponent(self.codec[c], "off")
             if 'service' in metadata:
-                self.switchcomponent(self.musicservices[metadata['service']],"on")
                 codec = self.getcodec(metadata)
+                self.switchcomponent(self.musicservices[metadata['service']],"on")
+
+
             self.switchcomponent(self.codec[codec])
             network = self.getnetwork()
             self.switchcomponent(self.wifi,"on" if network[0] else "off")
             self.switchcomponent(self.eth,"on" if network[1] else "off")
-            self.switchcomponent(self.play, "on" if metadata['status'] == 'play' else 'off')
-            self.switchcomponent(self.rnd, "on" if metadata['random']  else 'off')
-            self.switchcomponent(self.rpt, "on" if metadata['repeat']  else 'off')
+            self.switchcomponent(self.play, "on" if 'status' in metadata and metadata['status'] == 'play' else 'off')
+            self.switchcomponent(self.rnd, "on" if 'random' in metadata and metadata['random']  else 'off')
+            self.switchcomponent(self.rpt, "on" if 'repeat' in metadata and metadata['repeat']  else 'off')
             self.switchcomponent(self.inet, "on" if self.isInternet() else 'off')
 
-            self.cover.content = self.getalbumartpath(metadata['albumart'])
+            self.cover.content = self.getalbumart(metadata['albumart'])
 
-            self.metatext.album =  metadata['album']
-            self.metatext.artist = metadata['artist']
-            self.metatext.title = metadata['title']
-            self.metatext.seek = metadata['seek']
-            self.metatext.duration = metadata['duration']
-            self.metatext.bitrate = metadata['samplerate'] + " " + metadata['bitdepth']
+            self.metatext.album =  metadata['album'] if 'album' in metadata else '---'
+            self.metatext.artist = metadata['artist'] if 'artist' in metadata else '---'
+            self.metatext.title = metadata['title'] if 'title' in metadata else '---'
+            self.metatext.seek = metadata['seek'] if 'seek' in metadata else 0
+            self.metatext.duration = metadata['duration'] if 'duration' in metadata else 0
+
+            if 'samplerate' in metadata and metadata['samplerate'] and 'bitdepth' in metadata and metadata['bitdepth']:
+                self.metatext.bitrate = metadata['samplerate']  + " " + metadata['bitdepth']
+
             self.metatext.osversion = self.getosversion();
             self.progressbar.progress = self.metatext.seek/1000/self.metatext.duration*100 if self.metatext.duration!=0 else 0
 
@@ -351,18 +356,22 @@ class MetaMeter(Meter):
             return metadata['trackType']
         if metadata['service'] == 'tidalconnect' and 'trackType' in metadata:
             return metadata['codec']
+        if metadata['service'] == 'webradio':
+            metadata['service'] = 'volumio'
+            metadata['samplerate'] = "webradio"
+            if 'bitrate' in metadata:
+                metadata['bitdepth'] = metadata['bitrate']
+            return  'mp3'
+        if not metadata['service'] in self.musicservices:
+            metadata['service'] = 'volumio'
         elif 'trackType' in metadata and metadata['trackType'] == 'tidal':
             return 'flac'
         return 'flac'
-    def getalbumartpath(self,albumart):
-        if not "//extralarge" in albumart or "path=" in albumart:
-            if not "http" in albumart:
-                albumart = "http://volumio.local:3000" + albumart
-            if albumart != self.cover.content[0]:
-                return self.loadimagefromurl(albumart)
-        else:
-            if albumart != self.cover.content[0]:
-                return self.load_image(albumart)
+    def getalbumart(self,albumart):
+        if not "http" in albumart:
+            albumart = "http://volumio.local:3000" + albumart
+        if not self.cover or albumart != self.cover.content[0]:
+            return self.loadimagefromurl(albumart)
         return self.cover.content
     def redrawview(self):
         self.reset_bgr_fgr(self.bgr)
@@ -380,7 +389,8 @@ class MetaMeter(Meter):
             comp = (imageurl, img)
         except Exception as ex:
             self.coverurl = "http://volumio.local:3000/albumart"
-            comp = self.load_image('/home/volumio/PeppyMeter/icons/albumart.jpg')
+            comp = self.load_image('../icons/albumart.jpg')
+            comp = (imageurl,comp[1])
         return  comp
     def getimagefrompath(self, path):
         try:

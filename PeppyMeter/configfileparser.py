@@ -132,7 +132,7 @@ DEFAULT_DEPTH = 32
 
 TYPE_LINEAR = "linear"
 TYPE_CIRCULAR = "circular"
-
+TYPE_METACIRCULAR = "metacircular"
 WEB_SERVER = "web.server"
 HTTP_PORT = "http.port"
 
@@ -246,6 +246,8 @@ class ConfigFileParser(object):
             if meter_type == TYPE_LINEAR:
                 self.meter_config[section] = self.get_linear_section(c, section, meter_type)
             elif meter_type == TYPE_CIRCULAR:
+                self.meter_config[section] = self.get_circular_section(c, section, meter_type)
+            elif meter_type == TYPE_METACIRCULAR:
                 self.meter_config[section] = self.get_circular_section(c, section, meter_type)
 
         if "," in self.meter_config[METER]:

@@ -1,5 +1,5 @@
 [audiotop]
-meter.type = circular
+meter.type = metacircular
 channels = 2
 ui.refresh.period = 0.033
 bgr.filename = audiotop-bgr.png

@@ -184,6 +184,7 @@ class TextComponent(Component):
 
         pass
     def PyHebText(self,txtString = ''):
+        if not type(txtString) is str: return ''
         if any("\u0590" <= c <= "\u05EA" for c in txtString):
             return txtString[::-1]
         return txtString
