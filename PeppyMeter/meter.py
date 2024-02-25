@@ -24,7 +24,7 @@ from netifaces import AF_INET
 import netifaces as ni
 import socket
 
-from component import Component, TextComponent, ProgressBarComponent,BarTextComponent
+from component import Component, TextComponent, ProgressBarComponent
 from container import Container
 from configfileparser import *
 from linear import LinearAnimator
@@ -261,7 +261,53 @@ class Meter(Container):
 
 
 class MetaMeter(Meter):
+    def __init__(self, util, meter_type, meter_parameters, data_source):
+        super().__init__(util, meter_type, meter_parameters, data_source)
+        self.config = util.meter_config[util.meter_config['meter']]
+        self.usepick = self.config['icons.usepick']
+        self.coversize = self.config['cover.size']
+        self.usesingle = self.config['icons.usesingle']
+        self.musicservices = {}
+        self.codecs = {}
+        self.codec = None
+        self.musicservice = None
+    def add_foreground(self, image_name):
+        if (image_name):
+            super().add_foreground(image_name)
+        self.cover = self.add_image_component('../icons/albumart.jpg', *self.config['cover.position'], True)
+        self.eth = self.add_image_component('../icons/eth-off.png', *self.config['icons.eth.position'])
+        self.wifi = self.add_image_component('../icons/wifi-off.png', *self.config['icons.wifi.position'])
+        self.inet = self.add_image_component('../icons/inet-off.png', *self.config['icons.inet.position'])
+        self.rnd = self.add_image_component('../icons/rnd-off.png', *self.config['icons.rnd.position'])
+        self.rpt = self.add_image_component('../icons/rpt-off.png', *self.config['icons.rpt.position'])
+        self.play = self.add_image_component('../icons/play-off.png', *self.config['icons.play.position'])
+        if self.usepick:
+            self.redleds = self.add_image_component('../icons/redled-off.png', *self.config['icons.redledleft.position']), self.add_image_component(
+                '../icons/redled-off.png', *self.config['icons.redledright.position'])
+        if self.usesingle:
+            self.codec = self.add_image_component('../icons/flac-on.png', *self.config['icons.flac.position'])
+            self.musicservice = self.add_image_component('../icons/volumio-on.png', *self.config['icons.volumio.position'])
+        else:
+            self.musicservices = {
+                "airplay_emulation": self.add_image_component('../icons/airplay_emulation-off.png', *self.config['icons.airplay_emulation.position']),
+                "tidalconnect": self.add_image_component('../icons/tidalconnect-off.png', *self.config['icons.tidalconnect.position']),
+                "mpd": self.add_image_component('../icons/mpd-off.png', *self.config['icons.mpd.position']),
+                "volumio": self.add_image_component('../icons/volumio-off.png', *self.config['icons.volumio.position']),
+                "tidal": self.add_image_component('../icons/tidal-off.png', *self.config['icons.tidal.position'])
+            }
+            self.codecs = {
+                "aac": self.add_image_component('../icons/aac-off.png', *self.config['icons.aac.position']),
+                "mqa": self.add_image_component('../icons/mqa-off.png', *self.config['icons.mqa.position']),
+                "flac": self.add_image_component('../icons/flac-off.png', *self.config['icons.flac.position']),
+                "dsf": self.add_image_component('../icons/dsf-off.png', *self.config['icons.dsf.position']),
+                "mp3": self.add_image_component('../icons/mp3-off.png', *self.config['icons.mp3.position'])
+            }
 
+        self.metatext = TextComponent(self.util)
+        self.components.append(self.metatext)
+
+        self.progressbar = ProgressBarComponent(self.util)
+        self.components.append(self.progressbar)
     def switchcomponent(self, comp, state=None):
         pattern = r'/(.*-)(on|off)(.png)'
         rec = re.compile(pattern)
@@ -276,20 +322,36 @@ class MetaMeter(Meter):
                 s = rec.sub(fr'\1{state}\3', comp.path)
             comp.content = self.load_image(s)
 
-    def updateview(self,metadata):
+    def switchiconpath(self, comp,prefix):
+        pattern = r'/(.*)(/.*-on.png)'
+        s = re.sub(pattern,fr'\1/{prefix}-on.png', comp.path)
+        comp.content = self.load_image(s)
 
+    def updateview(self,metadata):
+        if self.usepick:
+            if self.data_source.get_current_left_channel_data()>80:
+                self.switchcomponent(self.redleds[0],"on")
+            else:
+                self.switchcomponent(self.redleds[0], "off")
+            if self.data_source.get_current_right_channel_data()>80:
+                self.switchcomponent(self.redleds[1],"on")
+            else:
+                self.switchcomponent(self.redleds[1], "off")
         if metadata:
             codec='flac'
-            for s in self.musicservices:
-                self.switchcomponent(self.musicservices[s], "off")
-            for c in self.codec:
-                self.switchcomponent(self.codec[c], "off")
-            if 'service' in metadata:
+            if self.usesingle:
                 codec = self.getcodec(metadata)
-                self.switchcomponent(self.musicservices[metadata['service']],"on")
-
-
-            self.switchcomponent(self.codec[codec])
+                self.switchiconpath(self.codec,codec)
+                self.switchiconpath(self.musicservice, metadata['service'])
+            else:
+                for s in self.musicservices:
+                    self.switchcomponent(self.musicservices[s], "off")
+                for c in self.codecs:
+                    self.switchcomponent(self.codecs[c], "off")
+                if 'service' in metadata:
+                    codec = self.getcodec(metadata)
+                    self.switchcomponent(self.musicservices[metadata['service']],"on")
+                self.switchcomponent(self.codecs[codec])
             network = self.getnetwork()
             self.switchcomponent(self.wifi,"on" if network[0] else "off")
             self.switchcomponent(self.eth,"on" if network[1] else "off")
@@ -366,7 +428,8 @@ class MetaMeter(Meter):
         return self.cover.content
     def redrawview(self):
         self.reset_bgr_fgr(self.bgr)
-        self.reset_bgr_fgr(self.fgr)
+        if self.fgr:
+            self.reset_bgr_fgr(self.fgr)
         self.draw()
         pygame.display.update()
     def loadimagefromurl(self,imageurl):
@@ -410,102 +473,5 @@ class MetaMeter(Meter):
         return c
 
 
-class CicularMetaMeter(MetaMeter):
-    def __init__(self, util, meter_type, meter_parameters, data_source):
-        super().__init__(util, meter_type, meter_parameters, data_source)
-        self.coversize=200
-    def updateview(self,metadata):
-
-        if self.data_source.get_current_left_channel_data()>80:
-            self.switchcomponent(self.redleds[0],"on")
-        else:
-            self.switchcomponent(self.redleds[0], "off")
-        if self.data_source.get_current_right_channel_data()>80:
-            self.switchcomponent(self.redleds[1],"on")
-        else:
-            self.switchcomponent(self.redleds[1], "off")
-        super().updateview(metadata)
-    def add_foreground(self, image_name):
-        super().add_foreground(image_name)
-
-        self.cover = self.add_image_component('../icons/albumart.jpg', 540, 150, True)
-        self.eth = self.add_image_component('../icons/eth-off.png', 24, 50)
-        self.wifi = self.add_image_component('../icons/wifi-off.png', 60, 50)
-        self.inet = self.add_image_component('../icons/inet-off.png', 95, 50)
-        self.rnd = self.add_image_component('../icons/rnd-off.png', 445, 47)
-        self.rpt = self.add_image_component('../icons/rpt-off.png', 485, 47)
-        self.play = self.add_image_component('../icons/play-off.png', 410, 51)
-        self.redleds = self.add_image_component('../icons/redled-off.png', 480, 100),self.add_image_component('../icons/redled-off.png', 1217, 100)
-        self.musicservices = {
-            "airplay_emulation": self.add_image_component('../icons/airplay-off.png', 1215, 38),
-            "tidalconnect": self.add_image_component('../icons/tidalconnect-off.png', 1185, 45),
-            "mpd": self.add_image_component('../icons/hdd-off.png', 1140, 45),
-            "volumio": self.add_image_component('../icons/volumio-off.png', 1115, 48),
-            "tidal": self.add_image_component('../icons/tidal-off.png', 1058, 33)
-
-        }
-        self.codec = {
-            "aac": self.add_image_component('../icons/aac-off.png', 922, 43),
-            "mqa": self.add_image_component('../icons/mqa-off.png', 890, 45),
-            "flac": self.add_image_component('../icons/flac-off.png', 844, 52),
-            "dsf": self.add_image_component('../icons/dsd-off.png', 795, 45),
-            "mp3": self.add_image_component('../icons/mp3-off.png', 760, 48)
-
-        }
-
-        self.metatext = TextComponent(self.util)
-        self.components.append(self.metatext)
-
-        self.progressbar = ProgressBarComponent(self.util)
-        self.components.append(self.progressbar)
-        self.progressbar.progress = 50
-class BarMetaMeter(MetaMeter):
-    def __init__(self, util, meter_type, meter_parameters, data_source):
-        super().__init__(util, meter_type, meter_parameters, data_source)
-        self.coversize=390
-    def redrawview(self):
-        self.reset_bgr_fgr(self.bgr)
-       # self.reset_bgr_fgr(self.fgr)
-        self.draw()
-        pygame.display.update()
-
-    def add_foreground(self, image_name):
-        if(image_name):
-            super().add_foreground(image_name)
-
-        self.cover = self.add_image_component('../icons/albumartbar.jpg', 15, 5, True)
-
-        self.eth = self.add_image_component('../icons/eth-off.png', 1240, 17)
-        self.wifi = self.add_image_component('../icons/wifi-off.png', 1207, 15)
-        self.inet = self.add_image_component('../icons/inet-off.png', 1167, 15)
-
-        self.rnd = self.add_image_component('../icons/rnd-off.png', 1190, 142)
-        self.rpt = self.add_image_component('../icons/rpt-off.png', 1230, 142)
-        self.play = self.add_image_component('../icons/play-off.png', 1150, 146)
-
-        self.musicservices = {
-            "airplay_emulation": self.add_image_component('../icons/airplay-off.png', 1098, 5),
-            "tidalconnect": self.add_image_component('../icons/tidalconnect-off.png', 1071, 10),
-            "mpd": self.add_image_component('../icons/hdd-off.png', 1027, 10),
-            "volumio": self.add_image_component('../icons/volumio-off.png', 1005, 15),
-            "tidal": self.add_image_component('../icons/tidal-off.png', 950, 0)
-
-        }
-
-        self.codec = {
-            "aac": self.add_image_component('../icons/aac-off.png', 892, 10),
-            "mqa": self.add_image_component('../icons/mqa-off.png', 860, 10),
-            "flac": self.add_image_component('../icons/flac-off.png', 814, 19),
-            "dsf": self.add_image_component('../icons/dsd-off.png', 765, 12),
-            "mp3": self.add_image_component('../icons/mp3-off.png', 735, 15)
-
-        }
-
-        self.metatext = BarTextComponent(self.util)
 
 
-        self.components.append(self.metatext)
-
-        self.progressbar = ProgressBarComponent(self.util)
-        self.components.append(self.progressbar)
-        self.progressbar.progress = 50

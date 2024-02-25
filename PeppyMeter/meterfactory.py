@@ -17,7 +17,7 @@
 
 import logging
 
-from meter import Meter,CicularMetaMeter,BarMetaMeter
+from meter import Meter,MetaMeter
 from maskfactory import MaskFactory
 from needlefactory import NeedleFactory
 from configfileparser import *
@@ -73,7 +73,7 @@ class MeterFactory(object):
         config = self.meter_config[name]
 
         if config[CHANNELS] == 2:
-            meter = BarMetaMeter(self.util, TYPE_LINEAR, config, self.data_source)
+            meter = MetaMeter(self.util, TYPE_LINEAR, config, self.data_source)
             meter.channels = 2
             meter.left_x = config[LEFT_X]
             meter.left_y = config[LEFT_Y]
@@ -163,7 +163,7 @@ class MeterFactory(object):
         config = self.meter_config[name]
 
         if config[CHANNELS] == 2:
-            meter = CicularMetaMeter(self.util, TYPE_CIRCULAR, config, self.data_source)
+            meter = MetaMeter(self.util, TYPE_CIRCULAR, config, self.data_source)
             meter.channels = 2
         else:
             meter = Meter(self.util, TYPE_CIRCULAR, config, self.data_source)
