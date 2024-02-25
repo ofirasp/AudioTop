@@ -206,20 +206,21 @@ class BarTextComponent(TextComponent):
         super().__init__(util, c, x, y, bb, fgr, bgr, v)
         self.bigfont = pygame.font.SysFont('Arial', 24, bold=False)
         self.smallfont = pygame.font.SysFont('Arial', 18, bold=False)
-        self.tinyfont = pygame.font.SysFont('Arial', 16, bold=False)
+        self.tinyfont = pygame.font.SysFont('Arial', 12, bold=False)
         self.durfont = pygame.font.SysFont('Digital-7 Mono', 36, bold=False)
         self.clockstart = 0
+        self.textcolor = (106, 210, 68)
     def draw(self):
 
-        textsurface = self.bigfont.render(self.PyHebText(self.title)[:100], True, (106, 210, 68))
+        textsurface = self.bigfont.render(self.PyHebText(self.title)[:25], True, self.textcolor)
         textsurface.set_colorkey((0, 0, 0))
-        self.screen.blit(textsurface, (440, 47))
+        self.screen.blit(textsurface, (440, 52))
 
-        textsurface = self.bigfont.render(self.PyHebText(self.artist)[:12], True, (106, 210, 68))
+        textsurface = self.bigfont.render(self.PyHebText(self.artist)[:25], True, self.textcolor)
         textsurface.set_colorkey((0, 0, 0))
         self.screen.blit(textsurface, (440, 82))
 
-        textsurface = self.smallfont.render(self.PyHebText(self.album)[:20], True, (106, 210, 68))
+        textsurface = self.smallfont.render(self.PyHebText(self.album)[:35], True, self.textcolor)
         textsurface.set_colorkey((0, 0, 0))
         self.screen.blit(textsurface, (440,117))
 
@@ -234,7 +235,7 @@ class BarTextComponent(TextComponent):
 
         textsurface = self.tinyfont.render(f"OS Version: {self.osversion}", True, (106, 210, 68))
         textsurface.set_colorkey((0, 0, 0))
-        self.screen.blit(textsurface, textsurface.get_rect(center=(250, 72)))
+        self.screen.blit(textsurface, textsurface.get_rect(center=(620, 30)))
 
         pass
 class ProgressBarComponent(Component):
@@ -266,5 +267,5 @@ class BarProgressBarComponent(ProgressBarComponent):
         self.background_color = (255, 255, 255)
         self.corner_radius = 10
         self.progress = 0
-        self.y = 153
+        self.y = 160
         self.x = 440

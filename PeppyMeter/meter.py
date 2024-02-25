@@ -479,9 +479,9 @@ class BarMetaMeter(MetaMeter):
         self.wifi = self.add_image_component('../icons/wifi-off.png', 1207, 15)
         self.inet = self.add_image_component('../icons/inet-off.png', 1167, 15)
 
-        self.rnd = self.add_image_component('../icons/rnd-off.png', 1190, 136)
-        self.rpt = self.add_image_component('../icons/rpt-off.png', 1230, 136)
-        self.play = self.add_image_component('../icons/play-off.png', 1150, 140)
+        self.rnd = self.add_image_component('../icons/rnd-off.png', 1190, 142)
+        self.rpt = self.add_image_component('../icons/rpt-off.png', 1230, 142)
+        self.play = self.add_image_component('../icons/play-off.png', 1150, 146)
 
         self.musicservices = {
             "airplay_emulation": self.add_image_component('../icons/airplay-off.png', 1098, 5),
@@ -494,7 +494,7 @@ class BarMetaMeter(MetaMeter):
 
         self.codec = {
             "aac": self.add_image_component('../icons/aac-off.png', 892, 10),
-            "mqa": self.add_image_component('../icons/mqa-off.png', 860, 12),
+            "mqa": self.add_image_component('../icons/mqa-off.png', 860, 10),
             "flac": self.add_image_component('../icons/flac-off.png', 814, 19),
             "dsf": self.add_image_component('../icons/dsd-off.png', 765, 12),
             "mp3": self.add_image_component('../icons/mp3-off.png', 735, 15)
