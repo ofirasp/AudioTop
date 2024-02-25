@@ -241,15 +241,15 @@ class BarTextComponent(TextComponent):
 class ProgressBarComponent(Component):
     def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
         super().__init__(util, c, x, y, bb, fgr, bgr, v)
-
-        self.width = 220
-        self.height = 5
-        self.bar_color = (106, 210, 68)
-        self.background_color = (255, 255, 255)
-        self.corner_radius = 10
+        m = util.meter_config[util.meter_config['meter']]
+        self.width = m['progressbar.width']
+        self.height = m['progressbar.height']
+        self.bar_color = m['progressbar.bar_color']
+        self.background_color = m['progressbar.background_color']
+        self.corner_radius = m['progressbar.corner_radius']
+        self.y = m['progressbar.y']
+        self.x = m['progressbar.x']
         self.progress = 0
-        self.y = 87
-        self.x = 530
     def draw(self):
      try:
 
@@ -257,15 +257,4 @@ class ProgressBarComponent(Component):
         pygame.draw.rect(self.screen, self.bar_color, (self.x, self.y, self.width*(self.progress/100), self.height), border_radius=self.corner_radius)
      except Exception as ex:
         pass
-class BarProgressBarComponent(ProgressBarComponent):
-    def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
-        super().__init__(util, c, x, y, bb, fgr, bgr, v)
 
-        self.width = 680
-        self.height = 5
-        self.bar_color = (106, 210, 68)
-        self.background_color = (255, 255, 255)
-        self.corner_radius = 10
-        self.progress = 0
-        self.y = 160
-        self.x = 440

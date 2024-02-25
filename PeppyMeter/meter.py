@@ -24,7 +24,7 @@ from netifaces import AF_INET
 import netifaces as ni
 import socket
 
-from component import Component, TextComponent, ProgressBarComponent,BarTextComponent,BarProgressBarComponent
+from component import Component, TextComponent, ProgressBarComponent,BarTextComponent
 from container import Container
 from configfileparser import *
 from linear import LinearAnimator
@@ -506,6 +506,6 @@ class BarMetaMeter(MetaMeter):
 
         self.components.append(self.metatext)
 
-        self.progressbar = BarProgressBarComponent(self.util)
+        self.progressbar = ProgressBarComponent(self.util)
         self.components.append(self.progressbar)
         self.progressbar.progress = 50

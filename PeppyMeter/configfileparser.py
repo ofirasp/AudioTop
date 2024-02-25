@@ -16,6 +16,7 @@
 # along with PeppyMeter. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+from ast import literal_eval as make_tuple
 
 from configparser import ConfigParser
 
@@ -303,14 +304,22 @@ class ConfigFileParser(object):
         d[SMOOTH_BUFFER_SIZE] = config_file.getint(section, SMOOTH_BUFFER_SIZE)
         return d
 
+    def get_mata_section(self, config_file, section, d):
+        d['progressbar.width'] = config_file.getint(section, 'progressbar.width')
+        d['progressbar.height'] = config_file.getint(section, 'progressbar.height')
+        d['progressbar.corner_radius'] = config_file.getint(section, 'progressbar.corner_radius')
+        d['progressbar.x'] = config_file.getint(section, 'progressbar.x')
+        d['progressbar.y'] = config_file.getint(section, 'progressbar.y')
+        d['progressbar.bar_color'] = make_tuple(config_file.get(section, 'progressbar.bar_color'))
+        d['progressbar.background_color'] = make_tuple(config_file.get(section, 'progressbar.background_color'))
     def get_matalinear_section(self, config_file, section, meter_type):
         d=self.get_linear_section(config_file, section, meter_type)
-        config_file, section, meter_type
+        self.get_mata_section(config_file, section, d)
         return d
 
     def get_metacircular_section(self, config_file, section, meter_type):
         d = self.get_circular_section( config_file, section, meter_type)
-        d['title.x'] = config_file.getint(section, 'title.x')
+        self.get_mata_section(config_file, section,  d)
         return d
     def get_linear_section(self, config_file, section, meter_type):
         """ Parser for linear meter

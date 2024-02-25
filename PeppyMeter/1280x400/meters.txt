@@ -17,6 +17,13 @@ meter.x = 0
 meter.y = 0
 screen.bgr =
 title.x = 100
+progressbar.width = 220
+progressbar.height = 5
+progressbar.bar_color = (106, 210, 68)
+progressbar.background_color = (255, 255, 255)
+progressbar.corner_radius = 10
+progressbar.y = 87
+progressbar.x = 530
 
 [metabar]
 meter.type = metalinear
@@ -35,6 +42,14 @@ step.width.overload = 47
 meter.x = 0
 meter.y = 0
 screen.bgr =
+progressbar.width = 680
+progressbar.height = 5
+progressbar.bar_color = (106, 210, 68)
+progressbar.background_color = (255, 255, 255)
+progressbar.corner_radius = 10
+progressbar.y = 160
+progressbar.x = 440
+
 
 [gold]
 meter.type = circular
