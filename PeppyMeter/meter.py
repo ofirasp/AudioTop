@@ -388,7 +388,7 @@ class MetaMeter(Meter):
             comp = self.load_image(path)
             r = comp[1].get_rect()
             if (r.w != self.coversize and r.h != self.coversize):
-                img = pygame.transform.scale(comp[1], (200, self.coversize))
+                img = pygame.transform.scale(comp[1], (self.coversize, self.coversize))
                 comp = (path, img)
         except Exception as ex:
             path = '../icons/albumart.jpg'
@@ -462,7 +462,7 @@ class CicularMetaMeter(MetaMeter):
 class BarMetaMeter(MetaMeter):
     def __init__(self, util, meter_type, meter_parameters, data_source):
         super().__init__(util, meter_type, meter_parameters, data_source)
-        self.coversize=400
+        self.coversize=390
     def redrawview(self):
         self.reset_bgr_fgr(self.bgr)
        # self.reset_bgr_fgr(self.fgr)
@@ -473,7 +473,7 @@ class BarMetaMeter(MetaMeter):
         if(image_name):
             super().add_foreground(image_name)
 
-        self.cover = self.add_image_component('../icons/albumartbar.jpg', 10, 5, True)
+        self.cover = self.add_image_component('../icons/albumartbar.jpg', 15, 5, True)
 
         self.eth = self.add_image_component('../icons/eth-off.png', 1240, 17)
         self.wifi = self.add_image_component('../icons/wifi-off.png', 1207, 15)
