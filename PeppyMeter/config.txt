@@ -1,5 +1,5 @@
 [current]
-meter = metabar
+meter = audiotop
 random.meter.interval = 20
 base.folder =
 meter.folder = 1280x400

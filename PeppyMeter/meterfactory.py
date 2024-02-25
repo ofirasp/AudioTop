@@ -118,14 +118,14 @@ class MeterFactory(object):
         config = self.meter_config[name]
 
         if config[CHANNELS] == 2:
-            meter = Meter(self.util, TYPE_LINEAR, config, self.data_source)
+            meter = Meter(self.util, TYPE_METALINEAR, config, self.data_source)
             meter.channels = 2
             meter.left_x = config[LEFT_X]
             meter.left_y = config[LEFT_Y]
             meter.right_x = config[RIGHT_X]
             meter.right_y = config[RIGHT_Y]
         else:
-            meter = Meter(self.util, TYPE_LINEAR, config, self.data_source)
+            meter = Meter(self.util, TYPE_METALINEAR, config, self.data_source)
             meter.x = config[MONO_X]
             meter.y = config[MONO_Y]
 

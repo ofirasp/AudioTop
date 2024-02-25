@@ -249,9 +249,9 @@ class ConfigFileParser(object):
             elif meter_type == TYPE_CIRCULAR:
                 self.meter_config[section] = self.get_circular_section(c, section, meter_type)
             elif meter_type == TYPE_METACIRCULAR:
-                self.meter_config[section] = self.get_circular_section(c, section, meter_type)
+                self.meter_config[section] = self.get_metacircular_section(c, section, meter_type)
             elif meter_type == TYPE_METALINEAR:
-                self.meter_config[section] = self.get_linear_section(c, section, meter_type)
+                self.meter_config[section] = self.get_matalinear_section(c, section, meter_type)
 
         if "," in self.meter_config[METER]:
             names = self.meter_config[METER].split(",")
@@ -302,7 +302,16 @@ class ConfigFileParser(object):
         d[STEP] = config_file.getint(section, STEP)
         d[SMOOTH_BUFFER_SIZE] = config_file.getint(section, SMOOTH_BUFFER_SIZE)
         return d
-    
+
+    def get_matalinear_section(self, config_file, section, meter_type):
+        d=self.get_linear_section(config_file, section, meter_type)
+        config_file, section, meter_type
+        return d
+
+    def get_metacircular_section(self, config_file, section, meter_type):
+        d = self.get_circular_section( config_file, section, meter_type)
+        d['title.x'] = config_file.getint(section, 'title.x')
+        return d
     def get_linear_section(self, config_file, section, meter_type):
         """ Parser for linear meter
         

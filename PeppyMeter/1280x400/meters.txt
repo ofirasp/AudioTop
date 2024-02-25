@@ -16,6 +16,7 @@ right.origin.y = 460
 meter.x = 0
 meter.y = 0
 screen.bgr =
+title.x = 100
 
 [metabar]
 meter.type = metalinear
