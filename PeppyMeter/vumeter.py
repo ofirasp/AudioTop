@@ -134,7 +134,7 @@ class Vumeter(ScreensaverMeter):
         
         self.frames = 0
         self.meter.stop()
-
+        self.sio.disconnect()
         if hasattr(self, "callback_stop"):
             self.callback_stop(self.meter)
 

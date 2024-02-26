@@ -264,7 +264,8 @@ class MetaMeter(Meter):
     def __init__(self, util, meter_type, meter_parameters, data_source):
         super().__init__(util, meter_type, meter_parameters, data_source)
         self.config = util.meter_config[util.meter_config['meter']]
-        self.usepick = self.config['icons.usepick']
+        self.usepeak = self.config['icons.usepeak']
+        self.peakthreshold = self.config['icons.peakthreshold']
         self.coversize = self.config['cover.size']
         self.usesingle = self.config['icons.usesingle']
         self.musicservices = {}
@@ -281,7 +282,7 @@ class MetaMeter(Meter):
         self.rnd = self.add_image_component('../icons/rnd-off.png', *self.config['icons.rnd.position'])
         self.rpt = self.add_image_component('../icons/rpt-off.png', *self.config['icons.rpt.position'])
         self.play = self.add_image_component('../icons/play-off.png', *self.config['icons.play.position'])
-        if self.usepick:
+        if self.usepeak:
             self.redleds = self.add_image_component('../icons/redled-off.png', *self.config['icons.redledleft.position']), self.add_image_component(
                 '../icons/redled-off.png', *self.config['icons.redledright.position'])
         if self.usesingle:
@@ -328,12 +329,12 @@ class MetaMeter(Meter):
         comp.content = self.load_image(s)
 
     def updateview(self,metadata):
-        if self.usepick:
-            if self.data_source.get_current_left_channel_data()>80:
+        if self.usepeak:
+            if self.data_source.get_current_left_channel_data()>self.peakthreshold:
                 self.switchcomponent(self.redleds[0],"on")
             else:
                 self.switchcomponent(self.redleds[0], "off")
-            if self.data_source.get_current_right_channel_data()>80:
+            if self.data_source.get_current_right_channel_data()>self.peakthreshold:
                 self.switchcomponent(self.redleds[1],"on")
             else:
                 self.switchcomponent(self.redleds[1], "off")
@@ -436,7 +437,7 @@ class MetaMeter(Meter):
         try:
             r = requests.get(imageurl,timeout=4)
             img = io.BytesIO(r.content)
-            img = pygame.image.load(img, "").convert_alpha()
+            img =  pygame.image.load(img).convert_alpha()
             r = img.get_rect()
             if(r.w!=self.coversize and r.h!=self.coversize):
                 img = pygame.transform.scale(img, (self.coversize, self.coversize))
