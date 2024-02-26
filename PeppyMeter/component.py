@@ -168,15 +168,15 @@ class TextComponent(Component):
             self.screen.blit(textsurface, textsurface.get_rect(center=self.config['metatext.album']))
 
         else:
-            textsurface = self.bigfont.render(self.PyHebText(self.title)[:100], True, self.fontcolor)
+            textsurface = self.bigfont.render(self.PyHebText(self.title)[:self.config['metatext.trimtitle']], True, self.fontcolor)
             textsurface.set_colorkey((0, 0, 0))
             self.screen.blit(textsurface, self.config['metatext.title'])
 
-            textsurface = self.bigfont.render(self.PyHebText(self.artist)[:12], True, self.fontcolor)
+            textsurface = self.bigfont.render(self.PyHebText(self.artist)[:self.config['metatext.trimartist']], True, self.fontcolor)
             textsurface.set_colorkey((0, 0, 0))
             self.screen.blit(textsurface, self.config['metatext.artist'])
 
-            textsurface = self.smallfont.render(self.PyHebText(self.album)[:20], True,self.fontcolor)
+            textsurface = self.smallfont.render(self.PyHebText(self.album)[:self.config['metatext.trimalbum']], True,self.fontcolor)
             textsurface.set_colorkey((0, 0, 0))
             self.screen.blit(textsurface, self.config['metatext.album'])
 
