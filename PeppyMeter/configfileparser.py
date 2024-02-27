@@ -135,6 +135,7 @@ TYPE_LINEAR = "linear"
 TYPE_METALINEAR = "metalinear"
 TYPE_CIRCULAR = "circular"
 TYPE_METACIRCULAR = "metacircular"
+TYPE_METACASSETE = "metacassete"
 WEB_SERVER = "web.server"
 HTTP_PORT = "http.port"
 
@@ -178,6 +179,7 @@ class ConfigFileParser(object):
             config_path = c.get(CURRENT, BASE_FOLDER)
         
         self.meter_config[METER] = c.get(CURRENT, METER)
+        self.meter_config["meter.list"] = c.get(CURRENT, "meter.list")
         self.meter_config[RANDOM_METER_INTERVAL] = c.getint(CURRENT, RANDOM_METER_INTERVAL)
         self.meter_config[EXIT_ON_TOUCH] = c.getboolean(CURRENT, EXIT_ON_TOUCH)
         self.meter_config[STOP_DISPLAY_ON_TOUCH] = c.getboolean(CURRENT, STOP_DISPLAY_ON_TOUCH)
@@ -253,7 +255,8 @@ class ConfigFileParser(object):
                 self.meter_config[section] = self.get_metacircular_section(c, section, meter_type)
             elif meter_type == TYPE_METALINEAR:
                 self.meter_config[section] = self.get_matalinear_section(c, section, meter_type)
-
+            elif meter_type == TYPE_METACASSETE:
+                self.meter_config[section] = self.get_matalinear_section(c, section, meter_type)
         if "," in self.meter_config[METER]:
             names = self.meter_config[METER].split(",")
             available_meter_names = list(map(str.strip, names))
@@ -351,6 +354,14 @@ class ConfigFileParser(object):
         d['icons.flac.position'] = make_tuple(config_file.get(section, 'icons.flac.position'))
         d['icons.dsf.position'] = make_tuple(config_file.get(section, 'icons.dsf.position'))
         d['icons.mp3.position'] = make_tuple(config_file.get(section, 'icons.mp3.position'))
+        d['knobs.selectmeterfrom'] = make_tuple(config_file.get(section, 'knobs.selectmeterfrom'))
+        d['knobs.selectmeterto'] = make_tuple(config_file.get(section, 'knobs.selectmeterto'))
+        d['knobs.powerfrom'] = make_tuple(config_file.get(section, 'knobs.powerfrom'))
+        d['knobs.powerto'] = make_tuple(config_file.get(section, 'knobs.powerto'))
+        d['metatext.fontname'] = config_file.get(section, 'metatext.fontname')
+
+
+
 
     def get_matalinear_section(self, config_file, section, meter_type):
         d=self.get_linear_section(config_file, section, meter_type)

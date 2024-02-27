@@ -35,7 +35,8 @@ class Vumeter(ScreensaverMeter):
         self.sio.connect('http://volumio.local:3000')
         self.sio.emit('getState', {})
         self.sio.wait()
-
+    def diconnectsocketio(self):
+        self.sio.disconnect()
     def __init__(self, util, data_source, timer_controlled_random_meter=True):
         """ Initializer
         
@@ -134,7 +135,6 @@ class Vumeter(ScreensaverMeter):
         
         self.frames = 0
         self.meter.stop()
-        self.sio.disconnect()
         if hasattr(self, "callback_stop"):
             self.callback_stop(self.meter)
 
@@ -172,8 +172,8 @@ class Vumeter(ScreensaverMeter):
         if(self.frames%self.util.meter_config[FRAME_RATE]==0):
             self.sio.emit('getState', {})
 
-        self.meter.updateview(self.metadata if self.updatemetadata else None)
-        self.updatemetadata=False
+            self.meter.updateview(self.metadata if self.updatemetadata else None)
+            self.updatemetadata=False
 
         if not self.timer_controlled_random_meter:
             return

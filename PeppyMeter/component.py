@@ -1,17 +1,17 @@
 # Copyright 2016-2024 Peppy Player peppy.player@gmail.com
-# 
+#
 # This file is part of Peppy Player.
-# 
+#
 # Peppy Player is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # Peppy Player is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with Peppy Player. If not, see <http://www.gnu.org/licenses/>.
 
@@ -19,13 +19,13 @@ import pygame
 import time
 
 class Component(object):
-    """ Represent the lowest UI component level.    
+    """ Represent the lowest UI component level.
     This is the only class which knows how to draw on Pygame Screen.
     """
-    
+
     def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
         """ Initializer
-        
+
         :param util: utility object
         :param c: component content
         :param x: component coordinate X on Pygame Screen
@@ -33,18 +33,18 @@ class Component(object):
         :param bb: component bounding box
         :param fgr: component foreground
         :param bgr: component background
-        :param v: visibility flag, True - visible, False - invisible 
+        :param v: visibility flag, True - visible, False - invisible
         """
         self.screen = None
         self.screen = util.PYGAME_SCREEN
         self.content = c
         self.content_x = x
         self.content_y = y
-        if bb: 
+        if bb:
             self.bounding_box = pygame.Rect(bb.x, bb.y, bb.w, bb.h)
         else:
             self.bounding_box = None
-        self.fgr = fgr       
+        self.fgr = fgr
         self.bgr = bgr
         self.visible = v
         self.text = None
@@ -54,25 +54,25 @@ class Component(object):
 
     def clean(self):
         """ Clean component by filling its bounding box by background color """
-        
+
         if not self.visible: return
         self.draw_rect(self.bgr, self.bounding_box)
-    
+
     def draw(self):
-        """ Dispatcher drawing method.        
+        """ Dispatcher drawing method.
         Distinguishes between Rectangle and Image components.
-        Doesn't draw invisible component. 
+        Doesn't draw invisible component.
         """
         if not self.visible: return
-        
+
         if isinstance(self.content, pygame.Rect):
             self.draw_rect(self.bgr, r=self.content)
         else:
             self.draw_image(self.content, self.content_x, self.content_y)
-    
+
     def draw_rect(self, f, r, t=0):
         """ Draw Rectangle on Pygame Screen
-        
+
         :param f: outline color
         :param r: rectangle object
         :param t: outline thickness
@@ -80,16 +80,16 @@ class Component(object):
         if not self.visible: return
         if self.screen:
             pygame.draw.rect(self.screen, f, r, t)
-    
+
     def draw_image(self, c, x, y):
         """ Draw Image on Pygame Screen
-        
+
         :param c: image
         :param x: coordinate X of the image top-left corner on Pygame Screen
         :param y: coordinate Y of the image top-left corner on Pygame Screen
         """
         comp = c
-        if isinstance(c, tuple):        
+        if isinstance(c, tuple):
             comp = c[1]
         if comp and self.screen:
             try:
@@ -102,17 +102,17 @@ class Component(object):
                     self.screen.blit(comp, (x, y))
             except:
                 pass
- 
+
     def set_visible(self, flag):
-        """ Set component visibility 
-        
+        """ Set component visibility
+
         :param flag: True - component visible, False - component invisible
         """
         self.visible = flag
-        
+
     def refresh(self):
         """ Refresh component. Used for periodical updates  animation. """
-        
+
         pass
 
 
@@ -129,9 +129,10 @@ class TextComponent(Component):
         self.duration = 0
         self.osversion = '---'
         self.fontcolor =  self.config['metatext.fontcolor']
-        self.bigfont = pygame.font.SysFont('Arial',self.config['metatext.bigfontsize'], bold=False)
-        self.smallfont = pygame.font.SysFont('Arial', self.config['metatext.smallfontsize'], bold=False)
-        self.tinyfont = pygame.font.SysFont('Arial', self.config['metatext.tinyfontsize'], bold=False)
+        self.textcolor = self.config['metatext.textcolor']
+        self.bigfont = pygame.font.SysFont(self.config['metatext.fontname'],self.config['metatext.bigfontsize'], bold=False)
+        self.smallfont = pygame.font.SysFont(self.config['metatext.fontname'], self.config['metatext.smallfontsize'], bold=False)
+        self.tinyfont = pygame.font.SysFont(self.config['metatext.fontname'], self.config['metatext.tinyfontsize'], bold=False)
         self.durfont = pygame.font.SysFont('Digital-7 Mono', self.config['metatext.durfontsize'], bold=False)
         self.clockstart = 0
         self.iscenter = self.config['metatext.iscenter']
@@ -185,11 +186,11 @@ class TextComponent(Component):
         self.screen.blit(textsurface, textsurface.get_rect(center=self.config['metatext.bitrate']))
 
         t = self.getSeekTime()
-        textsurface = self.durfont.render(f"{t[0]} - {t[1]}", True, self.fontcolor)
+        textsurface = self.durfont.render(f"{t[0]} - {t[1]}", True, self.textcolor)
         textsurface.set_colorkey((0, 0, 0))
         self.screen.blit(textsurface, textsurface.get_rect(center=self.config['metatext.duration']))
 
-        textsurface = self.tinyfont.render(f"OS Version: {self.osversion}", True, self.fontcolor)
+        textsurface = self.tinyfont.render(f"OS Version: {self.osversion}", True, self.textcolor)
         textsurface.set_colorkey((0, 0, 0))
         self.screen.blit(textsurface, textsurface.get_rect(center=self.config['metatext.osversion']))
 
@@ -217,6 +218,9 @@ class TextComponent(Component):
             m = dm
             s = ds
         return (f'{m:02d}:{s:02d}', f'{dm:02d}:{ds:02d}')
+
+
+
 class ProgressBarComponent(Component):
     def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
         super().__init__(util, c, x, y, bb, fgr, bgr, v)

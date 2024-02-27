@@ -23,6 +23,7 @@ import io
 from netifaces import AF_INET
 import netifaces as ni
 import socket
+from threading import Thread
 
 from component import Component, TextComponent, ProgressBarComponent
 from container import Container
@@ -272,6 +273,7 @@ class MetaMeter(Meter):
         self.codecs = {}
         self.codec = None
         self.musicservice = None
+        self.playing = False
     def add_foreground(self, image_name):
         if (image_name):
             super().add_foreground(image_name)
@@ -327,18 +329,30 @@ class MetaMeter(Meter):
         pattern = r'/(.*)(/.*-on.png)'
         s = re.sub(pattern,fr'\1/{prefix}-on.png', comp.path)
         comp.content = self.load_image(s)
-
-    def updateview(self,metadata):
+    def run(self):
+        r =  super().run()
         if self.usepeak:
-            if self.data_source.get_current_left_channel_data()>self.peakthreshold:
-                self.switchcomponent(self.redleds[0],"on")
+            if self.data_source.get_current_left_channel_data() > self.peakthreshold:
+                self.switchcomponent(self.redleds[0], "on")
             else:
                 self.switchcomponent(self.redleds[0], "off")
-            if self.data_source.get_current_right_channel_data()>self.peakthreshold:
-                self.switchcomponent(self.redleds[1],"on")
+            if self.data_source.get_current_right_channel_data() > self.peakthreshold:
+                self.switchcomponent(self.redleds[1], "on")
             else:
                 self.switchcomponent(self.redleds[1], "off")
-        if metadata:
+        self.redrawview()
+        return r
+
+
+    def updateview(self,metadata):
+
+        network = self.getnetwork()
+        self.switchcomponent(self.wifi, "on" if network[0] else "off")
+        self.switchcomponent(self.eth, "on" if network[1] else "off")
+        self.switchcomponent(self.inet, "on" if self.isInternet() else 'off')
+
+        if metadata and self.metatext.seek != metadata['seek']:
+            self.playing = metadata['status'] == 'play'
             codec='flac'
             if self.usesingle:
                 codec = self.getcodec(metadata)
@@ -353,13 +367,11 @@ class MetaMeter(Meter):
                     codec = self.getcodec(metadata)
                     self.switchcomponent(self.musicservices[metadata['service']],"on")
                 self.switchcomponent(self.codecs[codec])
-            network = self.getnetwork()
-            self.switchcomponent(self.wifi,"on" if network[0] else "off")
-            self.switchcomponent(self.eth,"on" if network[1] else "off")
-            self.switchcomponent(self.play, "on" if 'status' in metadata and metadata['status'] == 'play' else 'off')
+
+            self.switchcomponent(self.play, "on" if 'status' in metadata and self.playing else 'off')
             self.switchcomponent(self.rnd, "on" if 'random' in metadata and metadata['random']  else 'off')
             self.switchcomponent(self.rpt, "on" if 'repeat' in metadata and metadata['repeat']  else 'off')
-            self.switchcomponent(self.inet, "on" if self.isInternet() else 'off')
+
 
             self.cover.content = self.getalbumart(metadata['albumart'])
 
@@ -374,9 +386,11 @@ class MetaMeter(Meter):
 
             self.metatext.osversion = self.getosversion();
             self.progressbar.progress = self.metatext.seek/1000/self.metatext.duration*100 if self.metatext.duration!=0 else 0
+            if self.progressbar.progress>100:
+                self.progressbar.progress=0
 
 
-        self.redrawview()
+        #self.redrawview()
     def isInternet(self):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -474,5 +488,56 @@ class MetaMeter(Meter):
         return c
 
 
+class MetaCasseteMeter(MetaMeter):
+    def __init__(self, util, meter_type, meter_parameters, data_source):
+        super().__init__(util, meter_type, meter_parameters, data_source)
+
+        self.image = pygame.image.load("1280X400/cassete-wheel.png")
+        self.image_rectright = self.image.get_rect(center=(626, 180))
+        self.image_rectleft = self.image.get_rect(center=(311, 180))
+
+        self.angleleft = 0
+        self.angleright = 0
+        self.rotation_speedleft = 2
+        self.rotation_speedright = 4
+        self.clearwidth = 68
+        self.clearstartx = 0
+        self.clearstatus = 0
+
+    def run(self):
+        r = super().run()
+        if self.playing:
+            self.casseteAnimation()
+        return r
+    def add_foreground(self, image_name):
+        super().add_foreground(image_name)
+        self.leftcomp = self.add_image_component('cassete-wheel.png', 0, 0)
+        self.rightcomp = self.add_image_component('cassete-wheel.png', 0, 0)
+        self.casseteclear = self.add_image_component('cassete-clear.png', 458, 143)
+        self.clearstartx = self.casseteclear.content_x
+        self.casseteAnimation()
+    def rotatecomp(self,comp,angle,rect):
+        rotated_image = pygame.transform.rotate(self.image, angle)
+        rotated_rect = rotated_image.get_rect(center=rect.center)
+        comp.content_x = rotated_rect.x
+        comp.content_y = rotated_rect.y
+        comp.content = (self.leftcomp.content[0], rotated_image)
+    def casseteAnimation(self):
+        # # Rotate the right image
+        self.rotatecomp(self.rightcomp, self.angleright, self.image_rectright)
+        self.rotatecomp(self.leftcomp, self.angleleft, self.image_rectleft)
+        self.clearstatus = self.progressbar.progress/100*((self.clearstartx-self.casseteclear.content_x)/self.clearwidth)
+        if self.casseteclear.content_x > self.clearstartx-self.clearwidth:
+            self.casseteclear.content_x =  self.casseteclear.content_x -self.clearstatus
+
+        # Increment the rotation angle
+        self.angleright += self.rotation_speedright
+        if self.angleright >= 360:
+            self.angleright = 0
+        self.angleleft += self.rotation_speedleft
+        if self.angleleft >= 360:
+            self.angleleft = 0
+
+        self.redrawview()
 
 

@@ -19,7 +19,7 @@ import pygame
 import os
 import sys
 import logging
-
+import pickle
 from meterutil import MeterUtil
 from pygame.time import Clock
 from vumeter import Vumeter
@@ -71,7 +71,17 @@ class Peppymeter(ScreensaverMeter):
                     pass
             else:
                 logging.disable(logging.CRITICAL)
-        
+        self.persiststate = {"meter.index":0,"meter.name":self.util.meter_config[METER]}
+        self.meterlist = self.util.meter_config["meter.list"].split(",")
+        try:
+            with  open("state.p", "rb") as f:
+                self.persiststate = pickle.load(f)
+                self.util.meter_config[METER] = self.meterlist[self.persiststate["meter.index"]]
+        except :
+            self.savepersiststate()
+
+
+
         # no VU Meter support for Windows
         if "win" in sys.platform and self.util.meter_config[DATA_SOURCE][TYPE] == SOURCE_PIPE:
             self.util.meter_config[DATA_SOURCE][TYPE] = SOURCE_NOISE
@@ -198,6 +208,22 @@ class Peppymeter(ScreensaverMeter):
                         running = False
                 elif event.type == pygame.MOUSEBUTTONUP and (self.util.meter_config[EXIT_ON_TOUCH] or self.util.meter_config[STOP_DISPLAY_ON_TOUCH]):
                     running = False
+                if event.type == pygame.MOUSEBUTTONUP:
+                    pos = pygame.mouse.get_pos()
+                    knobmeterto=self.util.meter_config[self.util.meter_config[METER]]["knobs.selectmeterto"]
+                    knobmeterfrom = self.util.meter_config[self.util.meter_config[METER]]["knobs.selectmeterfrom"]
+                    knobpowerto = self.util.meter_config[self.util.meter_config[METER]]["knobs.powerto"]
+                    knobpowerfrom = self.util.meter_config[self.util.meter_config[METER]]["knobs.powerfrom"]
+                    if knobmeterfrom< pos < knobmeterto:
+                        self.persiststate["meter.index"]= (self.persiststate["meter.index"]+1) % len(self.meterlist)
+                        self.savepersiststate()
+                        self.util.meter_config[METER] = self.meterlist[self.persiststate["meter.index"]]
+                        self.meter.stop()
+                        self.meter.meter = None
+                        self.meter.start()
+                        pygame.display.update()
+                    if knobpowerfrom < pos < knobpowerto:
+                        running = False
 
             areas = self.meter.run()
             pygame.display.update(areas)
@@ -208,7 +234,9 @@ class Peppymeter(ScreensaverMeter):
             pygame.quit()
         else:
             self.exit()
-
+    def savepersiststate(self):
+        with open("state.p", "wb") as f:
+            pickle.dump(self.persiststate, f)
     def stop(self):
         """ Stop meter animation. """
 
@@ -246,7 +274,7 @@ class Peppymeter(ScreensaverMeter):
 
         if hasattr(self, "malloc_trim"):
             self.malloc_trim()
-
+        self.meter.diconnectsocketio()
         os._exit(0)
 
     def set_visible(self, flag):
