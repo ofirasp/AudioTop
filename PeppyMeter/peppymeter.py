@@ -30,7 +30,7 @@ from pwminterface import PWMInterface
 from httpinterface import HTTPInterface
 from screensavermeter import ScreensaverMeter
 from configfileparser import *
-
+import time
 class Peppymeter(ScreensaverMeter):
     """ Peppy Meter class """
     
@@ -219,6 +219,7 @@ class Peppymeter(ScreensaverMeter):
                         self.savepersiststate()
                         self.util.meter_config[METER] = self.meterlist[self.persiststate["meter.index"]]
                         self.meter.stop()
+                        time.sleep(0.2)  # let threads stop
                         self.meter.meter = None
                         self.meter.start()
                         pygame.display.update()

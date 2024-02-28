@@ -372,7 +372,6 @@ class MetaMeter(Meter):
             self.switchcomponent(self.rnd, "on" if 'random' in metadata and metadata['random']  else 'off')
             self.switchcomponent(self.rpt, "on" if 'repeat' in metadata and metadata['repeat']  else 'off')
 
-
             self.cover.content = self.getalbumart(metadata['albumart'])
 
             self.metatext.album =  metadata['album'] if 'album' in metadata else '---'
@@ -380,11 +379,10 @@ class MetaMeter(Meter):
             self.metatext.title = metadata['title'] if 'title' in metadata else '---'
             self.metatext.seek = metadata['seek'] if 'seek' in metadata else 0
             self.metatext.duration = metadata['duration'] if 'duration' in metadata else 0
-
             if 'samplerate' in metadata and metadata['samplerate'] and 'bitdepth' in metadata and metadata['bitdepth']:
                 self.metatext.bitrate = metadata['samplerate']  + " " + metadata['bitdepth']
-
             self.metatext.osversion = self.getosversion();
+
             self.progressbar.progress = self.metatext.seek/1000/self.metatext.duration*100 if self.metatext.duration!=0 else 0
             if self.progressbar.progress>100:
                 self.progressbar.progress=0
@@ -492,30 +490,32 @@ class MetaCasseteMeter(MetaMeter):
     def __init__(self, util, meter_type, meter_parameters, data_source):
         super().__init__(util, meter_type, meter_parameters, data_source)
 
-        self.image = pygame.image.load("1280X400/cassete-wheel.png")
-        self.image_rectright = self.image.get_rect(center=(626, 180))
-        self.image_rectleft = self.image.get_rect(center=(311, 180))
+        self.image = pygame.image.load("1280X400/"+self.config['icons.casstewheel'])
+        self.image_rectright = self.image.get_rect(center=self.config['icons.casstewheelright.position'])
+        self.image_rectleft = self.image.get_rect(center=self.config['icons.casstewheelleft.position'])
 
         self.angleleft = 0
         self.angleright = 0
-        self.rotation_speedleft = 2
-        self.rotation_speedright = 4
-        self.clearwidth = 68
+        self.rotation_speedleft = 1
+        self.rotation_speedright = 5
+        self.clearwidth = self.config['icons.casseteclear.width']
         self.clearstartx = 0
         self.clearstatus = 0
 
     def run(self):
         r = super().run()
-        if self.playing:
+        if True:#self.playing:
             self.casseteAnimation()
         return r
     def add_foreground(self, image_name):
         super().add_foreground(image_name)
-        self.leftcomp = self.add_image_component('cassete-wheel.png', 0, 0)
-        self.rightcomp = self.add_image_component('cassete-wheel.png', 0, 0)
-        self.casseteclear = self.add_image_component('cassete-clear.png', 458, 143)
+        self.leftcomp = self.add_image_component(self.config['icons.casstewheel'], 0, 0)
+        self.rightcomp = self.add_image_component(self.config['icons.casstewheel'], 0, 0)
+        self.casseteclear = self.add_image_component(self.config['icons.casseteclear'], *self.config['icons.casseteclear.position'])
         self.clearstartx = self.casseteclear.content_x
+        self.components.remove(self.progressbar)
         self.casseteAnimation()
+        self.redrawview()
     def rotatecomp(self,comp,angle,rect):
         rotated_image = pygame.transform.rotate(self.image, angle)
         rotated_rect = rotated_image.get_rect(center=rect.center)
@@ -523,14 +523,28 @@ class MetaCasseteMeter(MetaMeter):
         comp.content_y = rotated_rect.y
         comp.content = (self.leftcomp.content[0], rotated_image)
     def casseteAnimation(self):
-        # # Rotate the right image
         self.rotatecomp(self.rightcomp, self.angleright, self.image_rectright)
         self.rotatecomp(self.leftcomp, self.angleleft, self.image_rectleft)
-        self.clearstatus = self.progressbar.progress/100*((self.clearstartx-self.casseteclear.content_x)/self.clearwidth)
-        if self.casseteclear.content_x > self.clearstartx-self.clearwidth:
-            self.casseteclear.content_x =  self.casseteclear.content_x -self.clearstatus
 
-        # Increment the rotation angle
+        self.clearstatus = self.progressbar.progress/100*self.clearwidth
+        self.casseteclear.content_x =  self.clearstartx -self.clearstatus
+
+        if self.progressbar.progress < 20:
+            self.rotation_speedleft = 1
+            self.rotation_speedright = 5
+        elif self.progressbar.progress < 35:
+            self.rotation_speedleft = 2
+            self.rotation_speedright = 4
+        elif self.progressbar.progress < 50:
+            self.rotation_speedleft = 3
+            self.rotation_speedright = 3
+        elif self.progressbar.progress < 65:
+            self.rotation_speedleft = 4
+            self.rotation_speedright = 2
+        else:
+            self.rotation_speedleft = 5
+            self.rotation_speedright = 1
+
         self.angleright += self.rotation_speedright
         if self.angleright >= 360:
             self.angleright = 0
@@ -538,6 +552,5 @@ class MetaCasseteMeter(MetaMeter):
         if self.angleleft >= 360:
             self.angleleft = 0
 
-        self.redrawview()
 
 

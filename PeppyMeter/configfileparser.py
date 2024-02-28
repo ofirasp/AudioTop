@@ -256,7 +256,7 @@ class ConfigFileParser(object):
             elif meter_type == TYPE_METALINEAR:
                 self.meter_config[section] = self.get_matalinear_section(c, section, meter_type)
             elif meter_type == TYPE_METACASSETE:
-                self.meter_config[section] = self.get_matalinear_section(c, section, meter_type)
+                self.meter_config[section] = self.get_cassete_section(c, section, meter_type)
         if "," in self.meter_config[METER]:
             names = self.meter_config[METER].split(",")
             available_meter_names = list(map(str.strip, names))
@@ -359,10 +359,9 @@ class ConfigFileParser(object):
         d['knobs.powerfrom'] = make_tuple(config_file.get(section, 'knobs.powerfrom'))
         d['knobs.powerto'] = make_tuple(config_file.get(section, 'knobs.powerto'))
         d['metatext.fontname'] = config_file.get(section, 'metatext.fontname')
-
-
-
-
+        d['metatext.smalltextfont'] = config_file.get(section, 'metatext.smalltextfont')
+        d['metatext.smallHebfontname'] = config_file.get(section, 'metatext.smallHebfontname')
+        d['metatext.smallHebfontname'] = config_file.get(section, 'metatext.smallHebfontname')
     def get_matalinear_section(self, config_file, section, meter_type):
         d=self.get_linear_section(config_file, section, meter_type)
         self.get_mata_section(config_file, section, d)
@@ -372,6 +371,18 @@ class ConfigFileParser(object):
         d = self.get_circular_section( config_file, section, meter_type)
         self.get_mata_section(config_file, section,  d)
         return d
+    def get_cassete_section(self, config_file, section, meter_type):
+        d = self.get_matalinear_section(config_file, section, meter_type)
+        d['icons.casstewheel'] = config_file.get(section, 'icons.casstewheel')
+        d['icons.casseteclear'] = config_file.get(section, 'icons.casseteclear')
+        d['icons.casstewheelleft.position'] = make_tuple(config_file.get(section, 'icons.casstewheelleft.position'))
+        d['icons.casstewheelright.position'] = make_tuple(config_file.get(section, 'icons.casstewheelright.position'))
+        d['icons.casseteclear.position'] = make_tuple(config_file.get(section, 'icons.casseteclear.position'))
+        d['icons.casseteclear.width'] = config_file.getint(section, 'icons.casseteclear.width')
+
+        return d
+
+
     def get_linear_section(self, config_file, section, meter_type):
         """ Parser for linear meter
         

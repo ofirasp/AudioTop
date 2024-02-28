@@ -133,6 +133,11 @@ class TextComponent(Component):
         self.bigfont = pygame.font.SysFont(self.config['metatext.fontname'],self.config['metatext.bigfontsize'], bold=False)
         self.smallfont = pygame.font.SysFont(self.config['metatext.fontname'], self.config['metatext.smallfontsize'], bold=False)
         self.tinyfont = pygame.font.SysFont(self.config['metatext.fontname'], self.config['metatext.tinyfontsize'], bold=False)
+        self.smalltextfont = pygame.font.SysFont(self.config['metatext.smalltextfont'], self.config['metatext.smallfontsize'],
+                                             bold=False)
+        self.smallhebfont = pygame.font.SysFont(self.config['metatext.smallHebfontname'], self.config['metatext.smallfontsize'], bold=False)
+        self.bighebfont = pygame.font.SysFont(self.config['metatext.smallHebfontname'], self.config['metatext.bigfontsize'], bold=False)
+
         self.durfont = pygame.font.SysFont('Digital-7 Mono', self.config['metatext.durfontsize'], bold=False)
         self.clockstart = 0
         self.iscenter = self.config['metatext.iscenter']
@@ -155,33 +160,29 @@ class TextComponent(Component):
         return (f'{m:02d}:{s:02d}', f'{dm:02d}:{ds:02d}')
     def draw(self):
 
-        if self.iscenter:
-            textsurface = self.bigfont.render(self.PyHebText(self.title)[:self.config['metatext.trimtitle']], True, self.fontcolor)
-            textsurface.set_colorkey((0, 0, 0))
-            self.screen.blit(textsurface, textsurface.get_rect(center=self.config['metatext.title']))
+        #title
+        font = self.bighebfont if self.HasHeb(self.album) else self.bigfont
+        textsurface = font.render(self.PyHebText(self.title)[:self.config['metatext.trimtitle']], True, self.fontcolor)
+        textsurface.set_colorkey((0, 0, 0))
+        r = textsurface.get_rect(center=self.config['metatext.title']) if  self.iscenter else self.config['metatext.title']
+        self.screen.blit(textsurface,r)
 
-            textsurface = self.bigfont.render(self.PyHebText(self.artist)[:self.config['metatext.trimartist']], True, self.fontcolor)
-            textsurface.set_colorkey((0, 0, 0))
-            self.screen.blit(textsurface, textsurface.get_rect(center=self.config['metatext.artist']))
+        #artist
+        font = self.bigfont if self.HasHeb(self.album) else self.bigfont
+        textsurface = font.render(self.PyHebText(self.artist)[:self.config['metatext.trimartist']], True, self.fontcolor)
+        textsurface.set_colorkey((0, 0, 0))
+        r = textsurface.get_rect(center=self.config['metatext.artist']) if self.iscenter else self.config['metatext.artist']
+        self.screen.blit(textsurface, r)
 
-            textsurface = self.smallfont.render(self.PyHebText(self.album)[:self.config['metatext.trimalbum']], True, self.fontcolor)
-            textsurface.set_colorkey((0, 0, 0))
-            self.screen.blit(textsurface, textsurface.get_rect(center=self.config['metatext.album']))
+        #album
+        font =  self.smallhebfont if self.HasHeb(self.album) else self.smallfont
+        textsurface = font.render(self.PyHebText(self.album)[:self.config['metatext.trimalbum']], True, self.fontcolor)
+        textsurface.set_colorkey((0, 0, 0))
+        r = textsurface.get_rect(center=self.config['metatext.album']) if self.iscenter else self.config['metatext.album']
+        self.screen.blit(textsurface, r)
 
-        else:
-            textsurface = self.bigfont.render(self.PyHebText(self.title)[:self.config['metatext.trimtitle']], True, self.fontcolor)
-            textsurface.set_colorkey((0, 0, 0))
-            self.screen.blit(textsurface, self.config['metatext.title'])
 
-            textsurface = self.bigfont.render(self.PyHebText(self.artist)[:self.config['metatext.trimartist']], True, self.fontcolor)
-            textsurface.set_colorkey((0, 0, 0))
-            self.screen.blit(textsurface, self.config['metatext.artist'])
-
-            textsurface = self.smallfont.render(self.PyHebText(self.album)[:self.config['metatext.trimalbum']], True,self.fontcolor)
-            textsurface.set_colorkey((0, 0, 0))
-            self.screen.blit(textsurface, self.config['metatext.album'])
-
-        textsurface = self.smallfont.render(self.bitrate, True, self.fontcolor)
+        textsurface = self.smalltextfont.render(self.bitrate, True, self.textcolor)
         textsurface.set_colorkey((0, 0, 0))
         self.screen.blit(textsurface, textsurface.get_rect(center=self.config['metatext.bitrate']))
 
@@ -200,7 +201,8 @@ class TextComponent(Component):
         if any("\u0590" <= c <= "\u05EA" for c in txtString):
             return txtString[::-1]
         return txtString
-
+    def HasHeb(self,txtString):
+        return any("\u0590" <= c <= "\u05EA" for c in txtString)
     def getSeekTime(self):
         curtime = float(self.seek / 1000)
         mc, sc = divmod(curtime, 60)
