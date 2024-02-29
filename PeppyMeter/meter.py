@@ -457,8 +457,7 @@ class MetaMeter(Meter):
             comp = (imageurl, img)
         except Exception as ex:
             logging.warning(f"failed on loading coverart {imageurl} loading default image")
-            self.coverurl = f"http://{self.metadatasourcedns}:3000/albumart"
-            comp = self.load_image('../icons/albumart.jpg')
+            comp = self.getimagefrompath('../icons/albumart.jpg')
             comp = (imageurl,comp[1])
         return  comp
     def getimagefrompath(self, path):
