@@ -210,21 +210,17 @@ class Peppymeter(ScreensaverMeter):
                     running = False
                 if event.type == pygame.MOUSEBUTTONUP:
                     pos = pygame.mouse.get_pos()
-                    knobmeterto=self.util.meter_config[self.util.meter_config[METER]]["knobs.selectmeterto"]
-                    knobmeterfrom = self.util.meter_config[self.util.meter_config[METER]]["knobs.selectmeterfrom"]
-                    knobpowerto = self.util.meter_config[self.util.meter_config[METER]]["knobs.powerto"]
-                    knobpowerfrom = self.util.meter_config[self.util.meter_config[METER]]["knobs.powerfrom"]
-                    if knobmeterfrom< pos < knobmeterto:
-                        self.persiststate["meter.index"]= (self.persiststate["meter.index"]+1) % len(self.meterlist)
-                        self.savepersiststate()
-                        self.util.meter_config[METER] = self.meterlist[self.persiststate["meter.index"]]
-                        self.meter.stop()
-                        time.sleep(0.2)  # let threads stop
-                        self.meter.meter = None
-                        self.meter.start()
-                        pygame.display.update()
-                    if knobpowerfrom < pos < knobpowerto:
-                        running = False
+                    try:
+                        knobmeterto=self.util.meter_config[self.util.meter_config[METER]]["knobs.selectmeterto"]
+                        knobmeterfrom = self.util.meter_config[self.util.meter_config[METER]]["knobs.selectmeterfrom"]
+                        knobpowerto = self.util.meter_config[self.util.meter_config[METER]]["knobs.powerto"]
+                        knobpowerfrom = self.util.meter_config[self.util.meter_config[METER]]["knobs.powerfrom"]
+                        if knobmeterfrom< pos < knobmeterto:
+                            self.switchmeter()
+                        if knobpowerfrom < pos < knobpowerto:
+                            running = False
+                    except:
+                        self.switchmeter()
 
             areas = self.meter.run()
             pygame.display.update(areas)
@@ -235,6 +231,15 @@ class Peppymeter(ScreensaverMeter):
             pygame.quit()
         else:
             self.exit()
+    def switchmeter(self):
+        self.persiststate["meter.index"] = (self.persiststate["meter.index"] + 1) % len(self.meterlist)
+        self.savepersiststate()
+        self.util.meter_config[METER] = self.meterlist[self.persiststate["meter.index"]]
+        self.meter.stop()
+        time.sleep(0.2)  # let threads stop
+        self.meter.meter = None
+        self.meter.start()
+        pygame.display.update()
     def savepersiststate(self):
         with open("state.p", "wb") as f:
             pickle.dump(self.persiststate, f)
