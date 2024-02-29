@@ -180,6 +180,7 @@ class ConfigFileParser(object):
         
         self.meter_config[METER] = c.get(CURRENT, METER)
         self.meter_config["meter.list"] = c.get(CURRENT, "meter.list")
+        self.meter_config["metadatasourcedns"] = c.get(CURRENT,"metadatasourcedns")
         self.meter_config[RANDOM_METER_INTERVAL] = c.getint(CURRENT, RANDOM_METER_INTERVAL)
         self.meter_config[EXIT_ON_TOUCH] = c.getboolean(CURRENT, EXIT_ON_TOUCH)
         self.meter_config[STOP_DISPLAY_ON_TOUCH] = c.getboolean(CURRENT, STOP_DISPLAY_ON_TOUCH)
@@ -361,7 +362,7 @@ class ConfigFileParser(object):
         d['metatext.fontname'] = config_file.get(section, 'metatext.fontname')
         d['metatext.smalltextfont'] = config_file.get(section, 'metatext.smalltextfont')
         d['metatext.smallHebfontname'] = config_file.get(section, 'metatext.smallHebfontname')
-        d['metatext.smallHebfontname'] = config_file.get(section, 'metatext.smallHebfontname')
+        d['metatext.bigHebfontname'] = config_file.get(section, 'metatext.bigHebfontname')
     def get_matalinear_section(self, config_file, section, meter_type):
         d=self.get_linear_section(config_file, section, meter_type)
         self.get_mata_section(config_file, section, d)

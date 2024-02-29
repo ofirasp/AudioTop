@@ -23,7 +23,7 @@ import io
 from netifaces import AF_INET
 import netifaces as ni
 import socket
-from threading import Thread
+import math
 
 from component import Component, TextComponent, ProgressBarComponent
 from container import Container
@@ -31,6 +31,7 @@ from configfileparser import *
 from linear import LinearAnimator
 from circular import CircularAnimator
 import pygame
+import logging
 
 
 class Meter(Container):
@@ -265,6 +266,7 @@ class MetaMeter(Meter):
     def __init__(self, util, meter_type, meter_parameters, data_source):
         super().__init__(util, meter_type, meter_parameters, data_source)
         self.config = util.meter_config[util.meter_config['meter']]
+        self.metadatasourcedns = util.meter_config['metadatasourcedns']
         self.usepeak = self.config['icons.usepeak']
         self.peakthreshold = self.config['icons.peakthreshold']
         self.coversize = self.config['cover.size']
@@ -382,13 +384,12 @@ class MetaMeter(Meter):
             if 'samplerate' in metadata and metadata['samplerate'] and 'bitdepth' in metadata and metadata['bitdepth']:
                 self.metatext.bitrate = metadata['samplerate']  + " " + metadata['bitdepth']
             self.metatext.osversion = self.getosversion();
-
-            self.progressbar.progress = self.metatext.seek/1000/self.metatext.duration*100 if self.metatext.duration!=0 else 0
+            if self.metatext.seek:
+                self.progressbar.progress = self.metatext.seek/1000/self.metatext.duration*100 if self.metatext.duration!=0 else 0
+            else:
+                self.metatext.seek=0
             if self.progressbar.progress>100:
                 self.progressbar.progress=0
-
-
-        #self.redrawview()
     def isInternet(self):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -414,7 +415,7 @@ class MetaMeter(Meter):
                         return line.split('=')[1].strip().strip('"')
         except:
             pass
-        return "3.611"
+        return "----"
     def getcodec(self,metadata):
         if metadata['service'] == 'airplay_emulation':
             return  'aac'
@@ -435,7 +436,7 @@ class MetaMeter(Meter):
         return 'flac'
     def getalbumart(self,albumart):
         if not "http" in albumart:
-            albumart = "http://volumio.local:3000" + albumart
+            albumart = f"http://{self.metadatasourcedns}:3000" + albumart
         if not self.cover or albumart != self.cover.content[0]:
             return self.loadimagefromurl(albumart)
         return self.cover.content
@@ -455,7 +456,8 @@ class MetaMeter(Meter):
                 img = pygame.transform.scale(img, (self.coversize, self.coversize))
             comp = (imageurl, img)
         except Exception as ex:
-            self.coverurl = "http://volumio.local:3000/albumart"
+            logging.warning(f"failed on loading coverart {imageurl} loading default image")
+            self.coverurl = f"http://{self.metadatasourcedns}:3000/albumart"
             comp = self.load_image('../icons/albumart.jpg')
             comp = (imageurl,comp[1])
         return  comp
@@ -466,13 +468,11 @@ class MetaMeter(Meter):
             if (r.w != self.coversize and r.h != self.coversize):
                 img = pygame.transform.scale(comp[1], (self.coversize, self.coversize))
                 comp = (path, img)
+            return comp
         except Exception as ex:
-            path = '../icons/albumart.jpg'
-            self.coverurl = "http://127.0.0.1:3000/albumart"
-            comp = self.load_image(path)
-            r = comp[1].get_rect()
-            comp = (path, comp[1])
-        return comp
+            logging.error(f"failed on loading image {path}")
+            raise ex
+
 
     def add_image_component(self, path, x, y, scale=False):
         if scale:
@@ -489,11 +489,6 @@ class MetaMeter(Meter):
 class MetaCasseteMeter(MetaMeter):
     def __init__(self, util, meter_type, meter_parameters, data_source):
         super().__init__(util, meter_type, meter_parameters, data_source)
-
-        self.image = pygame.image.load("1280X400/"+self.config['icons.casstewheel'])
-        self.image_rectright = self.image.get_rect(center=self.config['icons.casstewheelright.position'])
-        self.image_rectleft = self.image.get_rect(center=self.config['icons.casstewheelleft.position'])
-
         self.angleleft = 0
         self.angleright = 0
         self.rotation_speedleft = 1
@@ -501,16 +496,23 @@ class MetaCasseteMeter(MetaMeter):
         self.clearwidth = self.config['icons.casseteclear.width']
         self.clearstartx = 0
         self.clearstatus = 0
+        self.prevprogress = 0
 
+    def updateview(self, metadata):
+        self.prevprogress = self.progressbar.progress
+        super().updateview(metadata)
     def run(self):
         r = super().run()
-        if True:#self.playing:
+        if self.playing:
             self.casseteAnimation()
         return r
     def add_foreground(self, image_name):
         super().add_foreground(image_name)
-        self.leftcomp = self.add_image_component(self.config['icons.casstewheel'], 0, 0)
-        self.rightcomp = self.add_image_component(self.config['icons.casstewheel'], 0, 0)
+        self.image = self.load_image(self.config['icons.casstewheel'])[1]
+        self.image_rectright = self.image.get_rect(center=self.config['icons.casstewheelright.position'])
+        self.image_rectleft = self.image.get_rect(center=self.config['icons.casstewheelleft.position'])
+        self.leftcomp = self.add_image_component(self.config['icons.casstewheel'], 266, 136)
+        self.rightcomp = self.add_image_component(self.config['icons.casstewheel'], 579, 136)
         self.casseteclear = self.add_image_component(self.config['icons.casseteclear'], *self.config['icons.casseteclear.position'])
         self.clearstartx = self.casseteclear.content_x
         self.components.remove(self.progressbar)
@@ -518,37 +520,46 @@ class MetaCasseteMeter(MetaMeter):
         self.redrawview()
     def rotatecomp(self,comp,angle,rect):
         rotated_image = pygame.transform.rotate(self.image, angle)
-        rotated_rect = rotated_image.get_rect(center=rect.center)
+        rotated_rect =  rotated_image.get_rect(center=rect.center)
         comp.content_x = rotated_rect.x
         comp.content_y = rotated_rect.y
-        comp.content = (self.leftcomp.content[0], rotated_image)
+        comp.content = (comp.content[0], rotated_image)
     def casseteAnimation(self):
         self.rotatecomp(self.rightcomp, self.angleright, self.image_rectright)
         self.rotatecomp(self.leftcomp, self.angleleft, self.image_rectleft)
 
-        self.clearstatus = self.progressbar.progress/100*self.clearwidth
-        self.casseteclear.content_x =  self.clearstartx -self.clearstatus
-
-        if self.progressbar.progress < 20:
-            self.rotation_speedleft = 1
-            self.rotation_speedright = 5
-        elif self.progressbar.progress < 35:
-            self.rotation_speedleft = 2
-            self.rotation_speedright = 4
-        elif self.progressbar.progress < 50:
-            self.rotation_speedleft = 3
-            self.rotation_speedright = 3
-        elif self.progressbar.progress < 65:
-            self.rotation_speedleft = 4
-            self.rotation_speedright = 2
+        progdiff = self.progressbar.progress - self.prevprogress
+        directionfactor = 1 if progdiff>=0 else -1
+        clearspeed = 10
+        if math.fabs(progdiff) > 10:
+            self.prevprogress += clearspeed*directionfactor
+            self.clearstatus = self.prevprogress / 100 * self.clearwidth
+            self.rotation_speedleft = 20
+            self.rotation_speedright = 20
         else:
-            self.rotation_speedleft = 5
-            self.rotation_speedright = 1
-
-        self.angleright += self.rotation_speedright
+            self.clearstatus = self.progressbar.progress / 100 * self.clearwidth
+            self.casseteclear.content_x = self.clearstartx - self.clearstatus
+            directionfactor = 1
+            if self.progressbar.progress < 20:
+                self.rotation_speedleft = 1
+                self.rotation_speedright = 5
+            elif self.progressbar.progress < 35:
+                self.rotation_speedleft = 2
+                self.rotation_speedright = 4
+            elif self.progressbar.progress < 50:
+                self.rotation_speedleft = 3
+                self.rotation_speedright = 3
+            elif self.progressbar.progress < 65:
+                self.rotation_speedleft = 4
+                self.rotation_speedright = 2
+            else:
+                self.rotation_speedleft = 5
+                self.rotation_speedright = 1
+        self.casseteclear.content_x = self.clearstartx - self.clearstatus
+        self.angleright += self.rotation_speedright* directionfactor
         if self.angleright >= 360:
             self.angleright = 0
-        self.angleleft += self.rotation_speedleft
+        self.angleleft += self.rotation_speedleft* directionfactor
         if self.angleleft >= 360:
             self.angleleft = 0
 

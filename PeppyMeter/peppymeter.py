@@ -70,7 +70,7 @@ class Peppymeter(ScreensaverMeter):
                 except:
                     pass
             else:
-                logging.disable(logging.CRITICAL)
+                logging.disable(logging.WARNING)
         self.persiststate = {"meter.index":0,"meter.name":self.util.meter_config[METER]}
         self.meterlist = self.util.meter_config["meter.list"].split(",")
         try:

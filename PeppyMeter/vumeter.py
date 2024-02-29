@@ -32,7 +32,7 @@ class Vumeter(ScreensaverMeter):
         self.metadata = data
         self.updatemetadata = True
     def startsockio(self):
-        self.sio.connect('http://volumio.local:3000')
+        self.sio.connect(f'http://{self.metadatasourcedns}:3000')
         self.sio.emit('getState', {})
         self.sio.wait()
     def diconnectsocketio(self):
@@ -44,16 +44,11 @@ class Vumeter(ScreensaverMeter):
         """
         self.metadata = {}
         self.updatemetadata = False
-        self.sio = socketio.Client()
-        self.sio.on('pushState', self.on_message)
-        x = threading.Thread(target=self.startsockio)
-        x.start()
-
         self.util = util
         self.update_period = 1
         self.meter = None
-        
         self.meter_names = self.util.meter_config[METER_NAMES]
+        self.metadatasourcedns = self.util.meter_config['metadatasourcedns']
         random_meter_interval = self.util.meter_config[RANDOM_METER_INTERVAL]
         frame_rate = self.util.meter_config[FRAME_RATE]
         self.frames_before_switch = random_meter_interval * frame_rate
@@ -79,6 +74,10 @@ class Vumeter(ScreensaverMeter):
         self.left_rect_cache = {}
         self.right_needle_cache = {}
         self.right_rect_cache = {}
+        self.sio = socketio.Client()
+        self.sio.on('pushState', self.on_message)
+        x = threading.Thread(target=self.startsockio)
+        x.start()
     
     def get_meter(self):
         """ Creates meter using meter factory. """  

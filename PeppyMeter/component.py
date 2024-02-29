@@ -136,11 +136,31 @@ class TextComponent(Component):
         self.smalltextfont = pygame.font.SysFont(self.config['metatext.smalltextfont'], self.config['metatext.smallfontsize'],
                                              bold=False)
         self.smallhebfont = pygame.font.SysFont(self.config['metatext.smallHebfontname'], self.config['metatext.smallfontsize'], bold=False)
-        self.bighebfont = pygame.font.SysFont(self.config['metatext.smallHebfontname'], self.config['metatext.bigfontsize'], bold=False)
+        self.bighebfont = pygame.font.SysFont(self.config['metatext.bigHebfontname'], self.config['metatext.bigfontsize'], bold=False)
 
         self.durfont = pygame.font.SysFont('Digital-7 Mono', self.config['metatext.durfontsize'], bold=False)
         self.clockstart = 0
         self.iscenter = self.config['metatext.iscenter']
+    def drawDynamicText(self,text,fonts,trimval,size):
+        font = fonts[1] if self.hasHeb(text) else fonts[0]
+        textsurface = font.render(self.pyHebText(text)[:trimval], True, self.fontcolor)
+        textsurface.set_colorkey((0, 0, 0))
+        r = textsurface.get_rect(center=size) if  self.iscenter else size
+        self.screen.blit(textsurface,r)
+    def drawText(self,text,font,size):
+        textsurface = font.render(text, True, self.textcolor)
+        textsurface.set_colorkey((0, 0, 0))
+        self.screen.blit(textsurface, textsurface.get_rect(center=size))
+
+    def draw(self):
+        self.drawDynamicText(self.title,(self.bigfont, self.bighebfont),  self.config['metatext.trimtitle'],self.config['metatext.title'])
+        self.drawDynamicText(self.artist,(self.bigfont, self.bighebfont),  self.config['metatext.trimartist'],self.config['metatext.artist'])
+        self.drawDynamicText( self.album,(self.smallfont, self.smallhebfont), self.config['metatext.trimalbum'],self.config['metatext.album'])
+        self.drawText(self.bitrate,self.smalltextfont,self.config['metatext.bitrate'])
+        t = self.getSeekTime()
+        self.drawText(f"{t[0]} - {t[1]}",self.durfont,  self.config['metatext.duration'])
+        self.drawText(f"OS Version: {self.osversion}",self.tinyfont,  self.config['metatext.osversion'])
+
     def getSeekTime(self):
         curtime = float(self.seek / 1000)
         mc, sc = divmod(curtime, 60)
@@ -158,68 +178,15 @@ class TextComponent(Component):
             m = dm
             s = ds
         return (f'{m:02d}:{s:02d}', f'{dm:02d}:{ds:02d}')
-    def draw(self):
-
-        #title
-        font = self.bighebfont if self.HasHeb(self.album) else self.bigfont
-        textsurface = font.render(self.PyHebText(self.title)[:self.config['metatext.trimtitle']], True, self.fontcolor)
-        textsurface.set_colorkey((0, 0, 0))
-        r = textsurface.get_rect(center=self.config['metatext.title']) if  self.iscenter else self.config['metatext.title']
-        self.screen.blit(textsurface,r)
-
-        #artist
-        font = self.bigfont if self.HasHeb(self.album) else self.bigfont
-        textsurface = font.render(self.PyHebText(self.artist)[:self.config['metatext.trimartist']], True, self.fontcolor)
-        textsurface.set_colorkey((0, 0, 0))
-        r = textsurface.get_rect(center=self.config['metatext.artist']) if self.iscenter else self.config['metatext.artist']
-        self.screen.blit(textsurface, r)
-
-        #album
-        font =  self.smallhebfont if self.HasHeb(self.album) else self.smallfont
-        textsurface = font.render(self.PyHebText(self.album)[:self.config['metatext.trimalbum']], True, self.fontcolor)
-        textsurface.set_colorkey((0, 0, 0))
-        r = textsurface.get_rect(center=self.config['metatext.album']) if self.iscenter else self.config['metatext.album']
-        self.screen.blit(textsurface, r)
-
-
-        textsurface = self.smalltextfont.render(self.bitrate, True, self.textcolor)
-        textsurface.set_colorkey((0, 0, 0))
-        self.screen.blit(textsurface, textsurface.get_rect(center=self.config['metatext.bitrate']))
-
-        t = self.getSeekTime()
-        textsurface = self.durfont.render(f"{t[0]} - {t[1]}", True, self.textcolor)
-        textsurface.set_colorkey((0, 0, 0))
-        self.screen.blit(textsurface, textsurface.get_rect(center=self.config['metatext.duration']))
-
-        textsurface = self.tinyfont.render(f"OS Version: {self.osversion}", True, self.textcolor)
-        textsurface.set_colorkey((0, 0, 0))
-        self.screen.blit(textsurface, textsurface.get_rect(center=self.config['metatext.osversion']))
-
-        pass
-    def PyHebText(self,txtString = ''):
+    def pyHebText(self,txtString = ''):
         if not type(txtString) is str: return ''
         if any("\u0590" <= c <= "\u05EA" for c in txtString):
             return txtString[::-1]
         return txtString
-    def HasHeb(self,txtString):
+    def hasHeb(self,txtString):
+        if not type(txtString) is str: return False
         return any("\u0590" <= c <= "\u05EA" for c in txtString)
-    def getSeekTime(self):
-        curtime = float(self.seek / 1000)
-        mc, sc = divmod(curtime, 60)
-        totaltime = float(self.duration)
-        durationm, durations = divmod(totaltime, 60)
 
-        # wt = time.time() - self.clockstart
-        # curtime = wt
-        mc, sc = divmod(curtime, 60)
-        m = int(mc)
-        s = int(sc)
-        dm = int(durationm)
-        ds = int(durations)
-        if m * 60 + s >= dm * 60 + ds:
-            m = dm
-            s = ds
-        return (f'{m:02d}:{s:02d}', f'{dm:02d}:{ds:02d}')
 
 
 
@@ -237,7 +204,6 @@ class ProgressBarComponent(Component):
         self.progress = 0
     def draw(self):
      try:
-
         pygame.draw.rect(self.screen, self.background_color, (self.x, self.y, self.width, self.height),border_radius= self.corner_radius)
         pygame.draw.rect(self.screen, self.bar_color, (self.x, self.y, self.width*(self.progress/100), self.height), border_radius=self.corner_radius)
      except Exception as ex:
