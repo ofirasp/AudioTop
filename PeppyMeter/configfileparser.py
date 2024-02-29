@@ -319,6 +319,7 @@ class ConfigFileParser(object):
         d['metatext.bigfontsize'] = config_file.getint(section, 'metatext.bigfontsize')
         d['metatext.smallfontsize'] = config_file.getint(section, 'metatext.smallfontsize')
         d['metatext.tinyfontsize'] = config_file.getint(section, 'metatext.tinyfontsize')
+        d['metatext.bitratefont'] = config_file.get(section, 'metatext.bitratefont')
         d['metatext.durfontsize'] = config_file.getint(section, 'metatext.durfontsize')
         d['metatext.textcolor'] = make_tuple(config_file.get(section, 'metatext.textcolor'))
         d['metatext.title'] = make_tuple(config_file.get(section, 'metatext.title'))
@@ -360,7 +361,7 @@ class ConfigFileParser(object):
         d['knobs.powerfrom'] = make_tuple(config_file.get(section, 'knobs.powerfrom'))
         d['knobs.powerto'] = make_tuple(config_file.get(section, 'knobs.powerto'))
         d['metatext.fontname'] = config_file.get(section, 'metatext.fontname')
-        d['metatext.smalltextfont'] = config_file.get(section, 'metatext.smalltextfont')
+        d['metatext.bitratefontsize'] = config_file.getint(section, 'metatext.bitratefontsize')
         d['metatext.smallHebfontname'] = config_file.get(section, 'metatext.smallHebfontname')
         d['metatext.bigHebfontname'] = config_file.get(section, 'metatext.bigHebfontname')
     def get_matalinear_section(self, config_file, section, meter_type):

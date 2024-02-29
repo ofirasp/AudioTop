@@ -292,6 +292,13 @@ class MetaMeter(Meter):
         if self.usesingle:
             self.codec = self.add_image_component('../icons/flac-on.png', *self.config['icons.flac.position'])
             self.musicservice = self.add_image_component('../icons/volumio-on.png', *self.config['icons.volumio.position'])
+            self.musicservices = {
+                "airplay_emulation": None,
+                "tidalconnect": None,
+                "mpd": None,
+                "volumio": None,
+                "tidal": None
+            }
         else:
             self.musicservices = {
                 "airplay_emulation": self.add_image_component('../icons/airplay_emulation-off.png', *self.config['icons.airplay_emulation.position']),
@@ -382,7 +389,7 @@ class MetaMeter(Meter):
             self.metatext.seek = metadata['seek'] if 'seek' in metadata else 0
             self.metatext.duration = metadata['duration'] if 'duration' in metadata else 0
             if 'samplerate' in metadata and metadata['samplerate'] and 'bitdepth' in metadata and metadata['bitdepth']:
-                self.metatext.bitrate = metadata['samplerate']  + " " + metadata['bitdepth']
+                self.metatext.bitrate = metadata['samplerate'].replace(' ','')  + " " + metadata['bitdepth'].replace(' ','')
             self.metatext.osversion = self.getosversion();
             if self.metatext.seek:
                 self.progressbar.progress = self.metatext.seek/1000/self.metatext.duration*100 if self.metatext.duration!=0 else 0

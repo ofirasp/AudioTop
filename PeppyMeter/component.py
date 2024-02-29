@@ -133,7 +133,7 @@ class TextComponent(Component):
         self.bigfont = pygame.font.SysFont(self.config['metatext.fontname'],self.config['metatext.bigfontsize'], bold=False)
         self.smallfont = pygame.font.SysFont(self.config['metatext.fontname'], self.config['metatext.smallfontsize'], bold=False)
         self.tinyfont = pygame.font.SysFont(self.config['metatext.fontname'], self.config['metatext.tinyfontsize'], bold=False)
-        self.smalltextfont = pygame.font.SysFont(self.config['metatext.smalltextfont'], self.config['metatext.smallfontsize'],
+        self.bitratefont = pygame.font.SysFont(self.config['metatext.bitratefont'], self.config['metatext.bitratefontsize'],
                                              bold=False)
         self.smallhebfont = pygame.font.SysFont(self.config['metatext.smallHebfontname'], self.config['metatext.smallfontsize'], bold=False)
         self.bighebfont = pygame.font.SysFont(self.config['metatext.bigHebfontname'], self.config['metatext.bigfontsize'], bold=False)
@@ -156,7 +156,7 @@ class TextComponent(Component):
         self.drawDynamicText(self.title,(self.bigfont, self.bighebfont),  self.config['metatext.trimtitle'],self.config['metatext.title'])
         self.drawDynamicText(self.artist,(self.bigfont, self.bighebfont),  self.config['metatext.trimartist'],self.config['metatext.artist'])
         self.drawDynamicText( self.album,(self.smallfont, self.smallhebfont), self.config['metatext.trimalbum'],self.config['metatext.album'])
-        self.drawText(self.bitrate,self.smalltextfont,self.config['metatext.bitrate'])
+        self.drawText(self.bitrate,self.bitratefont,self.config['metatext.bitrate'])
         t = self.getSeekTime()
         self.drawText(f"{t[0]} - {t[1]}",self.durfont,  self.config['metatext.duration'])
         self.drawText(f"OS Version: {self.osversion}",self.tinyfont,  self.config['metatext.osversion'])
