@@ -1,6 +1,6 @@
 [current]
 meter = metablue
-meter.list = gold,metablue,metabar,metapioneercassete
+meter.list = metablue,metabar,metapioneercassete
 metadatasourcedns = volumio.local
 random.meter.interval = 20
 base.folder =
