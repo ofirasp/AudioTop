@@ -162,22 +162,27 @@ class TextComponent(Component):
         self.drawText(f"OS Version: {self.osversion}",self.tinyfont,  self.config['metatext.osversion'])
 
     def getSeekTime(self):
-        curtime = float(self.seek / 1000)
-        mc, sc = divmod(curtime, 60)
-        totaltime = float(self.duration)
-        durationm, durations = divmod(totaltime, 60)
+        m =0
+        s=0
+        dm=0
+        ds=0
+        if self.seek:
+            curtime = float(self.seek / 1000)
+            mc, sc = divmod(curtime, 60)
+            totaltime = float(self.duration)
+            durationm, durations = divmod(totaltime, 60)
 
-        # wt = time.time() - self.clockstart
-        # curtime = wt
-        mc, sc = divmod(curtime, 60)
-        m = int(mc)
-        s = int(sc)
-        dm = int(durationm)
-        ds = int(durations)
-        if m * 60 + s >= dm * 60 + ds:
-            m = dm
-            s = ds
-        return (f'{m:02d}:{s:02d}', f'{dm:02d}:{ds:02d}')
+            # wt = time.time() - self.clockstart
+            # curtime = wt
+            mc, sc = divmod(curtime, 60)
+            m = int(mc)
+            s = int(sc)
+            dm = int(durationm)
+            ds = int(durations)
+            if m * 60 + s >= dm * 60 + ds:
+                m = dm
+                s = ds
+        return (f'{m:2d}:{s:2d}', f'{dm:2d}:{ds:2d}')
     def pyHebText(self,txtString = ''):
         if not type(txtString) is str: return ''
         if any("\u0590" <= c <= "\u05EA" for c in txtString):
