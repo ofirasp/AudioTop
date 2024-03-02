@@ -1,0 +1,13 @@
+bidict==0.23.1
+certifi==2024.2.2
+charset-normalizer==3.3.2
+h11==0.14.0
+idna==3.6
+netifaces==0.10.6
+pygame==2.5.2
+python-engineio==3.14.2
+python-socketio==4.6.0
+requests==2.31.0
+six==1.16.0
+urllib3==2.2.1
+wsproto==1.2.0
