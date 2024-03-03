@@ -1,5 +1,5 @@
 # General
-* Audiotop is a volumio plugin that inngerates volumio and peppymeter
+* Audiotop is a volumio plugin which integrates volumio and peppymeter
  * The project code is based on peppymeter
    * https://github.com/project-owner/PeppyMeter
  * Using the peppyalsa driver
