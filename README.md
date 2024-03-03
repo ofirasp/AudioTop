@@ -14,7 +14,7 @@
 * Add new 3 types of meters using the volumio titles metadata 
   * In this version only support the 1280*400 resolution
  
-![alt text](samples/1.jpg)
+![alt text](samples/1.png)
   * "matablue" Blue 2Ch Circular
   * "metabar" 2Ch with linear bars
   * "metapioneercassete" 2Ch vertical linear  bars with  cassete animation
