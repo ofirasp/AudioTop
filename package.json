@@ -1,0 +1,24 @@
+{
+  "name": "lcdcontroller",
+  "version": "2.1.0",
+  "description": "Plugin to send music information to a 20x4 LCD using I2C",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ofir Aspis",
+  "license": "ISC",
+  "volumio_info": {
+    "prettyName": "Quarantine Player",
+    "icon": "fa fa-music",
+    "plugin_type": "user_interface",
+    "manually_installed": true
+  },
+  "dependencies": {
+    "fs-extra": "^0.28.0",
+    "kew": "^0.7.0",
+    "v-conf": "^1.4.0",
+    "json": "latest",
+    "json-stringify": "latest"
+  }
+}

@@ -1,0 +1,27 @@
+{
+
+  "config_welcome_message_bool": {
+    "type": "boolean",
+    "value": true
+  },
+  "config_welcome_message_duration": {
+    "type": "string",
+    "value": "5"
+  },
+  "config_welcome_message_string": {
+    "type": "string",
+    "value": "Starting..."
+  },
+  "config_sleep_timer": {
+    "type": "string",
+    "value": "30"
+  },
+  "config_lcd_address": {
+    "type": "string",
+    "value": "0x27"
+  },
+  "config_dsd_direct_bool": {
+    "type": "boolean",
+    "value": true
+  }
+}
