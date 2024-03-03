@@ -375,6 +375,8 @@ class MetaMeter(Meter):
                 if 'service' in metadata:
                     codec = self.getcodec(metadata)
                     self.switchcomponent(self.musicservices[metadata['service']],"on")
+                if not codec in self.codecs:
+                    codec='flac'
                 self.switchcomponent(self.codecs[codec])
 
             self.switchcomponent(self.play, "on" if 'status' in metadata and self.playing else 'off')
