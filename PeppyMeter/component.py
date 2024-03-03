@@ -130,15 +130,14 @@ class TextComponent(Component):
         self.osversion = '---'
         self.fontcolor =  self.config['metatext.fontcolor']
         self.textcolor = self.config['metatext.textcolor']
-        self.bigfont = pygame.font.SysFont(self.config['metatext.fontname'],self.config['metatext.bigfontsize'], bold=False)
-        self.smallfont = pygame.font.SysFont(self.config['metatext.fontname'], self.config['metatext.smallfontsize'], bold=False)
-        self.tinyfont = pygame.font.SysFont(self.config['metatext.fontname'], self.config['metatext.tinyfontsize'], bold=False)
-        self.bitratefont = pygame.font.SysFont(self.config['metatext.bitratefont'], self.config['metatext.bitratefontsize'],
-                                             bold=False)
-        self.smallhebfont = pygame.font.SysFont(self.config['metatext.smallHebfontname'], self.config['metatext.smallfontsize'], bold=False)
-        self.bighebfont = pygame.font.SysFont(self.config['metatext.bigHebfontname'], self.config['metatext.bigfontsize'], bold=False)
+        self.bigfont = pygame.font.Font('fonts/'+self.config['metatext.fontname'],self.config['metatext.bigfontsize'])
+        self.smallfont = pygame.font.Font('fonts/'+self.config['metatext.fontname'], self.config['metatext.smallfontsize'])
+        self.tinyfont = pygame.font.Font('fonts/'+self.config['metatext.fontname'], self.config['metatext.tinyfontsize'])
+        self.bitratefont = pygame.font.Font('fonts/'+self.config['metatext.bitratefont'], self.config['metatext.bitratefontsize'])
+        self.smallhebfont = pygame.font.Font('fonts/'+self.config['metatext.smallHebfontname'], self.config['metatext.smallfontsize'])
+        self.bighebfont = pygame.font.Font('fonts/'+self.config['metatext.bigHebfontname'], self.config['metatext.bigfontsize'])
 
-        self.durfont = pygame.font.SysFont('Digital-7 Mono', self.config['metatext.durfontsize'], bold=False)
+        self.durfont = pygame.font.Font('fonts/Digital-7 (mono).ttf', self.config['metatext.durfontsize'])
         self.clockstart = 0
         self.iscenter = self.config['metatext.iscenter']
     def drawDynamicText(self,text,fonts,trimval,size):

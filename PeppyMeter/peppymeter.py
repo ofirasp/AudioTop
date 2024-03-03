@@ -63,14 +63,14 @@ class Peppymeter(ScreensaverMeter):
                     log_handlers.append(logging.StreamHandler(sys.stdout))
                     log_handlers.append(logging.FileHandler(filename="peppymeter.log", mode='w'))
                     logging.basicConfig(
-                        level=logging.NOTSET,
+                        level=logging.WARNING,
                         format='[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s',
                         handlers=log_handlers
                     )
                 except:
                     pass
             else:
-                logging.disable(logging.WARNING)
+                logging.disable(logging.CRITICAL)
         self.persiststate = {"meter.index":0,"meter.name":self.util.meter_config[METER]}
         self.meterlist = self.util.meter_config["meter.list"].split(",")
         try:
@@ -219,7 +219,7 @@ class Peppymeter(ScreensaverMeter):
                             self.switchmeter()
                         if knobpowerfrom < pos < knobpowerto:
                             running = False
-                    except:
+                    except Exception as ex:
                         self.switchmeter()
 
             areas = self.meter.run()

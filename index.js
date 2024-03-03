@@ -11,8 +11,8 @@ var json = require('json');
 var stringify = require('json-stringify');
 
 
-module.exports = lcdcontroller;
-function lcdcontroller(context) {
+module.exports = audiotop;
+function audiotop(context) {
 	var self = this;
 
 	this.context = context;
@@ -23,12 +23,12 @@ function lcdcontroller(context) {
 }
 
 // Tell Volumio that the settings are saved in a file called config.json
-lcdcontroller.prototype.getConfigurationFiles = function()
+audiotop.prototype.getConfigurationFiles = function()
 {
 	return ['config.json'];
 }
 
-lcdcontroller.prototype.onVolumioStart = function()
+audiotop.prototype.onVolumioStart = function()
 {
 	var self = this;
 	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
@@ -39,7 +39,7 @@ lcdcontroller.prototype.onVolumioStart = function()
 }
 
 // Tell Volumio what to do when the plugin gets enabled
-lcdcontroller.prototype.onStart = function() {
+audiotop.prototype.onStart = function() {
     var self = this;
     var defer=libQ.defer();
 
@@ -50,7 +50,7 @@ lcdcontroller.prototype.onStart = function() {
     var waitTimestamp = new Date(new Date().getTime() + 2000);
     while(waitTimestamp > new Date()){};
  
-    spawn('/data/plugins/user_interface/lcdcontroller/LCDcontroller/lcdmain.py', {
+    spawn('/data/plugins/user_interface/audiotop/audiotop/lcdmain.py', {
       detached: true
     });
 
@@ -77,7 +77,7 @@ lcdcontroller.prototype.onStart = function() {
 };
 
 // Tell Volumio what to do when the plugin gets disabled
-lcdcontroller.prototype.onStop = function() {
+audiotop.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
     // Use spawn with option 'detached: true' to run a command. 'detached: false' will crash Volumio instantly, because 'child process /usr/bin/killall' exited.
@@ -96,7 +96,7 @@ lcdcontroller.prototype.onStop = function() {
     return libQ.resolve();
 };
 
-lcdcontroller.prototype.onRestart = function() {
+audiotop.prototype.onRestart = function() {
     var self = this;
     restartLCD();
     // Use this if you need it
@@ -123,7 +123,7 @@ function restartLCD() {
     var waitTimestamp = new Date(new Date().getTime() + 450);
     while(waitTimestamp > new Date()){};
 
-    spawn('/data/plugins/user_interface/lcdcontroller/LCDcontroller/lcdmain.py', {
+    spawn('/data/plugins/user_interface/audiotop/audiotop/lcdmain.py', {
     	detached: true
     });
 
@@ -139,7 +139,7 @@ function restartLCD() {
 // Configuration Methods -----------------------------------------------------------------------------
 
 // Load the settings and display them in the "settings"-page
-lcdcontroller.prototype.getUIConfig = function() {
+audiotop.prototype.getUIConfig = function() {
     var defer = libQ.defer();
 	var self = this;
 
@@ -168,16 +168,16 @@ lcdcontroller.prototype.getUIConfig = function() {
 		.fail(function()
 		{
 			// Something went wrong. Tell the user about it and abort loading the settings-page.
-			self.commandRouter.pushToastMessage('error', "LCDcontroller", "Error: Could not load settings");
+			self.commandRouter.pushToastMessage('error', "audiotop", "Error: Could not load settings");
 			defer.reject(new Error());
 		});
 
 	return defer.promise;
 };
-lcdcontroller.prototype.saveDSDConfig = function(data){
+audiotop.prototype.saveDSDConfig = function(data){
     var defer = libQ.defer();
     var self = this;
-    this.commandRouter.pushToastMessage('success', "LCDcontroller", "DSD Setting saving and restarting audio...");
+    this.commandRouter.pushToastMessage('success', "audiotop", "DSD Setting saving and restarting audio...");
 
     if(data['dsd_direct_bool']) {
         sync('cp', ['/etc/mpd.conf.direct','/etc/mpd.conf'])
@@ -190,11 +190,11 @@ lcdcontroller.prototype.saveDSDConfig = function(data){
     sync('/usr/bin/sudo',['systemctl','restart','mpd'])
 
     self.config.set('config_dsd_direct_bool', data['dsd_direct_bool']);
-    this.commandRouter.pushToastMessage('success', "LCDcontroller", "DSD Setting saved sucessfully.");
+    this.commandRouter.pushToastMessage('success', "audiotop", "DSD Setting saved sucessfully.");
 
 };
 // Function to save the settings the user wants to have
-lcdcontroller.prototype.saveUIConfig = function(data) {
+audiotop.prototype.saveUIConfig = function(data) {
    var defer = libQ.defer();
    var self = this;
 
@@ -203,9 +203,9 @@ lcdcontroller.prototype.saveUIConfig = function(data) {
    self.config.set('config_welcome_message_string', data['welcome_message_string']);
    self.config.set('config_lcd_address', data['lcd_address']);
    self.config.set('config_sleep_timer', data['sleep_timer']);
-   this.commandRouter.pushToastMessage('success', "LCDcontroller", "Configuration saved sucessfully. Restarting plugin...");
+   this.commandRouter.pushToastMessage('success', "audiotop", "Configuration saved sucessfully. Restarting plugin...");
 
-   // After saving all settings, restart the LCDcontroller
+   // After saving all settings, restart the audiotop
    var waitTimestamp = new Date(new Date().getTime() + 4000);
    while(waitTimestamp > new Date()){};
    restartLCD();
@@ -214,16 +214,16 @@ lcdcontroller.prototype.saveUIConfig = function(data) {
    return defer.promise;
 };
 
-lcdcontroller.prototype.setUIConfig = function(data) {
+audiotop.prototype.setUIConfig = function(data) {
 	var self = this;
 	//Perform your installation tasks here
 };
 
-lcdcontroller.prototype.getConf = function(varName) {
+audiotop.prototype.getConf = function(varName) {
 	var self = this;
 	return ['config.json'];
 };
 
-lcdcontroller.prototype.setConf = function(varName, varValue) {
+audiotop.prototype.setConf = function(varName, varValue) {
 	var self = this;
 };

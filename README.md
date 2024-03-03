@@ -1,12 +1,12 @@
 # General
 * Audiotop is a volumio plugin which integrates volumio and peppymeter
- * The project code is based on peppymeter
+ * The project code is based on peppymeter ("Picasso Edition" 2024.02.10)
    * https://github.com/project-owner/PeppyMeter
  * Using the peppyalsa driver
    * https://github.com/project-owner/peppyalsa
- * Runs on volumio os
+ * Runs on volumio os (base version 3.631)
    * https://volumio.com/get-started/
- * With raspberry pi 5
+ * With raspberry pi
 
 
 # version 1.0.0
