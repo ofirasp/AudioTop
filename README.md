@@ -12,7 +12,9 @@
 # version 1.0.0
 ## 3.3.2024
 * Add new 3 types of meters using the volumio titles metadata 
-  * In this version only support the 1280*400 resolution
+  * With this version, only support the 1280*400 resolution
+  * Custom skins can be added (for all resultion) 
+    * Look at the meters.txt file
   * "matablue" Blue 2Ch Circular
  ![alt text](samples/s1.png)
   * "metabar" 2Ch with linear bars
