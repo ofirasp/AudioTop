@@ -62,8 +62,9 @@ class Peppymeter(ScreensaverMeter):
                 try:
                     log_handlers.append(logging.StreamHandler(sys.stdout))
                     log_handlers.append(logging.FileHandler(filename="peppymeter.log", mode='w'))
+                    level = logging.NOTSET if self.util.meter_config['use.loglevel'] != 'Warning' else logging.WARNING
                     logging.basicConfig(
-                        level=logging.WARNING,
+                        level=level,
                         format='[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s',
                         handlers=log_handlers
                     )

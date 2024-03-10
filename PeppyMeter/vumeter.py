@@ -14,6 +14,7 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with PeppyMeter. If not, see <http://www.gnu.org/licenses/>.
+import logging
 import sys
 import time
 import copy
@@ -32,9 +33,13 @@ class Vumeter(ScreensaverMeter):
         self.metadata = data
         self.updatemetadata = True
     def startsockio(self):
-        self.sio.connect(f'http://{self.metadatasourcedns}:3000')
-        self.sio.emit('getState', {})
-        self.sio.wait()
+        try:
+            self.sio.connect(f'http://{self.metadatasourcedns}:3000')
+            self.sio.emit('getState', {})
+            self.sio.wait()
+        except Exception as ex:
+            logging.error(ex)
+
     def diconnectsocketio(self):
         self.sio.disconnect()
     def __init__(self, util, data_source, timer_controlled_random_meter=True):

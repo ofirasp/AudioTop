@@ -43,14 +43,14 @@ audiotop.prototype.onStart = function() {
     var self = this;
     var defer=libQ.defer();
 
-    spawn('/usr/bin/killall', ['lcdmain.py'], {
+    spawn('/usr/bin/killall', ['peppymeter.py'], {
     		detached: true
     });
     // Wait some time for '/usr/bin/killall' to complete
     var waitTimestamp = new Date(new Date().getTime() + 2000);
     while(waitTimestamp > new Date()){};
  
-    spawn('/data/plugins/user_interface/audiotop/audiotop/lcdmain.py', {
+    spawn('/data/plugins/user_interface/audiotop/audiotop/peppymeter.py', {
       detached: true
     });
 
@@ -81,14 +81,9 @@ audiotop.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
     // Use spawn with option 'detached: true' to run a command. 'detached: false' will crash Volumio instantly, because 'child process /usr/bin/killall' exited.
-    spawn('/usr/bin/killall', ['lcdmain.py'], {
+    spawn('/usr/bin/killall', ['peppymeter.py'], {
     		detached: true
     });
-
-    // spawn('/usr/bin/killall', ['peppymeter.py'], {
-    // 		detached: true
-    // });
-
 
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
@@ -98,25 +93,15 @@ audiotop.prototype.onStop = function() {
 
 audiotop.prototype.onRestart = function() {
     var self = this;
-    restartLCD();
+    restartPeppy();
     // Use this if you need it
 };
 
 //restartLCD();
 
-function restartLCD() {
+function restartPeppy() {
 
-    // spawn('/usr/bin/killall', ['peppymeter.py'], {
-    // 		detached: true
-    // });
-    // // Wait some time for '/usr/bin/killall' to complete
-    // waitTimestamp = new Date(new Date().getTime() + 450);
-    // while(waitTimestamp > new Date()){};
-    // spawn('/home/volumio/PeppyMeter/peppymeter.py', {
-    // 	detached: true
-    // });
-
-    spawn('/usr/bin/killall', ['lcdmain.py'], {
+    spawn('/usr/bin/killall', ['peppymeter.py'], {
     	detached: true
     });
     // Wait some time for '/usr/bin/killall' to complete
@@ -126,9 +111,6 @@ function restartLCD() {
     spawn('/data/plugins/user_interface/audiotop/audiotop/lcdmain.py', {
     	detached: true
     });
-
-
-
 
     //exec('/home/volumio/PeppyMeter/peppymeter.py',{shell:true} ,(err, stdout, stderr) => {});
 }

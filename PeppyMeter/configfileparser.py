@@ -190,6 +190,7 @@ class ConfigFileParser(object):
         self.meter_config[OUTPUT_PWM] = c.getboolean(CURRENT, OUTPUT_PWM)
         self.meter_config[OUTPUT_HTTP] = c.getboolean(CURRENT, OUTPUT_HTTP)
         self.meter_config[USE_LOGGING] = c.getboolean(CURRENT, USE_LOGGING)
+        self.meter_config['use.loglevel'] = c.get(CURRENT, 'use.loglevel')
         self.meter_config[USE_CACHE] = c.getboolean(CURRENT, USE_CACHE)
         self.meter_config[FRAME_RATE] = c.getint(CURRENT, FRAME_RATE)
         

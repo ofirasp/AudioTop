@@ -181,7 +181,7 @@ class TextComponent(Component):
             if m * 60 + s >= dm * 60 + ds:
                 m = dm
                 s = ds
-        return (f'{m:2d}:{s:2d}', f'{dm:2d}:{ds:2d}')
+        return (f'{m:2d}:{s:02d}', f'{dm:2d}:{ds:02d}')
     def pyHebText(self,txtString = ''):
         if not type(txtString) is str: return ''
         if any("\u0590" <= c <= "\u05EA" for c in txtString):
