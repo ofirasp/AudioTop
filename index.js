@@ -50,7 +50,7 @@ audiotop.prototype.onStart = function() {
     var waitTimestamp = new Date(new Date().getTime() + 2000);
     while(waitTimestamp > new Date()){};
  
-    spawn('/data/plugins/user_interface/audiotop/audiotop/peppymeter.py', {
+    spawn('/data/plugins/user_interface/audiotop/audiotop/PeppyMeter/peppymeter.py', {
       detached: true
     });
 

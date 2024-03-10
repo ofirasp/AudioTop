@@ -8,7 +8,7 @@
       "element": "section",
       "label": "TRANSLATE.TITLE",
       "icon": "fa-plug",
-      "onSave": {"type":"controller", "endpoint":"user_interface/lcdcontroller", "method":"saveUIConfig"},
+      "onSave": {"type":"controller", "endpoint":"user_interface/audiotop", "method":"saveUIConfig"},
       "saveButton": {
       "label": "TRANSLATE.SAVE",
       "data": [
@@ -69,7 +69,7 @@
       "element": "section",
       "label": "TRANSLATE.DSDTITLE",
       "icon": "fa-plug",
-      "onSave": {"type":"controller", "endpoint":"user_interface/lcdcontroller", "method":"saveDSDConfig"},
+      "onSave": {"type":"controller", "endpoint":"user_interface/audiotop", "method":"saveDSDConfig"},
       "saveButton": {
       "label": "TRANSLATE.DSDSAVE",
       "data": [

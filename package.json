@@ -1,7 +1,7 @@
 {
-  "name": "lcdcontroller",
-  "version": "2.1.0",
-  "description": "Plugin to send music information to a 20x4 LCD using I2C",
+  "name": "audiotop",
+  "version": "1.0.0",
+  "description": "Plugin that integrates Peppymeter and volumio",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,7 @@
   "author": "Ofir Aspis",
   "license": "ISC",
   "volumio_info": {
-    "prettyName": "Quarantine Player",
+    "prettyName": "Audiotop",
     "icon": "fa fa-music",
     "plugin_type": "user_interface",
     "manually_installed": true
