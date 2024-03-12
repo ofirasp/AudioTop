@@ -150,7 +150,7 @@ class Peppymeter(ScreensaverMeter):
         if "win" not in sys.platform:
             if not self.util.meter_config[SDL_ENV][VIDEO_DRIVER] == "dummy":
                 os.environ["SDL_VIDEODRIVER"] = self.util.meter_config[SDL_ENV][VIDEO_DRIVER]
-                os.environ["DISPLAY"] = self.util.meter_config[SDL_ENV][VIDEO_DISPLAY]
+            os.environ["DISPLAY"] = self.util.meter_config[SDL_ENV][VIDEO_DISPLAY]
             pygame.display.init()
             pygame.mouse.set_visible(False)
         else:            
