@@ -296,7 +296,6 @@ if __name__ == "__main__":
 
     pm = Peppymeter(standalone=True)
     source = pm.util.meter_config[DATA_SOURCE][TYPE]
-
     if source == SOURCE_HTTP:
         try:
             f = open(os.devnull, 'w')

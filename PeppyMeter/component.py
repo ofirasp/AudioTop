@@ -137,7 +137,7 @@ class TextComponent(Component):
         self.smallhebfont = pygame.font.Font('fonts/'+self.config['metatext.smallHebfontname'], self.config['metatext.smallfontsize'])
         self.bighebfont = pygame.font.Font('fonts/'+self.config['metatext.bigHebfontname'], self.config['metatext.bigfontsize'])
 
-        self.durfont = pygame.font.Font('fonts/Digital-7 (mono).ttf', self.config['metatext.durfontsize'])
+        self.durfont = pygame.font.Font('fonts/digital-7 (mono).ttf', self.config['metatext.durfontsize'])
         self.clockstart = 0
         self.iscenter = self.config['metatext.iscenter']
     def drawDynamicText(self,text,fonts,trimval,size):

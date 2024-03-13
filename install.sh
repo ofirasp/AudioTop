@@ -44,7 +44,7 @@ if [ -d "${$peppyalsapath}" ] && [ ! -f "${$peppyalsapath}/src/peppyalsa-client"
 else
     echo "commandline tool already compiled"
 fi
-cdcdcdcdcdcdcd
+cdcdcdcdcdcdcd TODODODOD
 # modify volumio alsa os file
 sudo mv /volumio/app/plugins/audio_interface/alsa_controller/index.js /volumio/app/plugins/audio_interface/alsa_controller/index.js.original.js
 sudo cp volumiomod/index.js.audiotop.js /volumio/app/plugins/audio_interface/alsa_controller/index.js

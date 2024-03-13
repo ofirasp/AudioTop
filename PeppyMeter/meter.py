@@ -341,11 +341,13 @@ class MetaMeter(Meter):
     def run(self):
         r =  super().run()
         if self.usepeak:
-            if self.data_source.get_current_left_channel_data() > self.peakthreshold:
+            left = self.data_source.get_current_left_channel_data()
+            right = self.data_source.get_current_right_channel_data()
+            if left and left > self.peakthreshold:
                 self.switchcomponent(self.redleds[0], "on")
             else:
                 self.switchcomponent(self.redleds[0], "off")
-            if self.data_source.get_current_right_channel_data() > self.peakthreshold:
+            if right and right > self.peakthreshold:
                 self.switchcomponent(self.redleds[1], "on")
             else:
                 self.switchcomponent(self.redleds[1], "off")
@@ -360,7 +362,7 @@ class MetaMeter(Meter):
         self.switchcomponent(self.eth, "on" if network[1] else "off")
         self.switchcomponent(self.inet, "on" if self.isInternet() else 'off')
 
-        if metadata and self.metatext.seek != metadata['seek']:
+        if metadata and 'seek' in metadata and 'status' in metadata and self.metatext.seek != metadata['seek']:
             self.playing = metadata['status'] == 'play'
             codec='flac'
             if self.usesingle:
@@ -411,10 +413,10 @@ class MetaMeter(Meter):
     def getnetwork(self):
         allint = ni.interfaces()
         net = [False,False]
-        if 'en0' in allint:
-            net[0] = AF_INET in ni.ifaddresses('en0')
-        if 'en13' in allint:
-            net[1] = AF_INET in ni.ifaddresses('en13')
+        if 'eth0' in allint:
+            net[0] = AF_INET in ni.ifaddresses('eth0')
+        if 'wlan0' in allint:
+            net[1] = AF_INET in ni.ifaddresses('wlan0')
         return net
     def getosversion(self):
         try:
