@@ -238,6 +238,9 @@ class Peppymeter(ScreensaverMeter):
             self.meter.stop()
             pygame.quit()
         else:
+            self.meter.stop()
+            pygame.quit()
+            time.sleep(0.5)
             self.exit()
     def switchmeter(self):
         self.persiststate["meter.index"] = (self.persiststate["meter.index"] + 1) % len(self.meterlist)

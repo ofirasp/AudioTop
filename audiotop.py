@@ -57,6 +57,7 @@ lasttime = datetime.now()
 
 while running:
     try:
+        #sio.emit('getState', {})
         if 'status' in info and info['status'] == "play":
             if not peppy or not process_status(peppy.pid):
                 peppy = Popen(["../vvenv/bin/python", "peppymeter.py"])
@@ -66,6 +67,7 @@ while running:
                 closepeppy(peppy)
                 peppy = None
         time.sleep(2)
+        print(info)
     except Exception  as ex:
         time.sleep(5)
         print(ex,file=sys.stderr)

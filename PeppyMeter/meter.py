@@ -276,6 +276,9 @@ class MetaMeter(Meter):
         self.codec = None
         self.musicservice = None
         self.playing = False
+
+
+
     def add_foreground(self, image_name):
         if (image_name):
             super().add_foreground(image_name)
