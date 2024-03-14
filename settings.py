@@ -25,22 +25,14 @@ class Settings():
         return self.settings[item]
     def validate(self):
         if(len(self.settings) > 0):
-            if self.settings['config_welcome_message_bool']['value']:
-                try:
-                    self.settings['config_welcome_message_duration']['value'] = int(self.settings['config_welcome_message_duration']['value'])
-                    if(self.settings['config_welcome_message_duration']['value'] < 0):
-                        self.settings['config_welcome_message_duration']['value'] = 0
-                        self.settings['config_welcome_message_bool']['value'] = False
-                    if(len(self.settings['config_welcome_message_string']['value']) > 20):
-                        self.settings['config_welcome_message_string']['value'] = self.settings['config_welcome_message_string']['value'][0:20]
-                except:
-                    self.settings['config_welcome_message_duration']['value'] = 0
-                    self.settings['config_welcome_message_bool']['value'] = False
             try:
                 self.settings['config_sleep_timer']['value'] = int(self.settings['config_sleep_timer']['value'])
             except:
                 self.settings['config_sleep_timer']['value']=30
-
+            try:
+                self.settings['config_metadata_url']['value'] = self.settings['config_metadata_url']['value']
+            except:
+                self.settings['config_metadata_url']['value']="127.0.0.1"
             return self.settings
         else:
             return False

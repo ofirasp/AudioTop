@@ -10,6 +10,9 @@ import socketio
 import threading
 import settings
 
+settings = settings.Settings()
+settings.retreive()
+
 def process_status(pid):
     for process in psutil.process_iter(['pid', 'name']):
         if process.info['pid'] == pid:
@@ -36,12 +39,11 @@ def on_message(data):
     global info, isupdateinfo
     info = data
 def startsockio():
-    sio.connect('http://volumio.local:3000')
+    sio.connect(f"http://{settings['config_metadata_url']['value']}:3000")
     sio.emit('getState', {})
     sio.wait()
 
-settings = settings.Settings()
-settings.retreive()
+
 
 TIMETOSLEEP =  settings['config_sleep_timer']['value']
 peppy = None
@@ -52,7 +54,6 @@ sockectworker.start()
 signal.signal(signal.SIGUSR1, shutdown)
 os.chdir("PeppyMeter")
 lasttime = datetime.now()
-
 
 while running:
     try:
