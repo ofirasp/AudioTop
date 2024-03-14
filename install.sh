@@ -6,6 +6,7 @@ sudo apt-get update
 pluginpath=/data/plugins/user_interface/audiotop
 peppyalsapath=/home/volumio/peppyalsa
 peppypath=${pluginpath}/PeppyMeter
+currenpath = /home/volumnio/Audiotop
 
 
 echo "Install python dependencies"
@@ -44,11 +45,23 @@ if [ -d "${$peppyalsapath}" ] && [ ! -f "${$peppyalsapath}/src/peppyalsa-client"
 else
     echo "commandline tool already compiled"
 fi
-cdcdcdcdcdcdcd TODODODOD
+cd ${$currenpath}
+
+
 # modify volumio alsa os file
 sudo mv /volumio/app/plugins/audio_interface/alsa_controller/index.js /volumio/app/plugins/audio_interface/alsa_controller/index.js.original.js
 sudo cp volumiomod/index.js.audiotop.js /volumio/app/plugins/audio_interface/alsa_controller/index.js
 
+
+
+#fix display orientation
+mkdir /home/volumio/.config/openbox
+cat >> /home/volumio/.config/openbox/autostart <<EOL
+xrandr --output HDMI-1 --rotate left
+EOL
+
+chmod +x PeppyMeter/peppymeter.py
+chmod +x audiotop.py
 
 echo "If the plugin does not turn on after installing, restart Volumio"
 echo "plugininstallend"

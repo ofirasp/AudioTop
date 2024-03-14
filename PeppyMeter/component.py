@@ -208,8 +208,9 @@ class ProgressBarComponent(Component):
         self.progress = 0
     def draw(self):
      try:
-        pygame.draw.rect(self.screen, self.background_color, (self.x, self.y, self.width, self.height),border_radius= self.corner_radius)
-        pygame.draw.rect(self.screen, self.bar_color, (self.x, self.y, self.width*(self.progress/100), self.height), border_radius=self.corner_radius)
+         #,border_radius= self.corner_radius   only > python 3.8
+        pygame.draw.rect(self.screen, self.background_color, (self.x, self.y, self.width, self.height))
+        pygame.draw.rect(self.screen, self.bar_color, (self.x, self.y, self.width*(self.progress/100), self.height))
      except Exception as ex:
         pass
 

@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 # Copyright 2016-2024 PeppyMeter peppy.player@gmail.com
 # 
 # This file is part of PeppyMeter.
@@ -31,6 +32,7 @@ from httpinterface import HTTPInterface
 from screensavermeter import ScreensaverMeter
 from configfileparser import *
 import time
+import signal
 class Peppymeter(ScreensaverMeter):
     """ Peppy Meter class """
     
@@ -45,7 +47,8 @@ class Peppymeter(ScreensaverMeter):
             self.util = util
         else:
             self.util = MeterUtil()
-            
+        signal.signal(signal.SIGUSR1, self.gotosleep)
+        self.running = False
         self.use_vu_meter = getattr(self.util, USE_VU_METER, None)
         
         self.name = "peppymeter"
@@ -108,7 +111,11 @@ class Peppymeter(ScreensaverMeter):
 
         self.start_interface_outputs()
         logging.debug("PeppyMeter initialized")
-    
+    def gotosleep(self,a,b):
+        print(a,b)
+        self.stop()
+        self.running = False
+
     def output_display(self, data_source):
         """ Initialize display
         
@@ -197,18 +204,18 @@ class Peppymeter(ScreensaverMeter):
         clock = Clock()
         self.meter.start()
         pygame.display.update(self.util.meter_config[SCREEN_RECT])
-        running = True
+        self.running  = True
 
-        while running:
+        while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    self.running = False
                 elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
                     keys = pygame.key.get_pressed() 
                     if (keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]) and event.key == pygame.K_c:
-                        running = False
+                        self.running = False
                 elif event.type == pygame.MOUSEBUTTONUP and (self.util.meter_config[EXIT_ON_TOUCH] or self.util.meter_config[STOP_DISPLAY_ON_TOUCH]):
-                    running = False
+                    self.running = False
                 if event.type == pygame.MOUSEBUTTONUP:
                     pos = pygame.mouse.get_pos()
                     try:
@@ -219,7 +226,7 @@ class Peppymeter(ScreensaverMeter):
                         if knobmeterfrom< pos < knobmeterto:
                             self.switchmeter()
                         if knobpowerfrom < pos < knobpowerto:
-                            running = False
+                            self.running = False
                     except Exception as ex:
                         self.switchmeter()
 
