@@ -62,8 +62,8 @@ while running:
         #sio.emit('getState', {})
         if 'status' in info and info['status'] == "play":
             if not peppy or not process_status(peppy.pid):
-                peppy = Popen(["../vvenv/bin/python", "peppymeter.py"])
-                #peppy = Popen(["./peppymeter.py"])
+                #peppy = Popen(["../vvenv/bin/python", "peppymeter.py"])
+                peppy = Popen(["./peppymeter.py"])
             lasttime = datetime.now()
         else:
             if TIMETOSLEEP>0 and (datetime.now() - lasttime).total_seconds() > TIMETOSLEEP:

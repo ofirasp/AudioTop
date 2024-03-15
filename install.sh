@@ -12,7 +12,7 @@ currenpath = /home/volumnio/Audiotop
 echo "Install python dependencies"
 sudo apt-get -y install python3-pip
 sudo apt-get -y install python3-pygame
-pip3 install -r requirements.txt
+python3 -m pip install -r requirements.txt
 
 ########################################
 # install peppyalsa
