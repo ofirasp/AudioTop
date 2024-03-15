@@ -1,7 +1,7 @@
 [current]
 meter = metablue
 meter.list = metablue,metabar,metapioneercassete
-metadatasourcedns = volumio.local
+metadatasourcedns = audiotop.local
 random.meter.interval = 20
 base.folder =
 meter.folder = 1280x400

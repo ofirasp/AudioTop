@@ -6,6 +6,6 @@
   },
   "config_metadata_url": {
     "type": "string",
-    "value": "volumio.local"
+    "value": "audiotop.local"
   }
 }
