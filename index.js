@@ -43,7 +43,7 @@ audiotop.prototype.onStart = function() {
     var self = this;
     var defer=libQ.defer();
 
-    spawn('/usr/bin/killall', ['audiotop.py'], {
+    spawn('/usr/bin/killall', ['-10','audiotop.py'], {
     		detached: true
     });
     // Wait some time for '/usr/bin/killall' to complete
@@ -65,7 +65,7 @@ audiotop.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
     // Use spawn with option 'detached: true' to run a command. 'detached: false' will crash Volumio instantly, because 'child process /usr/bin/killall' exited.
-    spawn('/usr/bin/killall', ['audiotop.py'], {
+    spawn('/usr/bin/killall', ['-10','audiotop.py'], {
     		detached: true
     });
 
@@ -85,7 +85,7 @@ audiotop.prototype.onRestart = function() {
 
 function restartAudiotop() {
 
-    spawn('/usr/bin/killall', ['audiotop.py'], {
+    spawn('/usr/bin/killall', ['-10','audiotop.py'], {
     	detached: true
     });
     // Wait some time for '/usr/bin/killall' to complete
