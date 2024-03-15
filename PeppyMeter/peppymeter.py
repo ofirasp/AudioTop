@@ -238,6 +238,7 @@ class Peppymeter(ScreensaverMeter):
             self.meter.stop()
             pygame.quit()
         else:
+            self.meter.pauseplayer()
             self.meter.stop()
             pygame.quit()
             time.sleep(0.5)

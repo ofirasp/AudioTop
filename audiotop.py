@@ -16,8 +16,7 @@ settings.retreive()
 def process_status(pid):
     for process in psutil.process_iter(['pid', 'name']):
         if process.info['pid'] == pid:
-            status = process.status()
-            return status=="running"
+            return True
     return False
 
 def volumiostatus():
@@ -27,10 +26,12 @@ def shutdown():
     global running
     running=False
 
-def closepeppy(peppy):
+def closepeppy():
+    global peppy
     if peppy:
         os.kill(peppy.pid, signal.SIGUSR1)
         peppy.wait()
+        peppy = None
 
 
 sio = socketio.Client()
@@ -51,7 +52,7 @@ running = True
 info={}
 sockectworker = threading.Thread(target=startsockio)
 sockectworker.start()
-signal.signal(signal.SIGUSR1, shutdown)
+signal.signal(signal.SIGKILL, shutdown)
 os.chdir("PeppyMeter")
 lasttime = datetime.now()
 
@@ -60,19 +61,20 @@ while running:
         #sio.emit('getState', {})
         if 'status' in info and info['status'] == "play":
             if not peppy or not process_status(peppy.pid):
-                peppy = Popen(["../vvenv/bin/python", "peppymeter.py"])
+                #peppy = Popen(["../vvenv/bin/python", "peppymeter.py"])
+                peppy = Popen(["./peppymeter.py"])
             lasttime = datetime.now()
         else:
-            if (datetime.now() - lasttime).total_seconds() > TIMETOSLEEP:
-                closepeppy(peppy)
-                peppy = None
+            if TIMETOSLEEP>0 and (datetime.now() - lasttime).total_seconds() > TIMETOSLEEP:
+                closepeppy()
+
         time.sleep(2)
-        print(info)
+        #print(info)
     except Exception  as ex:
         time.sleep(5)
         print(ex,file=sys.stderr)
 
 else:
     sio.disconnect()
-    closepeppy(peppy)
+    closepeppy()
 

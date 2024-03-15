@@ -133,10 +133,11 @@ class Vumeter(ScreensaverMeter):
         if self.meter:
             return self.meter.run()
         return None
-    
+    def pauseplayer(self):
+        self.sio.emit('pause', '')
     def stop(self):
         """ Stop meter animation. """
-        self.sio.emit('pause', '')
+
         self.frames = 0
         self.meter.stop()
         if hasattr(self, "callback_stop"):

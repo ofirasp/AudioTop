@@ -1,11 +1,10 @@
 {
-
   "config_sleep_timer": {
     "type": "int",
     "value": "30"
   },
   "config_metadata_url": {
     "type": "string",
-    "value": "audiotop.local"
+    "value": "localhost"
   }
 }

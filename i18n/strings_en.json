@@ -1,30 +1,9 @@
 {
-  "PLUGIN_CONFIGURATION":"Quarantine Player settings",
-  "TITLE":"Settings for the Quarantine Player",
-  "DSDTITLE": "DSD Settings",
-  "DSDSAVE": "Save and restart audio",
+  "PLUGIN_CONFIGURATION":"Audiotop Audio Streamer settings",
+  "TITLE":"Settings for the Audiotop Audio Streamer",
   "SAVE":"Save settings and restart plugin",
-  "TEXTSPLITLABEL":"Separator for scrolling text",
-  "TEXTSPLITDOC":"If a song name, artist name etc. is too long to display on the LCD-screen, the text will automatically start scrolling. If the scrolling text reaches the end, a separator will be shown and the text will start to scroll from the beginning again. You can change this setting to apply your own separator. The separator can be as many characters as you want and can also be left empty.",
-
-  "WELCOMEMESSAGEBOOLLABEL":"Show Welcome-message on LCD",
-  "WELCOMEMESSAGEBOOLDOC":"If this setting in turned on, the LCD-display will display a welcome message. The message can be edited using the input fields below this setting.",
-
-  "WELCOMEMESSAGEDURATIONLABEL":"Duration welcome message in seconds",
-  "WELCOMEMESSAGEDURATIONDOC":"How long should the welcome message be displayed?",
-
-  "WELCOMEMESSAGELABEL1":"Welcome message text",
-  "WELCOMEMESSAGEDOC1":"The LCD display can display a message when the plugin in started. This setting tells the LCD what message to display on the first line of the display. The message can only be 20 characters per line, as one line of the display can only display 20 characters. All text will be centered automatically.",
-
-  "HOSTLABEL":"MPD-host",
-  "HOSTDOC":"This plugin used mpd (package python-mpd) to get song-/radio-information from Volumio. The Volumio-system can share it's song-/radio-info with other Volumio-systems easily by finding other Volumio-systems on the network and connecting to them. If this Volumio-system does not auto-connect to another Volumio-system, this setting can be changed from 'localhost' to '<external Volumio-device's IP-address>' to directly ask information from the other Volumio-system.",
-
-  "LCDADDRESSLABEL":"I2C LCD Address",
-  "LCDADDRESSDOC":"Not all I2C controllers are the same and not all LCD-displays use the same address to communicate with the host-system. This setting can be changed if your LCD or I2C device uses another address. Most of the time, the I2C-address is either 0x3F or 0x27.",
-
-  "SLEEPTIMERLABEL": "Inactive minutes before sleep",
-  "SLEEPTIMERDOC": "How much time (in minutes) to wait before entering to sleep mode",
-  "DSDDIRECTDOC": "Direct DSD can stream dsd256 but peppy meter will not work with dsd",
-  "DSDDIRECTLABEL": "Direct DSD"
-
+  "SLEEPTIMERLABEL": "Inactive seconds before sleep",
+  "SLEEPTIMERDOC": "How much time (in seconds) to wait before entering to sleep mode, put 0 to disable sleep",
+  "METAURLLABEL": "Volumio metadata service url",
+  "METAURLDOC": "scocketio url to get metadata info"
 }

@@ -4,7 +4,7 @@
   },
   "sections": [
     {
-      "id": "lcdcontroller_settings",
+      "id": "audiotop_settings",
       "element": "section",
       "label": "TRANSLATE.TITLE",
       "icon": "fa-plug",
@@ -12,40 +12,11 @@
       "saveButton": {
       "label": "TRANSLATE.SAVE",
       "data": [
-        "welcome_message_bool",
-        "welcome_message_duration",
-        "welcome_message_string",
         "sleep_timer",
-        "lcd_address"
+        "metadata_url"
         ]
       },
       "content": [
-
-        {
-          "id":"welcome_message_bool",
-          "element": "switch",
-          "doc": "TRANSLATE.WELCOMEMESSAGEBOOLDOC",
-          "label": "TRANSLATE.WELCOMEMESSAGEBOOLLABEL",
-          "value": true
-        },
-        {
-          "id": "welcome_message_duration",
-          "type":"text",
-          "element": "input",
-          "doc": "TRANSLATE.WELCOMEMESSAGEDURATIONDOC",
-          "label": "TRANSLATE.WELCOMEMESSAGEDURATIONLABEL",
-          "visibleIf": {"field": "welcome_message_bool", "value": true},
-          "value": "5"
-        },
-        {
-          "id": "welcome_message_string",
-          "type":"text",
-          "element": "input",
-          "doc": "TRANSLATE.WELCOMEMESSAGEDOC1",
-          "label": "TRANSLATE.WELCOMEMESSAGELABEL1",
-          "visibleIf": {"field": "welcome_message_bool", "value": true},
-          "value": "Starting..."
-        },
         {
           "id": "sleep_timer",
           "type":"text",
@@ -55,37 +26,14 @@
           "value": "30"
         },
         {
-          "id": "lcd_address",
+          "id": "metadata_url",
           "type":"text",
           "element": "input",
-          "doc": "TRANSLATE.LCDADDRESSDOC",
-          "label": "TRANSLATE.LCDADDRESSLABEL",
-          "value": "0x27"
+          "doc": "TRANSLATE.METAURLDOC",
+          "label": "TRANSLATE.METAURLLABEL",
+          "value": "http://localhost:3000"
         }
       ]
-    },
-    {
-      "id": "lcdcontroller_dsd",
-      "element": "section",
-      "label": "TRANSLATE.DSDTITLE",
-      "icon": "fa-plug",
-      "onSave": {"type":"controller", "endpoint":"user_interface/audiotop", "method":"saveDSDConfig"},
-      "saveButton": {
-      "label": "TRANSLATE.DSDSAVE",
-      "data": [
-        "dsd_direct_bool"
-        ]
-      },
-      "content": [
-
-        {
-          "id":"dsd_direct_bool",
-          "element": "switch",
-          "doc": "TRANSLATE.DSDDIRECTDOC",
-          "label": "TRANSLATE.DSDDIRECTLABEL",
-          "value": true
-        }
-        ]
     }
   ]
 }

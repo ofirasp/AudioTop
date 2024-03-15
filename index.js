@@ -43,32 +43,16 @@ audiotop.prototype.onStart = function() {
     var self = this;
     var defer=libQ.defer();
 
-    spawn('/usr/bin/killall', ['peppymeter.py'], {
+    spawn('/usr/bin/killall', ['audiotop.py'], {
     		detached: true
     });
     // Wait some time for '/usr/bin/killall' to complete
     var waitTimestamp = new Date(new Date().getTime() + 2000);
     while(waitTimestamp > new Date()){};
  
-    spawn('/data/plugins/user_interface/audiotop/audiotop/PeppyMeter/peppymeter.py', {
+    spawn('/data/plugins/user_interface/audiotop/audiotop.py', {
       detached: true
     });
-
-
-    // spawn('/usr/bin/killall', ['peppymeter.py'], {
-    // 		detached: true
-    // });
-    // // Wait some time for '/usr/bin/killall' to complete
-    // waitTimestamp = new Date(new Date().getTime() + 2000);
-    // while(waitTimestamp > new Date()){};
-    // spawn('/home/volumio/PeppyMeter/peppymeter.py', {
-    // 	detached: true
-    // });
-
-    //exec('/home/volumio/PeppyMeter/peppymeter.py',{shell:true} , (err, stdout, stderr) => {});
-
-
-
 
     //  Once the Plugin has successfull started resolve the promise
     defer.resolve();
@@ -81,7 +65,7 @@ audiotop.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
     // Use spawn with option 'detached: true' to run a command. 'detached: false' will crash Volumio instantly, because 'child process /usr/bin/killall' exited.
-    spawn('/usr/bin/killall', ['peppymeter.py'], {
+    spawn('/usr/bin/killall', ['audiotop.py'], {
     		detached: true
     });
 
@@ -93,26 +77,24 @@ audiotop.prototype.onStop = function() {
 
 audiotop.prototype.onRestart = function() {
     var self = this;
-    restartPeppy();
+    restartAudiotop();
     // Use this if you need it
 };
 
-//restartLCD();
 
-function restartPeppy() {
 
-    spawn('/usr/bin/killall', ['peppymeter.py'], {
+function restartAudiotop() {
+
+    spawn('/usr/bin/killall', ['audiotop.py'], {
     	detached: true
     });
     // Wait some time for '/usr/bin/killall' to complete
     var waitTimestamp = new Date(new Date().getTime() + 450);
     while(waitTimestamp > new Date()){};
 
-    spawn('/data/plugins/user_interface/audiotop/audiotop/lcdmain.py', {
+    spawn('/data/plugins/user_interface/audiotop/audiotop.py', {
     	detached: true
     });
-
-    //exec('/home/volumio/PeppyMeter/peppymeter.py',{shell:true} ,(err, stdout, stderr) => {});
 }
 
 
@@ -132,19 +114,9 @@ audiotop.prototype.getUIConfig = function() {
 		__dirname + '/UIConfig.json')
 		.then(function(uiconf)
 		{
+			uiconf.sections[0].content[0].value = self.config.get('config_sleep_timer');
+			uiconf.sections[0].content[1].value = self.config.get('config_metadata_url');
 
-			// Load config_welcome_message_bool into UIconfig
-			uiconf.sections[0].content[0].value = self.config.get('config_welcome_message_bool');
-			// // Load config_welcome_message_duration into UIconfig
-			uiconf.sections[0].content[1].value = self.config.get('config_welcome_message_duration');
-			// // Load config_welcome_message_string_one into UIconfig
-			uiconf.sections[0].content[2].value = self.config.get('config_welcome_message_string');
-			uiconf.sections[0].content[3].value = self.config.get('config_sleep_timer');
-
-			uiconf.sections[0].content[4].value = self.config.get('config_lcd_address');
-
-            uiconf.sections[1].content[0].value = self.config.get('config_dsd_direct_bool');
-			// Tell Volumio everything went very well
 			defer.resolve(uiconf);
 		})
 		.fail(function()
@@ -156,41 +128,20 @@ audiotop.prototype.getUIConfig = function() {
 
 	return defer.promise;
 };
-audiotop.prototype.saveDSDConfig = function(data){
-    var defer = libQ.defer();
-    var self = this;
-    this.commandRouter.pushToastMessage('success', "audiotop", "DSD Setting saving and restarting audio...");
 
-    if(data['dsd_direct_bool']) {
-        sync('cp', ['/etc/mpd.conf.direct','/etc/mpd.conf'])
-        sync('cp', ['/etc/asound.conf.direct','/etc/asound.conf'])
-    }else{
-        sync('cp', ['/etc/mpd.conf.dop','/etc/mpd.conf'])
-        sync('cp', ['/etc/asound.conf.dop','/etc/asound.conf'])
-    }
-    sync('/usr/bin/sudo',['/etc/init.d/alsa-utils','restart'])
-    sync('/usr/bin/sudo',['systemctl','restart','mpd'])
-
-    self.config.set('config_dsd_direct_bool', data['dsd_direct_bool']);
-    this.commandRouter.pushToastMessage('success', "audiotop", "DSD Setting saved sucessfully.");
-
-};
 // Function to save the settings the user wants to have
 audiotop.prototype.saveUIConfig = function(data) {
    var defer = libQ.defer();
    var self = this;
 
-   self.config.set('config_welcome_message_bool', data['welcome_message_bool']);
-   self.config.set('config_welcome_message_duration', data['welcome_message_duration']);
-   self.config.set('config_welcome_message_string', data['welcome_message_string']);
-   self.config.set('config_lcd_address', data['lcd_address']);
    self.config.set('config_sleep_timer', data['sleep_timer']);
+   self.config.set('config_metadata_url', data['metadata_url']);
    this.commandRouter.pushToastMessage('success', "audiotop", "Configuration saved sucessfully. Restarting plugin...");
 
    // After saving all settings, restart the audiotop
    var waitTimestamp = new Date(new Date().getTime() + 4000);
    while(waitTimestamp > new Date()){};
-   restartLCD();
+   restartAudiotop();
 
    // Tell Volumio everything went fine
    return defer.promise;
