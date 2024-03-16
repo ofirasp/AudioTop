@@ -9,7 +9,7 @@ import psutil
 import socketio
 import threading
 import settings
-
+sys.stderr = open("audiotop.log","wt")
 settings = settings.Settings()
 settings.retreive()
 
@@ -54,7 +54,7 @@ info={}
 sockectworker = threading.Thread(target=startsockio)
 sockectworker.start()
 signal.signal(signal.SIGUSR1, shutdown)
-os.chdir("PeppyMeter")
+os.chdir("/data/plugins/user_interface/audiotop/PeppyMeter")
 lasttime = datetime.now()
 
 while running:

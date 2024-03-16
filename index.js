@@ -136,7 +136,6 @@ audiotop.prototype.saveUIConfig = function(data) {
 
    self.config.set('config_sleep_timer', data['sleep_timer']);
    self.config.set('config_metadata_url', data['metadata_url']);
-   this.commandRouter.pushToastMessage('success', "audiotop", "Configuration saved sucessfully. Restarting plugin...");
 
    // After saving all settings, restart the audiotop
    var waitTimestamp = new Date(new Date().getTime() + 4000);

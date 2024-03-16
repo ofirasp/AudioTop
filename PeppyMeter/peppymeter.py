@@ -33,6 +33,8 @@ from screensavermeter import ScreensaverMeter
 from configfileparser import *
 import time
 import signal
+import os
+os.chdir("/data/plugins/user_interface/audiotop/PeppyMeter")
 class Peppymeter(ScreensaverMeter):
     """ Peppy Meter class """
     

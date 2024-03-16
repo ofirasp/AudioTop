@@ -60,8 +60,8 @@ cat >> /home/volumio/.config/openbox/autostart <<EOL
 xrandr --output HDMI-1 --rotate left
 EOL
 
-chmod +x PeppyMeter/peppymeter.py
-chmod +x audiotop.py
+chmod +x /data/plugins/user_interface/audiotop/PeppyMeter/peppymeter.py
+chmod +x /data/plugins/user_interface/audiotop/audiotop.py
 
 echo "If the plugin does not turn on after installing, restart Volumio"
 echo "plugininstallend"
