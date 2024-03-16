@@ -42,7 +42,7 @@
       "icon": "fa-plug",
       "content": [
         {
-          "id":"dsd_direct_bool",
+          "id":"ops_switchmeter",
           "element": "button",
           "label": "TRANSLATE.OPSSWITCHMETERLABEL",
           "description": "TRANSLATE.OPSSWITCHMETERDESC",
