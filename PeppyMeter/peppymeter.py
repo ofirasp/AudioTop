@@ -50,6 +50,7 @@ class Peppymeter(ScreensaverMeter):
         else:
             self.util = MeterUtil()
         signal.signal(signal.SIGUSR1, self.gotosleep)
+        signal.signal(signal.SIGUSR2, self.switchmeter)
         self.running = False
         self.use_vu_meter = getattr(self.util, USE_VU_METER, None)
         

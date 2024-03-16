@@ -34,6 +34,21 @@
           "value": "http://localhost:3000"
         }
       ]
+    },
+    {
+      "id": "audiotop_ops",
+      "element": "section",
+      "label": "TRANSLATE.OPSTITLE",
+      "icon": "fa-plug",
+      "content": [
+        {
+          "id":"dsd_direct_bool",
+          "element": "button",
+          "label": "TRANSLATE.OPSSWITCHMETERLABEL",
+          "description": "TRANSLATE.OPSSWITCHMETERDESC",
+          "onClick": {"type":"controller", "endpoint":"user_interface/audiotop", "method":"switchMeter"}
+        }
+      ]
     }
   ]
 }

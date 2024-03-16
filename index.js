@@ -145,7 +145,11 @@ audiotop.prototype.saveUIConfig = function(data) {
    // Tell Volumio everything went fine
    return defer.promise;
 };
-
+audiotop.prototype.switchMeter = function(){
+    spawn('/usr/bin/killall', ['-12','peppymeter.py'], {
+    		detached: true
+        });
+} ;
 audiotop.prototype.setUIConfig = function(data) {
 	var self = this;
 	//Perform your installation tasks here
