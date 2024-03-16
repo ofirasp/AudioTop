@@ -70,7 +70,7 @@ while running:
                 closepeppy()
 
         time.sleep(2)
-        print(info)
+        #print(info)
     except Exception  as ex:
         time.sleep(5)
         print(ex,file=sys.stderr)
