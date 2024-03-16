@@ -6,7 +6,7 @@
   "SLEEPTIMERDOC": "How much time (in seconds) to wait before entering to sleep mode, put 0 to disable sleep",
   "METAURLLABEL": "Volumio metadata service url",
   "METAURLDOC": "scocketio url to get metadata info",
-  "TRANSLATE.OPSTITLE": "Operations",
-  "TRANSLATE.OPSSWITCHMETERLABEL": "Switch Meter",
-  "TRANSLATE.OPSSWITCHMETERDESC": "Switch between meter types"
+  "OPSTITLE": "Operations",
+  "OPSSWITCHMETERLABEL": "Switch Meter",
+  "OPSSWITCHMETERDESC": "Switch between meter types"
 }
