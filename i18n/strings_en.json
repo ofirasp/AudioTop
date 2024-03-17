@@ -8,5 +8,11 @@
   "METAURLDOC": "scocketio url to get metadata info",
   "OPSTITLE": "Operations",
   "OPSSWITCHMETERLABEL": "Switch Meter",
-  "OPSSWITCHMETERDESC": "Switch between meter types"
+  "OPSSWITCHMETERDESC": "Switch between meter types",
+  "RESTORETITLE": "Restore Alsa",
+  "RESTOREVOLLABEL": "Volumio",
+  "RESTOREVOLDESC": "Restore alsa setting back to volumio (for system update)",
+  "RESTOREAUDIOTOPLABEL": "Audiotop",
+  "RESTOREAUDIOTOPDESC": "Restore alsa setting back to audiotop"
+
 }

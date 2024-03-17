@@ -49,6 +49,28 @@
           "onClick": {"type":"controller", "endpoint":"user_interface/audiotop", "method":"switchMeter"}
         }
       ]
+    },
+    {
+      "id": "audiotop_restore",
+      "element": "section",
+      "label": "TRANSLATE.RESTORETITLE",
+      "icon": "fa-plug",
+      "content": [
+        {
+          "id":"ops_restorevol",
+          "element": "button",
+          "label": "TRANSLATE.RESTOREVOLLABEL",
+          "description": "TRANSLATE.RESTOREVOLDESC",
+          "onClick": {"type":"controller", "endpoint":"user_interface/audiotop", "method":"restroeVolumioAlsaSettings"}
+        },
+        {
+          "id":"ops_restoreaudiotop",
+          "element": "button",
+          "label": "TRANSLATE.RESTOREAUDIOTOPLABEL",
+          "description": "TRANSLATE.RESTOREAUDIOTOPDESC",
+          "onClick": {"type":"controller", "endpoint":"user_interface/audiotop", "method":"restroeAudiotopAlsaSettings"}
+        }
+      ]
     }
   ]
 }

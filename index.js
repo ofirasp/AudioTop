@@ -43,17 +43,8 @@ audiotop.prototype.onStart = function() {
     var self = this;
     var defer=libQ.defer();
 
-    spawn('/usr/bin/killall', ['-10','audiotop.py'], {
-    		detached: true
-    });
-    // Wait some time for '/usr/bin/killall' to complete
-    var waitTimestamp = new Date(new Date().getTime() + 2000);
-    while(waitTimestamp > new Date()){};
- 
-    spawn('/data/plugins/user_interface/audiotop/audiotop.py', {
-      detached: true
-    });
-
+     restartAudiotop();
+    this.commandRouter.pushToastMessage('success', "audiotop", "Audiotop plugin started");
     //  Once the Plugin has successfull started resolve the promise
     defer.resolve();
 
@@ -65,10 +56,7 @@ audiotop.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
     // Use spawn with option 'detached: true' to run a command. 'detached: false' will crash Volumio instantly, because 'child process /usr/bin/killall' exited.
-    spawn('/usr/bin/killall', ['-10','audiotop.py'], {
-    		detached: true
-    });
-
+    stopAudiotop();
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
 
@@ -80,11 +68,7 @@ audiotop.prototype.onRestart = function() {
     restartAudiotop();
     // Use this if you need it
 };
-
-
-
-function restartAudiotop() {
-
+function stopAudiotop() {
     spawn('/usr/bin/killall', ['-10','audiotop.py'], {
     	detached: true
     });
@@ -92,6 +76,17 @@ function restartAudiotop() {
     var waitTimestamp = new Date(new Date().getTime() + 450);
     while(waitTimestamp > new Date()){};
 
+    spawn('/usr/bin/killall', ['peppymeter.py'], {
+    	detached: true
+    });
+    // Wait some time for '/usr/bin/killall' to complete
+    var waitTimestamp = new Date(new Date().getTime() + 450);
+    while(waitTimestamp > new Date()){};
+}
+
+
+function restartAudiotop() {
+    stopAudiotop();
     spawn('/data/plugins/user_interface/audiotop/audiotop.py', {
     	detached: true
     });
@@ -146,9 +141,33 @@ audiotop.prototype.saveUIConfig = function(data) {
    return defer.promise;
 };
 audiotop.prototype.switchMeter = function(){
+    var defer = libQ.defer();
+    var self = this;
     spawn('/usr/bin/killall', ['-12','peppymeter.py'], {
     		detached: true
         });
+    return defer.promise;
+} ;
+audiotop.prototype.restroeVolumioAlsaSettings = function(){
+    var defer = libQ.defer();
+
+    spawn('mv', ['/volumio/app/plugins/audio_interface/alsa_controller/index.js.original.js','/volumio/app/plugins/audio_interface/alsa_controller/index.js'], {
+    		detached: true
+        });
+    this.commandRouter.pushToastMessage('success', "audiotop", "Volumio Alsa setting has restored");
+    return defer.promise;
+} ;
+audiotop.prototype.restroeAudiotopAlsaSettings = function(){
+    var defer = libQ.defer();
+
+    spawn('mv', ['/volumio/app/plugins/audio_interface/alsa_controller/index.js','/volumio/app/plugins/audio_interface/alsa_controller/index.js.original.js'], {
+    		detached: true
+        });
+    spawn('cp', ['/home/volumio/Audiotop/volumiomod/index.js.audiotop.js','/volumio/app/plugins/audio_interface/alsa_controller/index.js'], {
+    		detached: true
+        });
+    this.commandRouter.pushToastMessage('success', "audiotop", "Audiotop Alsa setting has restored");
+    return defer.promise;
 } ;
 audiotop.prototype.setUIConfig = function(data) {
 	var self = this;
