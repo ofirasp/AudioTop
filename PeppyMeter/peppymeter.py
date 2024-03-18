@@ -34,7 +34,11 @@ from configfileparser import *
 import time
 import signal
 import os
-os.chdir("/data/plugins/user_interface/audiotop/PeppyMeter")
+
+try:
+    os.chdir("/data/plugins/user_interface/audiotop/PeppyMeter")
+except:
+    pass
 class Peppymeter(ScreensaverMeter):
     """ Peppy Meter class """
     
