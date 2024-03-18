@@ -48,7 +48,7 @@
 ## Install Touch Display plugin
 * Install from the volumio UI
 * Set the orientation to 270
-## Fix touch orientation for waveshare 1280X400 display
+## Fix orientation for waveshare 1280X400 display
 
 mkdir /home/volumio/.config/openbox
 
