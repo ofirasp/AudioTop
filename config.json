@@ -5,6 +5,6 @@
   },
   "config_metadata_url": {
     "type": "string",
-    "value": "audiotop"
+    "value": "audiotop.local"
   }
 }

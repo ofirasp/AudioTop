@@ -27,7 +27,10 @@
 * Install the lateset version of Volumio
 * Browse to http://volumio.local/dev and enable ssh
 ## Install peppyalsa
-* ssh volumio@volumio.local
+* ssh volumio@volumio.local 
+
+    (password:volumio)
+
 * git clone https://github.com/project-owner/peppyalsa.git
 * sudo apt-get install build-essential autoconf automake libtool libasound2-dev libfftw3-dev
 * cd peppyalsa
@@ -37,7 +40,22 @@
 * sudo make install
 * mkfifo /home/volumio/myfifo
 * chmod 777 /home/volumio/myfifo
-## install Audiotop plugin
-*  git clone https://github.com/ofirasp/AudioTop.git
-* 
+## Install Audiotop plugin
+* cd /home/volumio
+* git clone https://github.com/ofirasp/AudioTop.git
+* cd Audiotop
+* volumio plugin install
+## Install Touch Display plugin
+* Install from the volumio UI
+* Set the orientation to 270
+## Fix touch orientation for waveshare 1280X400 display
+
+mkdir /home/volumio/.config/openbox
+
+cat >> /home/volumio/.config/openbox/autostart <<EOL
+
+xrandr --output HDMI-1 --rotate left
+
+EOL
+* more info :https://www.waveshare.com/wiki/7.9inch_HDMI_LCD
 

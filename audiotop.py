@@ -14,10 +14,8 @@ settings = settings.Settings()
 settings.retreive()
 
 def process_status(pid):
-    for process in psutil.process_iter(['pid', 'name']):
-        if process.info['pid'] == pid:
-            return True
-    return False
+    return [ps for ps in psutil.process_iter(['pid', 'name']) if ps.pid == pid and ps.status() != 'zombie']
+
 
 def volumiostatus():
     return "play";
