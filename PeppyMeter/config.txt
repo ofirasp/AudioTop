@@ -1,6 +1,6 @@
 [current]
 meter = metablue
-meter.list = metablue,metabar,metapioneercassete
+meter.list = metablue,metabar,metapioneercassete,blue
 metadatasourcedns = audiotop.local
 random.meter.interval = 20
 base.folder =

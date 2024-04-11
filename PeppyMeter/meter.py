@@ -417,9 +417,9 @@ class MetaMeter(Meter):
         allint = ni.interfaces()
         net = [False,False]
         if 'eth0' in allint:
-            net[0] = AF_INET in ni.ifaddresses('eth0')
+            net[1] = AF_INET in ni.ifaddresses('eth0')
         if 'wlan0' in allint:
-            net[1] = AF_INET in ni.ifaddresses('wlan0')
+            net[0] = AF_INET in ni.ifaddresses('wlan0')
         return net
     def getosversion(self):
         try:

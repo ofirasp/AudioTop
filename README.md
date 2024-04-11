@@ -7,6 +7,7 @@
  * Runs on volumio os (base version 3.631)
    * https://volumio.com/get-started/
  * With raspberry pi
+ * Display - waveshare hdmi 7.9" 1280*400
 
 
 # version 1.0.0
