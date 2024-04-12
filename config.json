@@ -17,6 +17,6 @@
   },
   "config_switch_meter_on_restart": {
     "type": "boolean",
-    "value": false
+    "value": true
   }
 }
