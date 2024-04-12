@@ -57,7 +57,7 @@
           "element": "switch",
           "label": "TRANSLATE.AUTOSWITCHMETERONRESTARTLABEL",
           "type": "boolean",
-          "value": false,
+          "value": true,
           "doc": "TRANSLATE.AUTOSWITCHMETERONRESTARTDOC"
         }
       ]
