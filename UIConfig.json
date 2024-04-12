@@ -13,8 +13,11 @@
       "label": "TRANSLATE.SAVE",
       "data": [
         "sleep_timer",
-        "metadata_url"
-        ]
+        "metadata_url",
+        "switch_meter_on_title",
+        "switch_meter_on_album",
+        "switch_meter_on_restart"
+      ]
       },
       "content": [
         {
