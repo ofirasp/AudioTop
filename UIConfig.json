@@ -40,19 +40,25 @@
           "id":"switch_meter_on_title",
           "element": "switch",
           "label": "TRANSLATE.AUTOSWITCHMETERONTITLELABEL",
-          "value": false
+          "type": "boolean",
+          "value": false,
+          "doc": ""
         },
         {
           "id":"switch_meter_on_album",
           "element": "switch",
           "label": "TRANSLATE.AUTOSWITCHMETERONALBUMLABEL",
-          "value": false
+          "type": "boolean",
+          "value": false,
+          "doc": ""
         },
         {
           "id":"switch_meter_on_restart",
           "element": "switch",
           "label": "TRANSLATE.AUTOSWITCHMETERONRESTARTLABEL",
-          "value": false
+          "type": "boolean",
+          "value": false,
+          "doc": ""
         }
       ]
     },
