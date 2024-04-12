@@ -9,11 +9,11 @@
   },
   "config_switch_meter_on_title": {
     "type": "boolean",
-    "value": true
+    "value": false
   },
   "config_switch_meter_on_album": {
     "type": "boolean",
-    "value": true
+    "value": false
   },
   "config_switch_meter_on_restart": {
     "type": "boolean",
