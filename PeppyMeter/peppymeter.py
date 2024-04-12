@@ -34,6 +34,7 @@ from configfileparser import *
 import time
 import signal
 import os
+import settings
 
 try:
     os.chdir("/data/plugins/user_interface/audiotop/PeppyMeter")
@@ -42,13 +43,16 @@ except:
 class Peppymeter(ScreensaverMeter):
     """ Peppy Meter class """
     
-    def __init__(self, util=None, standalone=False, timer_controlled_random_meter=True):
+    def __init__(self,settings, util=None, standalone=False, timer_controlled_random_meter=True):
         """ Initializer
         
         :param util: utility object
         :param standalone: True - standalone version, False - part of Peppy player
         """
         ScreensaverMeter.__init__(self)
+        self.autoswitchmeter = {'title':settings["config_switch_meter_on_title"]['value'],
+                                'album':settings["config_switch_meter_on_album"]['value'],
+                                'restart':settings["config_switch_meter_on_restart"]['value']}
         if util:
             self.util = util
         else:
@@ -87,7 +91,13 @@ class Peppymeter(ScreensaverMeter):
         try:
             with  open("state.p", "rb") as f:
                 self.persiststate = pickle.load(f)
+                if self.autoswitchmeter["restart"]:
+                    self.persiststate["meter.index"] = (self.persiststate["meter.index"] + 1) % len(self.meterlist)
+
                 self.util.meter_config[METER] = self.meterlist[self.persiststate["meter.index"]]
+
+
+
         except :
             self.savepersiststate()
 
@@ -103,7 +113,8 @@ class Peppymeter(ScreensaverMeter):
         
         if self.util.meter_config[OUTPUT_DISPLAY]:
             self.meter = self.output_display(self.data_source)
-            
+            self.meter.meterlist = self.meterlist
+
         if self.util.meter_config[OUTPUT_SERIAL]:
             self.outputs[OUTPUT_SERIAL] = SerialInterface(self.util.meter_config, self.data_source)
             
@@ -129,7 +140,7 @@ class Peppymeter(ScreensaverMeter):
         :data_source: data source
         :return: graphical VU Meter
         """
-        meter = Vumeter(self.util, data_source, self.timer_controlled_random_meter)
+        meter = Vumeter(self.util, data_source, self.timer_controlled_random_meter,self.autoswitchmeter)
         self.current_image = None
         self.update_period = meter.get_update_period()
         
@@ -311,8 +322,9 @@ class Peppymeter(ScreensaverMeter):
        
 if __name__ == "__main__":
     """ This is called by stand-alone PeppyMeter """
-
-    pm = Peppymeter(standalone=True)
+    settings = settings.Settings()
+    settings.retreive()
+    pm = Peppymeter(settings,standalone=True)
     source = pm.util.meter_config[DATA_SOURCE][TYPE]
     if source == SOURCE_HTTP:
         try:

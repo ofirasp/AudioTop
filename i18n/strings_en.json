@@ -4,11 +4,16 @@
   "SAVE":"Save settings and restart plugin",
   "SLEEPTIMERLABEL": "Inactive seconds before sleep",
   "SLEEPTIMERDOC": "How much time (in seconds) to wait before entering to sleep mode, put 0 to disable sleep",
-  "METAURLLABEL": "Volumio metadata service url",
+  "METAURLLABEL": "Volumio metadata service ip",
   "METAURLDOC": "scocketio url to get metadata info",
   "OPSTITLE": "Operations",
   "OPSSWITCHMETERLABEL": "Switch Meter",
   "OPSSWITCHMETERDESC": "Switch between meter types",
+  "AUTOSWITCHMETERONTITLELABEL": "Auto Switch Meter on every title",
+  "AUTOSWITCHMETERONALBUMLABEL": "Auto Switch Meter on every album",
+  "AUTOSWITCHMETERONRESTARTLABEL": "Auto Switch Meter on every restart",
+
+
   "RESTORETITLE": "Restore Alsa",
   "RESTOREVOLLABEL": "Volumio",
   "RESTOREVOLDESC": "Restore alsa setting back to volumio (for system update)",

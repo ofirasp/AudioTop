@@ -8,7 +8,7 @@ import signal
 import psutil
 import socketio
 import threading
-import settings
+from PeppyMeter import settings
 sys.stderr = open("audiotop.log","wt")
 settings = settings.Settings()
 settings.retreive()

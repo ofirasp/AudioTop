@@ -13,8 +13,8 @@ class Settings():
                 settings_file = open('/data/configuration/user_interface/audiotop/config.json')
         elif(os.path.isfile('/data/plugins/user_interface/audiotop/config.json')):
                 settings_file = open('/data/plugins/user_interface/audiotop/config.json')
-        elif (os.path.isfile('config.json')):
-            settings_file = open('config.json')
+        elif (os.path.isfile('../config.json')):
+            settings_file = open('../config.json')
         else:
                 print("No config.json found!\nExiting...",file=sys.stderr)
                 exit(1)

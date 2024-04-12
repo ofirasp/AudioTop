@@ -32,6 +32,24 @@
           "doc": "TRANSLATE.METAURLDOC",
           "label": "TRANSLATE.METAURLLABEL",
           "value": "http://localhost:3000"
+        },
+        {
+          "id":"config_switch_meter_on_title",
+          "element": "switch",
+          "label": "TRANSLATE.AUTOSWITCHMETERONTITLELABEL",
+          "value": true
+        },
+        {
+          "id":"config_switch_meter_on_album",
+          "element": "switch",
+          "label": "TRANSLATE.AUTOSWITCHMETERONALBUMLABEL",
+          "value": true
+        },
+        {
+          "id":"config_switch_meter_on_restart",
+          "element": "switch",
+          "label": "TRANSLATE.AUTOSWITCHMETERONRESTARTLABEL",
+          "value": true
         }
       ]
     },

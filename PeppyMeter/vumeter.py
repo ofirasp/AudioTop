@@ -32,6 +32,17 @@ class Vumeter(ScreensaverMeter):
     def on_message(self,data):
         self.metadata = data
         self.updatemetadata = True
+        if self.metadata!=None and "title" in self.metadata:
+            if self.currenttitle!=self.metadata['title']:
+                self.currenttitle=self.metadata['title']
+                self.titleupdate=True
+        if self.metadata!=None and "album" in self.metadata:
+            if self.currentalbum!=self.metadata['album']:
+                self.currentalbum=self.metadata['album']
+                self.albumupdate=True
+
+
+
     def startsockio(self):
         try:
             self.sio.connect(f'http://{self.metadatasourcedns}:3000')
@@ -42,13 +53,18 @@ class Vumeter(ScreensaverMeter):
 
     def diconnectsocketio(self):
         self.sio.disconnect()
-    def __init__(self, util, data_source, timer_controlled_random_meter=True):
+    def __init__(self, util, data_source, timer_controlled_random_meter=True,autoswitchmeter=None):
         """ Initializer
         
         :param util: utility class
         """
         self.metadata = {}
+        self.autoswitchmeter = autoswitchmeter
         self.updatemetadata = False
+        self.titleupdate = False
+        self.albumupdate = False
+        self.currenttitle =''
+        self.currentalbum = ''
         self.util = util
         self.update_period = 1
         self.meter = None
@@ -106,7 +122,14 @@ class Vumeter(ScreensaverMeter):
         m = factory.create_meter()
 
         return m
-    
+    def switchmeter(self):
+        self.list_meter_index = (self.list_meter_index + 1) % len(self.meterlist)
+        self.util.meter_config[METER] = self.meterlist[self.list_meter_index]
+        factory = MeterFactory(self.util, self.util.meter_config, self.data_source, self.mono_needle_cache,
+                               self.mono_rect_cache, self.left_needle_cache, self.left_rect_cache,
+                               self.right_needle_cache, self.right_rect_cache)
+        self.meter = factory.create_meter()
+
     def set_volume(self, volume):
         """ Set volume level 
 
@@ -180,10 +203,22 @@ class Vumeter(ScreensaverMeter):
             self.meter.updateview(self.metadata if self.updatemetadata else None)
             self.updatemetadata=False
 
+        switch = False
+        if self.autoswitchmeter['title'] and self.titleupdate:
+            self.titleupdate = False
+            switch = True
+        if self.autoswitchmeter['album'] and self.albumupdate:
+            self.albumupdate = False
+            switch = True
+        if switch:
+            self.switchmeter()
+            self.restart()
+
         if not self.timer_controlled_random_meter:
             return
                
         if (self.random_meter or self.list_meter) and self.frames == self.frames_before_switch:
             self.frames = 0
             self.restart()
+
         self.frames += 1

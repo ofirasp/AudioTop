@@ -111,6 +111,9 @@ audiotop.prototype.getUIConfig = function() {
 		{
 			uiconf.sections[0].content[0].value = self.config.get('config_sleep_timer');
 			uiconf.sections[0].content[1].value = self.config.get('config_metadata_url');
+            uiconf.sections[0].content[2].value = self.config.get('config_switch_meter_on_title');
+            uiconf.sections[0].content[3].value = self.config.get('config_switch_meter_on_album');
+            uiconf.sections[0].content[4].value = self.config.get('config_switch_meter_on_restart');
 
 			defer.resolve(uiconf);
 		})
@@ -131,6 +134,9 @@ audiotop.prototype.saveUIConfig = function(data) {
 
    self.config.set('config_sleep_timer', data['sleep_timer']);
    self.config.set('config_metadata_url', data['metadata_url']);
+   self.config.set('config_metadata_url', data['config_switch_meter_on_title']);
+   self.config.set('config_metadata_url', data['config_switch_meter_on_album']);
+   self.config.set('config_metadata_url', data['config_switch_meter_on_restart']);
 
    // After saving all settings, restart the audiotop
    var waitTimestamp = new Date(new Date().getTime() + 4000);

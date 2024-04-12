@@ -6,5 +6,17 @@
   "config_metadata_url": {
     "type": "string",
     "value": "audiotop.local"
+  },
+  "config_switch_meter_on_title": {
+    "type": "boolean",
+    "value": false
+  },
+  "config_switch_meter_on_album": {
+    "type": "boolean",
+    "value": false
+  },
+  "config_switch_meter_on_restart": {
+    "type": "boolean",
+    "value": true
   }
 }
