@@ -33,6 +33,19 @@ class Settings():
                 self.settings['config_metadata_url']['value'] = self.settings['config_metadata_url']['value']
             except:
                 self.settings['config_metadata_url']['value']="127.0.0.1"
+            try:
+                self.settings['config_switch_meter_on_title']['value'] = self.settings['config_switch_meter_on_title']['value']
+            except:
+                self.settings['config_switch_meter_on_title']['value'] = False
+            try:
+                self.settings['config_switch_meter_on_album']['value'] = self.settings['config_switch_meter_on_album']['value']
+            except:
+                self.settings['config_switch_meter_on_album']['value'] = False
+            try:
+                self.settings['config_switch_meter_on_restart']['value'] = self.settings['config_switch_meter_on_restart']['value']
+            except:
+                self.settings['config_switch_meter_on_restart']['value'] = False
+
             return self.settings
         else:
             return False

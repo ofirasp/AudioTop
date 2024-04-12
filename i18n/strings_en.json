@@ -4,7 +4,7 @@
   "SAVE":"Save settings and restart plugin",
   "SLEEPTIMERLABEL": "Inactive seconds before sleep",
   "SLEEPTIMERDOC": "How much time (in seconds) to wait before entering to sleep mode, put 0 to disable sleep",
-  "METAURLLABEL": "Volumio metadata service ip",
+  "METAURLLABEL": "Volumio metadata service IP",
   "METAURLDOC": "scocketio url to get metadata info",
   "OPSTITLE": "Operations",
   "OPSSWITCHMETERLABEL": "Switch Meter",
