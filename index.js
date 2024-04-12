@@ -110,9 +110,9 @@ audiotop.prototype.getUIConfig = function() {
 		__dirname + '/UIConfig.json')
 		.then(function(uiconf)
 		{
-			uiconf.sections[0].content[0].value = self.config.get('config_sleep_timer');
+			uiconf.sections[0].content[0].value = "36";//self.config.get('config_sleep_timer');
 			uiconf.sections[0].content[1].value = self.config.get('config_metadata_url');
-            uiconf.sections[0].content[2].value = self.config.get('config_switch_meter_on_title');
+            uiconf.sections[0].content[2].value = true;//self.config.get('config_switch_meter_on_title');
             uiconf.sections[0].content[3].value = self.config.get('config_switch_meter_on_album');
             uiconf.sections[0].content[4].value = self.config.get('config_switch_meter_on_restart');
 
