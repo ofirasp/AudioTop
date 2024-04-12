@@ -1,7 +1,7 @@
 {
   "config_sleep_timer": {
     "type": "int",
-    "value": "30"
+    "value": "31"
   },
   "config_metadata_url": {
     "type": "string",
@@ -17,6 +17,6 @@
   },
   "config_switch_meter_on_restart": {
     "type": "boolean",
-    "value": true
+    "value": false
   }
 }
