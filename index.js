@@ -134,8 +134,8 @@ audiotop.prototype.saveUIConfig = function(data) {
    var self = this;
     this.commandRouter.pushToastMessage('success', "audiotop", "Saving Configuration");
 
-   self.config.set('config_sleep_timer', data['sleep_timer']);
-   self.config.set('config_metadata_url', data['metadata_url']);
+   //self.config.set('config_sleep_timer', data['sleep_timer']);
+   //self.config.set('config_metadata_url', data['metadata_url']);
    //self.config.set('config_switch_meter_on_title', data['switch_meter_on_title']);
    //self.config.set('config_switch_meter_on_album', data['switch_meter_on_album']);
    //self.config.set('config_switch_meter_on_restart', data['switch_meter_on_restart']);
