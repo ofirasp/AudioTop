@@ -90,7 +90,6 @@ function restartAudiotop() {
     spawn('/data/plugins/user_interface/audiotop/audiotop.py', {
     	detached: true
     });
-    this.commandRouter.pushToastMessage('success', "audiotop", "Audiotop plugin restarted");
 
 }
 
@@ -140,9 +139,13 @@ audiotop.prototype.saveUIConfig = function(data) {
    self.config.set('config_switch_meter_on_album', data['switch_meter_on_album']);
    self.config.set('config_switch_meter_on_restart', data['switch_meter_on_restart']);
 
+   this.commandRouter.pushToastMessage('success', "audiotop", "Configuration saved sucessfully. Restarting plugin...");
+
    // After saving all settings, restart the audiotop
    var waitTimestamp = new Date(new Date().getTime() + 4000);
    while(waitTimestamp > new Date()){};
+
+
    restartAudiotop();
 
    // Tell Volumio everything went fine
