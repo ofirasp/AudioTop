@@ -42,7 +42,7 @@
           "label": "TRANSLATE.AUTOSWITCHMETERONTITLELABEL",
           "type": "boolean",
           "value": false,
-          "doc": ""
+          "doc": "TRANSLATE.AUTOSWITCHMETERONTITLELABEL"
         },
         {
           "id":"switch_meter_on_album",
@@ -50,7 +50,7 @@
           "label": "TRANSLATE.AUTOSWITCHMETERONALBUMLABEL",
           "type": "boolean",
           "value": false,
-          "doc": ""
+          "doc": "TRANSLATE.AUTOSWITCHMETERONALBUMDOC"
         },
         {
           "id":"switch_meter_on_restart",
@@ -58,7 +58,7 @@
           "label": "TRANSLATE.AUTOSWITCHMETERONRESTARTLABEL",
           "type": "boolean",
           "value": false,
-          "doc": ""
+          "doc": "TRANSLATE.AUTOSWITCHMETERONRESTARTDOC"
         }
       ]
     },

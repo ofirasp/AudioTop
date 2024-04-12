@@ -10,8 +10,11 @@
   "OPSSWITCHMETERLABEL": "Switch Meter",
   "OPSSWITCHMETERDESC": "Switch between meter types",
   "AUTOSWITCHMETERONTITLELABEL": "Auto Switch Meter on every title",
+  "AUTOSWITCHMETERONTITLEDOC": "switch meter when title has changed",
   "AUTOSWITCHMETERONALBUMLABEL": "Auto Switch Meter on every album",
+  "AUTOSWITCHMETERONALBUMDOC": "switch meter when album has changed",
   "AUTOSWITCHMETERONRESTARTLABEL": "Auto Switch Meter on every restart",
+  "AUTOSWITCHMETERONRESTARTDOC": "switch meter when device restart",
 
 
   "RESTORETITLE": "Restore Alsa",
