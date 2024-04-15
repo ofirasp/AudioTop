@@ -319,9 +319,15 @@ class Peppymeter(ScreensaverMeter):
         :param flag: True - visible, False - invisible
         """
         pass
-       
+
+
 if __name__ == "__main__":
     """ This is called by stand-alone PeppyMeter """
+   # sm = Spectrum(None, True)
+   # sm.callback_start = lambda self : sm.clean_draw_update()
+   # sm.start()
+
+
     settings = settings.Settings()
     settings.retreive()
     pm = Peppymeter(settings,standalone=True)
@@ -341,4 +347,4 @@ if __name__ == "__main__":
     pm.init_display()
         
     if pm.util.meter_config[OUTPUT_DISPLAY]:
-        pm.start_display_output()    
+        pm.start_display_output()

@@ -33,7 +33,7 @@ from circular import CircularAnimator
 import pygame
 import logging
 
-
+from peppyspectrum.spectrum import Spectrum
 class Meter(Container):
     """ The base class for all meters """
 
@@ -526,14 +526,15 @@ class MetaCasseteMeter(MetaMeter):
         self.image_rectleft = self.image.get_rect(center=self.config['icons.casstewheelleft.position'])
         self.leftcomp = self.add_image_component(self.config['icons.casstewheel'], 266, 136)
         self.rightcomp = self.add_image_component(self.config['icons.casstewheel'], 579, 136)
-        self.casseteclear = self.add_image_component(self.config['icons.casseteclear'], *self.config['icons.casseteclear.position'])
+        self.casseteclear = self.add_image_component(self.config['icons.casseteclear'],
+                                                     *self.config['icons.casseteclear.position'])
         self.clearstartx = self.casseteclear.content_x
         self.components.remove(self.progressbar)
         self.casseteAnimation()
         self.redrawview()
-    def rotatecomp(self,comp,angle,rect):
+    def rotatecomp(self, comp, angle, rect):
         rotated_image = pygame.transform.rotate(self.image, angle)
-        rotated_rect =  rotated_image.get_rect(center=rect.center)
+        rotated_rect = rotated_image.get_rect(center=rect.center)
         comp.content_x = rotated_rect.x
         comp.content_y = rotated_rect.y
         comp.content = (comp.content[0], rotated_image)
@@ -542,10 +543,10 @@ class MetaCasseteMeter(MetaMeter):
         self.rotatecomp(self.leftcomp, self.angleleft, self.image_rectleft)
 
         progdiff = self.progressbar.progress - self.prevprogress
-        directionfactor = 1 if progdiff>=0 else -1
+        directionfactor = 1 if progdiff >= 0 else -1
         clearspeed = 10
         if math.fabs(progdiff) > 10:
-            self.prevprogress += clearspeed*directionfactor
+            self.prevprogress += clearspeed * directionfactor
             self.clearstatus = self.prevprogress / 100 * self.clearwidth
             self.rotation_speedleft = 20
             self.rotation_speedright = 20
@@ -569,12 +570,32 @@ class MetaCasseteMeter(MetaMeter):
                 self.rotation_speedleft = 5
                 self.rotation_speedright = 1
         self.casseteclear.content_x = self.clearstartx - self.clearstatus
-        self.angleright += self.rotation_speedright* directionfactor
+        self.angleright += self.rotation_speedright * directionfactor
         if self.angleright >= 360:
             self.angleright = 0
-        self.angleleft += self.rotation_speedleft* directionfactor
+        self.angleleft += self.rotation_speedleft * directionfactor
         if self.angleleft >= 360:
             self.angleleft = 0
 
 
+class MetaSpectrumMeter(MetaMeter):
+    def __init__(self, util, meter_type, meter_parameters, data_source):
+        super().__init__(util, meter_type, meter_parameters, data_source)
+        self.pm = Spectrum(None, True)
+        self.pm.callback_start = lambda x: self.pm.clean_draw_update()
+        self.pm.start()
 
+    def updateview(self, metadata):
+        super().updateview(metadata)
+    def add_foreground(self, image_name):
+        super().add_foreground(image_name)
+    def redrawview(self):
+        #self.reset_bgr_fgr(self.bgr)
+        #if self.fgr:
+        #    self.reset_bgr_fgr(self.fgr)
+        self.draw()
+        pygame.display.update()
+    def run(self):
+        self.redrawview()
+        self.pm.get_data()
+        self.pm.clean_draw_update()

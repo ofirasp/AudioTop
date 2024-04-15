@@ -136,6 +136,7 @@ TYPE_METALINEAR = "metalinear"
 TYPE_CIRCULAR = "circular"
 TYPE_METACIRCULAR = "metacircular"
 TYPE_METACASSETE = "metacassete"
+TYPE_METALINEARSPECTRUM = "metalinearspectrum"
 WEB_SERVER = "web.server"
 HTTP_PORT = "http.port"
 
@@ -256,6 +257,8 @@ class ConfigFileParser(object):
             elif meter_type == TYPE_METACIRCULAR:
                 self.meter_config[section] = self.get_metacircular_section(c, section, meter_type)
             elif meter_type == TYPE_METALINEAR:
+                self.meter_config[section] = self.get_matalinear_section(c, section, meter_type)
+            elif meter_type == TYPE_METALINEARSPECTRUM:
                 self.meter_config[section] = self.get_matalinear_section(c, section, meter_type)
             elif meter_type == TYPE_METACASSETE:
                 self.meter_config[section] = self.get_cassete_section(c, section, meter_type)
