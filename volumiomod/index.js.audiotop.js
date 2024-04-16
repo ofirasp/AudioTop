@@ -2136,8 +2136,8 @@ ControllerAlsa.prototype.internalUpdateALSAConfigFile = function () {
       outPCM = contribution.snippetDatum.outPCM;
     }
 
-    var card = self.config.get('outputdevicecardname')
-    var device = self.config.get('outputdevicealsadevice')
+    var card = self.config.get('outputdevicecardname');
+    var device = self.config.get('outputdevicealsadevice');
 
     asoundcontent += '# There is always a plug before the hardware to be safe\n';
     asoundcontent += 'pcm.volumioOutput {\n';
@@ -2153,31 +2153,40 @@ ControllerAlsa.prototype.internalUpdateALSAConfigFile = function () {
     }
     asoundcontent += '}\n';
 
-    asoundcontent += '# PeppyAlsa section\n'
-    asoundcontent += 'pcm.peppyalsa {\n'
-    asoundcontent += '        type meter\n'
-    asoundcontent += '        slave.pcm \"volumioHw\"\n'
-    asoundcontent += '        scopes.0 peppyalsa\n'
-    asoundcontent += '}\n\n'
+    asoundcontent += '# PeppyAlsa section\n';
+    asoundcontent += 'pcm.peppyalsa {\n';
+    asoundcontent += '        type meter\n';
+    asoundcontent += '        slave.pcm \"volumioHw\"\n';
+    asoundcontent += '        scopes.0 peppyalsa\n';
+    asoundcontent += '}\n\n';
     asoundcontent += 'pcm.softvol_and_peppyalsa {\n';
-    asoundcontent += '        type softvol\n'
-    asoundcontent += '        slave.pcm \"peppyalsa\"\n'
-    asoundcontent += '        control {\n'
-    asoundcontent += '                name \"PCM\"\n'
-    asoundcontent += '                card 2\n'
-    asoundcontent += '        }\n'
-    asoundcontent += '}\n'
-    asoundcontent += 'pcm_scope.peppyalsa {\n'
-    asoundcontent += '        type peppyalsa\n'
-    asoundcontent += '        decay_ms 400\n'
-    asoundcontent += '        meter \"/home/volumio/myfifo\"\n'
-    asoundcontent += '        meter_max 100\n'
-    asoundcontent += '        meter_show 0\n'
-    asoundcontent += '}\n\n'
-    asoundcontent += 'pcm_scope_type.peppyalsa {\n'
-    asoundcontent += '        lib /usr/local/lib/libpeppyalsa.so\n'
-    asoundcontent += '}\n\n'
-    asoundcontent += 'pcm.dsp0 peppyalsa\n'
+    asoundcontent += '        type softvol\n';
+    asoundcontent += '        slave.pcm \"peppyalsa\"\n';
+    asoundcontent += '        control {\n';
+    asoundcontent += '                name \"PCM\"\n';
+    asoundcontent += '                card 2\n';
+    asoundcontent += '        }\n';
+    asoundcontent += '}\n';
+    asoundcontent += 'pcm_scope.peppyalsa {\n';
+    asoundcontent += '        type peppyalsa\n';
+    asoundcontent += '        decay_ms 400\n';
+    asoundcontent += '        meter \"/home/volumio/myfifo\"\n';
+    asoundcontent += '        meter_max 100\n';
+    asoundcontent += '        meter_show 0\n';
+    asoundcontent += '        spectrum \"/home/volumio/myfifosa\"\n';
+    asoundcontent += '        spectrum_max 100\n';
+    asoundcontent += '        spectrum_size 20\n';
+    asoundcontent += '        logarithmic_frequency 1\n';
+    asoundcontent += '        logarithmic_amplitude 1\n';
+    asoundcontent += '        smoothing_factor 60\n'  ;
+
+
+
+    asoundcontent += '}\n\n';
+    asoundcontent += 'pcm_scope_type.peppyalsa {\n';
+    asoundcontent += '        lib /usr/local/lib/libpeppyalsa.so\n';
+    asoundcontent += '}\n\n';
+    asoundcontent += 'pcm.dsp0 peppyalsa\n';
     return asoundcontent;
   }).then((asoundcontent) => {
 

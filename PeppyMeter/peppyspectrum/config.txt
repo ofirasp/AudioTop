@@ -5,7 +5,7 @@ spectrum.folder = 1280x400
 update.period = 10
 max.value = 100
 pipe.name = /home/volumio/myfifosa
-size = 30
+size = 20
 update.ui.interval = 0.04
 frame.rate = 30
 depth = 32
@@ -14,7 +14,7 @@ use.logging = False
 use.test.data =
 spectrum.position.x = 445
 spectrum.position.y = 195
-spectrum.width = 670
+spectrum.width = 667
 spectrum.height = 180
 
 [sdl.env]
