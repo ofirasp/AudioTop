@@ -155,7 +155,7 @@ fgr.filename =
 steps = 40
 
 [s.7]
-origin.x = 435
+origin.x = 452
 origin.y = 370
 spectrum.x = 0
 spectrum.y = 0
@@ -167,9 +167,9 @@ bar.type = image.extended
 bar.color =
 bar.gradient =
 bar.filename = s-7.png
-bar.width = 19
+bar.width = 17
 bar.height = 170
-bar.gap = 3
+bar.gap = 5
 reflection.type =
 reflection.color =
 reflection.gradient =
