@@ -40,6 +40,7 @@ DEFAULT_FRAME_RATE = 30
 
 CURRENT = "current"
 UPDATE_PERIOD = "update.period"
+ADD_FACTOR = "add.factor"
 MAX_VALUE = "max.value"
 PIPE_NAME = "pipe.name"
 SIZE = "size"
@@ -143,6 +144,7 @@ class SpectrumConfigParser(object):
         config[SPECTRUM_HEIGHT] = c.getint(CURRENT, SPECTRUM_HEIGHT)
         config[SPECTRUM_WIDTH] = c.getint(CURRENT, SPECTRUM_WIDTH)
         config[UPDATE_UI_INTERVAL] = c.getfloat(CURRENT, UPDATE_UI_INTERVAL)
+        config[ADD_FACTOR] = c.getfloat(CURRENT, ADD_FACTOR)
         config[PIPE_POLLING_INTERVAL] = config[UPDATE_UI_INTERVAL] / 10
         config[PIPE_SIZE] = 4 * config[SIZE]
         config[FRAME_RATE] = c.getint(CURRENT, FRAME_RATE)

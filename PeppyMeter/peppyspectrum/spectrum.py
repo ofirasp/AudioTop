@@ -57,6 +57,7 @@ class Spectrum(SpectrumContainer, ScreensaverSpectrum):
         self.config_parser = SpectrumConfigParser(self.standalone)
         self.config = self.config_parser.config
         self.update_period = self.config[UPDATE_PERIOD]
+        self.addfactor = self.config[ADD_FACTOR]
 
         if self.standalone:
             screen_rect = pygame.Rect(self.config[SPECTRUM_POS_X], self.config[SPECTRUM_POS_Y], self.config[SPECTRUM_WIDTH], self.config[SPECTRUM_HEIGHT])
@@ -521,7 +522,7 @@ class Spectrum(SpectrumContainer, ScreensaverSpectrum):
         """ Data Source Thread method. """ 
                
         if self.run_datasource:
-            self.set_values()
+            self.set_values(self.addfactor)
            # time.sleep(self.config[UPDATE_UI_INTERVAL])
     
     def get_latest_pipe_data(self):
@@ -573,7 +574,7 @@ class Spectrum(SpectrumContainer, ScreensaverSpectrum):
 
         return data
 
-    def set_values(self):
+    def set_values(self,addfactor=1):
         """ Get signal from the named pipe and update spectrum bars. """ 
 
         data = []
@@ -607,7 +608,7 @@ class Spectrum(SpectrumContainer, ScreensaverSpectrum):
             else:
                 steps = int(v / self.step) + 1
             
-            new_height = steps * self.step
+            new_height = steps * self.step*addfactor
             i = m + 1
             
             self.set_bar_y(i, new_height)
