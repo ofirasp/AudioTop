@@ -1,12 +1,13 @@
 # General
 * Audiotop is a volumio plugin which integrates volumio and peppymeter
- * The project code is based on peppymeter ("Picasso Edition" 2024.02.10)
+ * The project code is based on peppymeter and peppyspectrum ("Picasso Edition" 2024.02.10) 
    * https://github.com/project-owner/PeppyMeter
+   * https://github.com/project-owner/PeppySpectrum
  * Using the peppyalsa driver
    * https://github.com/project-owner/peppyalsa
  * Runs on volumio os (base version 3.631)
    * https://volumio.com/get-started/
- * With raspberry pi
+ * With raspberry pi 5
  * Display - waveshare hdmi 7.9" 1280*400
 
 # version 2.0.0
@@ -14,7 +15,7 @@
 * Add peppy spectrum analyzer support
   * "metabarspectrum" new meter with spectrum
  ![alt text](samples/s4.png)
-* Add some settings to the volumio plugin to configue the switching meters method 
+* Add some settings to the volumio plugin to configue the meters switching method 
 
 # version 1.0.0
 ## 3.3.2024
