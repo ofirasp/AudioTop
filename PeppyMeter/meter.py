@@ -582,16 +582,23 @@ class MetaSpectrumMeter(MetaMeter):
     def __init__(self, util, meter_type, meter_parameters, data_source):
         super().__init__(util, meter_type, meter_parameters, data_source)
         self.pm = Spectrum(None, True,self.util,self.config)
-       # self.pm.callback_start = lambda x: self.pm.clean_draw_update()
+        #self.pm.callback_start = lambda x: self.pm.clean_draw_update()
         self.pm.start()
         self.framecount=0
 
-    def updateview(self, metadata):
+    def updateview1(self, metadata):
+
         super().updateview(metadata)
-    def add_foreground(self, image_name):
+    def add_foreground1(self, image_name):
+
         super().add_foreground(image_name)
 
     def run(self):
+        r = Meter.run(self)
+        self.reset_bgr_fgr(self.bgr)
+        if self.fgr:
+            self.reset_bgr_fgr(self.fgr)
+
 
         self.framecount+=1
         if self.framecount==3:
@@ -606,4 +613,5 @@ class MetaSpectrumMeter(MetaMeter):
             #self.pm.refresh()
         pygame.display.update()
         self.pm.seconds += 0.1
+        return r
 

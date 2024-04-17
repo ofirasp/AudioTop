@@ -138,6 +138,7 @@ TYPE_CIRCULAR = "circular"
 TYPE_METACIRCULAR = "metacircular"
 TYPE_METACASSETE = "metacassete"
 TYPE_METALINEARSPECTRUM = "metalinearspectrum"
+TYPE_METACIRCLESSPECTRUM = "metacirclespectrum"
 WEB_SERVER = "web.server"
 HTTP_PORT = "http.port"
 
@@ -261,6 +262,8 @@ class ConfigFileParser(object):
                 self.meter_config[section] = self.get_matalinear_section(c, section, meter_type)
             elif meter_type == TYPE_METALINEARSPECTRUM:
                 self.meter_config[section] = self.get_matalinearspectrum_section(c, section, meter_type)
+            elif meter_type == TYPE_METACIRCLESSPECTRUM:
+                self.meter_config[section] = self.get_matacirclesspectrum_section(c, section, meter_type)
             elif meter_type == TYPE_METACASSETE:
                 self.meter_config[section] = self.get_cassete_section(c, section, meter_type)
         if "," in self.meter_config[METER]:
@@ -377,6 +380,11 @@ class ConfigFileParser(object):
         d=self.get_matalinear_section(config_file, section, meter_type)
         d['spectrum.type'] = config_file.get(section, 'spectrum.type')
         return d
+    def get_matacirclesspectrum_section(self ,config_file, section, meter_type):
+        d=self.get_metacircular_section(config_file, section, meter_type)
+        d['spectrum.type'] = config_file.get(section, 'spectrum.type')
+        return d
+#
     def get_metacircular_section(self, config_file, section, meter_type):
         d = self.get_circular_section( config_file, section, meter_type)
         self.get_mata_section(config_file, section,  d)

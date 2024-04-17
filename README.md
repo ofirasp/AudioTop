@@ -13,9 +13,10 @@
 # version 2.0.0
 ## 17.4.2024
 * Add peppy spectrum analyzer support
+  * Integrate peppy spectrum with peppy meter by replacing all the threads that are used in spectrum with the meter event loop  
   * "metabarspectrum" new meter with spectrum
- ![alt text](samples/s4.png)
-* Add some settings to the volumio plugin to configue the meters switching method 
+  ![alt text](samples/s4.png)
+* Add some settings to the volumio plugin to configue the meters switching method
 
 # version 1.0.0
 ## 3.3.2024
@@ -57,7 +58,7 @@
 * volumio plugin install
 ## Install Touch Display plugin
 
-* Install from the volumio UI
+* Install from the volumio UI available plugins
 * Set the orientation to 270
 ## Fix orientation for waveshare 1280X400 display
 

@@ -1,6 +1,6 @@
 [current]
-meter = metabarspectrum
-meter.list = metabarspectrum
+meter = metaspectrum
+meter.list = metaspectrum
 metadatasourcedns = audiotop.local
 random.meter.interval = 20
 base.folder =

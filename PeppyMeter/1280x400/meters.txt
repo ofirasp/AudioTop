@@ -454,26 +454,23 @@ knobs.powerto = (1252,366)
 
 [metaspectrum]
 meter.type = metacirclespectrum
-spectrum.type = s.7
-
+spectrum.type = s.8
 channels = 2
 ui.refresh.period = 0.033
-bgr.filename = red-bgr.png
-fgr.filename = red-fgr.png
+bgr.filename = circlesspectrum-bgr.png
+fgr.filename = circlesspectrum-fgr.png
 indicator.filename = red-needle.png
 steps.per.degree = 2
-start.angle = 43
-stop.angle = -43
-distance = 200
-left.origin.x = 345
-left.origin.y = 435
-right.origin.x = 935
-right.origin.y = 435
+start.angle = 25
+stop.angle = -25
+distance = 170
+left.origin.x = 680
+left.origin.y = 450
+right.origin.x = 900
+right.origin.y = 450
 meter.x = 0
 meter.y = 0
 screen.bgr =
-
-
 progressbar.width = 830
 progressbar.height = 5
 progressbar.bar_color = (106, 210, 68)

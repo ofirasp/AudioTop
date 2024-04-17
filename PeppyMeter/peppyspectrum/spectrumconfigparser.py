@@ -105,9 +105,12 @@ class SpectrumConfigParser(object):
     """ Configuration file parser """
     
     def __init__(self, standalone,spectromname=None):
+        global CURRENT
+        CURRENT=spectromname
         self.standalone = standalone
         self.config = self.get_config(spectromname)
         self.spectrum_configs = self.get_spectrum_configs()
+
 
     def get_config(self,spectromname=None):
         """ Parse the config.txt file
