@@ -594,11 +594,6 @@ class MetaSpectrumMeter(MetaMeter):
         super().add_foreground(image_name)
 
     def run(self):
-        r = Meter.run(self)
-        self.reset_bgr_fgr(self.bgr)
-        if self.fgr:
-            self.reset_bgr_fgr(self.fgr)
-
 
         self.framecount+=1
         if self.framecount==3:
@@ -613,5 +608,13 @@ class MetaSpectrumMeter(MetaMeter):
             #self.pm.refresh()
         pygame.display.update()
         self.pm.seconds += 0.1
-        return r
 
+
+class MetaMSpectrumWithMeter(MetaSpectrumMeter):
+    def run(self):
+        r = Meter.run(self)
+        self.reset_bgr_fgr(self.bgr)
+        if self.fgr:
+            self.reset_bgr_fgr(self.fgr)
+        super().run()
+        return r

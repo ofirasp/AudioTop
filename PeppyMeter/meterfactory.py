@@ -17,7 +17,7 @@
 
 import logging
 
-from meter import Meter,MetaMeter,MetaCasseteMeter,MetaSpectrumMeter
+from meter import Meter,MetaMeter,MetaCasseteMeter,MetaSpectrumMeter,MetaMSpectrumWithMeter
 from maskfactory import MaskFactory
 from needlefactory import NeedleFactory
 from configfileparser import *
@@ -416,7 +416,7 @@ class MeterFactory(object):
         config = self.meter_config[name]
 
         if config[CHANNELS] == 2:
-            meter = MetaSpectrumMeter(self.util, TYPE_CIRCULAR, config, self.data_source)
+            meter = MetaMSpectrumWithMeter(self.util, TYPE_CIRCULAR, config, self.data_source)
             meter.channels = 2
         else:
             meter = Meter(self.util, TYPE_CIRCULAR, config, self.data_source)
