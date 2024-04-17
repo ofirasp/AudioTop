@@ -9,6 +9,9 @@
  * With raspberry pi
  * Display - waveshare hdmi 7.9" 1280*400
 
+# version 2.0.0
+## 17.4.2024
+
 
 # version 1.0.0
 ## 3.3.2024

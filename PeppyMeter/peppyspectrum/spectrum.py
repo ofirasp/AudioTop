@@ -33,7 +33,7 @@ from spectrumconfigparser import *
 class Spectrum(SpectrumContainer, ScreensaverSpectrum):
     """ Spectrum Analyzer screensaver plug-in. """
         
-    def __init__(self, util=None, standalone=False,meterutil=None):
+    def __init__(self, util=None, standalone=False,meterutil=None,meterconfig=None):
         """ Initializer
         
         :param util: the utility functions
@@ -45,6 +45,7 @@ class Spectrum(SpectrumContainer, ScreensaverSpectrum):
         plugin_folder = type(self).__name__.lower()
         ScreensaverSpectrum.__init__(self, self.name, util, plugin_folder)
         self.meterutil = meterutil
+        self.meterconfig=meterconfig
         if util:
             self.util = util
             self.image_util = util.image_util
@@ -54,8 +55,11 @@ class Spectrum(SpectrumContainer, ScreensaverSpectrum):
         
         self.run_flag = False
         self.run_datasource = False
-        self.config_parser = SpectrumConfigParser(self.standalone)
+        self.config_parser = SpectrumConfigParser(self.standalone,self.meterconfig['spectrum.type'])
         self.config = self.config_parser.config
+
+        #self.config/////
+
         self.update_period = self.config[UPDATE_PERIOD]
         self.addfactor = self.config[ADD_FACTOR]
 

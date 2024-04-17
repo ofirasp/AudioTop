@@ -104,12 +104,12 @@ TEST_DATA = {
 class SpectrumConfigParser(object):
     """ Configuration file parser """
     
-    def __init__(self, standalone):
+    def __init__(self, standalone,spectromname=None):
         self.standalone = standalone
-        self.config = self.get_config()
+        self.config = self.get_config(spectromname)
         self.spectrum_configs = self.get_spectrum_configs()
 
-    def get_config(self):
+    def get_config(self,spectromname=None):
         """ Parse the config.txt file
         
         :return: dictionary with properties from the config.txt
@@ -122,7 +122,10 @@ class SpectrumConfigParser(object):
 
         c = ConfigParser()
         c.read(config_path)
-        spectrum = c.get(CURRENT, SPECTRUM)
+        if spectromname:
+            spectrum = spectromname
+        else:
+            spectrum = c.get(CURRENT, SPECTRUM)
         config = {}
         
         if "," in spectrum:

@@ -581,7 +581,7 @@ class MetaCasseteMeter(MetaMeter):
 class MetaSpectrumMeter(MetaMeter):
     def __init__(self, util, meter_type, meter_parameters, data_source):
         super().__init__(util, meter_type, meter_parameters, data_source)
-        self.pm = Spectrum(None, True,self.util)
+        self.pm = Spectrum(None, True,self.util,self.config)
        # self.pm.callback_start = lambda x: self.pm.clean_draw_update()
         self.pm.start()
         self.framecount=0
