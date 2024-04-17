@@ -11,7 +11,10 @@
 
 # version 2.0.0
 ## 17.4.2024
-
+* Add peppy spectrum analyzer support
+  * "metabarspectrum" new meter with spectrum
+ ![alt text](samples/s4.png)
+* Add some settings to the volumio plugin to configue the switching meters method 
 
 # version 1.0.0
 ## 3.3.2024
@@ -44,12 +47,15 @@
 * sudo make install
 * mkfifo /home/volumio/myfifo
 * chmod 777 /home/volumio/myfifo
+* mkfifo /home/volumio/myfifosa
+* chmod 777 /home/volumio/myfifosa
 ## Install Audiotop plugin
 * cd /home/volumio
 * git clone https://github.com/ofirasp/AudioTop.git
 * cd Audiotop
 * volumio plugin install
 ## Install Touch Display plugin
+
 * Install from the volumio UI
 * Set the orientation to 270
 ## Fix orientation for waveshare 1280X400 display

@@ -14,5 +14,6 @@ chmod +x /data/plugins/user_interface/audiotop/audiotop.py
 #sudo apt-get -y install python3-pip
 #sudo apt-get -y install python3-pygame
 #python3 -m pip install -r requirements.txt
+#sudo tar -xzf dependecies/PIL.tar.gz  -C /usr/local/lib/python3.7/dist-packages
 
 echo "plugininstalled"
