@@ -9,14 +9,24 @@
    * https://volumio.com/get-started/
  * With raspberry pi 5
  * Display - waveshare hdmi 7.9" 1280*400
+ * Linear Power supply 5V 3.5A
+ * 2TB SSD 
+
 
 # version 2.0.0
 ## 17.4.2024
 * Add peppy spectrum analyzer support
   * Integrate peppy spectrum with peppy meter by replacing all the threads that are used in spectrum with the meter event loop  
+  * "metaspectrum" new meter with meter and spectrum 
+![alt text](samples/s5.png)
   * "metabarspectrum" new meter with spectrum
   ![alt text](samples/s4.png)
 * Add some settings to the volumio plugin to configue the meters switching method
+
+ ![alt text](samples/v1.png)
+
+
+
 
 # version 1.0.0
 ## 3.3.2024
@@ -30,6 +40,12 @@
  ![alt text](samples/s2.png)
   * "metapioneercassete" 2Ch vertical linear  bars with  cassete animation
  ![alt text](samples/s3.png)
+
+
+#Featuers
+* Touch button to switch  between meters
+* Touch button to power off the meter and go to the volumio web page
+
 
 #  Installation
 ## Install volumio
