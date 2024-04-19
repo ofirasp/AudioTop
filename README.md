@@ -45,6 +45,23 @@
 #Featuers
 * Touch button to switch  between meters
 * Touch button to power off the meter and go to the volumio web page
+* Restore alas conf file in order to make os version update from volumio ui.
+  * Instead , do the update with force option using ssh 
+
+   $ volumio updater forceupdate volumio
+
+#Notes
+
+* Music services tested and working with meter :
+  * Tidal connect
+  * Apple music
+* DSD foramt
+  * The meter animation doesn't support dsd fomrat (rest anmiations and metadata is working)
+    * need some more configuration ro asound.conf , matbe on the next versions
+
+
+
+
 
 
 #  Installation
