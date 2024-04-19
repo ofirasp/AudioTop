@@ -30,7 +30,7 @@
 
 # version 1.0.0
 ## 3.3.2024
-* Add new 3 types of meters using the volumio titles metadata 
+* 3 types of meters using the volumio titles metadata 
   * With this version, only support the 1280*400 resolution
   * Custom skins can be added (for all resultion) 
     * Look at the meters.txt file
