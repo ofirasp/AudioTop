@@ -586,12 +586,7 @@ class MetaSpectrumMeter(MetaMeter):
         self.pm.start()
         self.framecount=0
 
-    def updateview1(self, metadata):
 
-        super().updateview(metadata)
-    def add_foreground1(self, image_name):
-
-        super().add_foreground(image_name)
 
     def run(self):
 
