@@ -54,7 +54,7 @@
 
 * Music services tested and working with meter :
   * Tidal connect
-  * Apple music
+  * Airplay
 * DSD format
   * The meter animation doesn't support dsd format (rest animations and metadata is working)
     * Need to add some more configurations to asound.conf , maybe on the next versions...
