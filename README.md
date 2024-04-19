@@ -45,8 +45,8 @@
 # Featuers
 * Touch button to switch  between meters
 * Touch button to power off the meter and go to the volumio web page
-* Restore alas conf file in order to make os version update from volumio ui.
-  * Instead , do the update with force option using ssh 
+* Restore alsa conf file (asound.conf) in order to make os version update from volumio ui.
+  * Instead , do the update with forceupdate option using ssh 
 
    $ volumio updater forceupdate volumio
 
