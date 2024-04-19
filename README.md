@@ -57,7 +57,7 @@
   * Apple music
 * DSD foramt
   * The meter animation doesn't support dsd fomrat (rest anmiations and metadata is working)
-    * need some more configuration ro asound.conf , matbe on the next versions
+    * Need to add some more configurations to asound.conf , maybe on the next versions...
 
 
 
