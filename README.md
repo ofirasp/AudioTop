@@ -42,7 +42,7 @@
  ![alt text](samples/s3.png)
 
 
-#Featuers
+# Featuers
 * Touch button to switch  between meters
 * Touch button to power off the meter and go to the volumio web page
 * Restore alas conf file in order to make os version update from volumio ui.
@@ -50,7 +50,7 @@
 
    $ volumio updater forceupdate volumio
 
-#Notes
+# Notes
 
 * Music services tested and working with meter :
   * Tidal connect
