@@ -13,7 +13,7 @@
  * 2TB SSD 
 
 
-# version 2.0.0
+# version 0.0.2
 ## 17.4.2024
 * Add peppy spectrum analyzer support
   * Integrate peppy spectrum with peppy meter by replacing all the threads that are used in spectrum with the meter event loop  
@@ -28,7 +28,7 @@
 
 
 
-# version 1.0.0
+# version 0.0.1
 ## 3.3.2024
 * 3 types of meters using the volumio titles metadata 
   * With this version, only support the 1280*400 resolution
@@ -46,15 +46,20 @@
 * Touch button to switch  between meters
 * Touch button to power off the meter and go to the volumio web page
 * Restore alsa conf file (asound.conf) in order to make os version update from volumio ui.
-  * Instead , do the update with forceupdate option using ssh 
-
+  * Instead , do the update with forceupdate option using ssh
    $ volumio updater forceupdate volumio
+* Switching meters from the volumio app UI from the plugin area 
+* Network indicators for wifi,lan,internet
+
+
 
 # Notes
 
-* Music services tested and working with meter :
+* Remote Music services tested and working with meter :
   * Tidal connect
   * Airplay
+
+
 * DSD format
   * The meter animation doesn't support dsd format (rest animations and metadata is working)
     * Need to add some more configurations to asound.conf , maybe on the next versions...
