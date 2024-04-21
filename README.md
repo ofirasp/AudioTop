@@ -91,7 +91,7 @@
 * chmod 777 /home/volumio/myfifosa
 ## Install Audiotop plugin
 * cd /home/volumio
-* git clone https://github.com/ofirasp/AudioTop.git
+* git clone  --branch spectrom https://github.com/ofirasp/AudioTop.git
 * cd Audiotop
 * volumio plugin install
 ## Install Touch Display plugin
