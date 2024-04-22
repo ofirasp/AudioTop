@@ -94,6 +94,11 @@
 * git clone  --branch spectrom https://github.com/ofirasp/AudioTop.git
 * cd Audiotop
 * volumio plugin install
+
+* sudo mv /volumio/app/plugins/audio_interface/alsa_controller/index.js /volumio/app/plugins/audio_interface/alsa_controller/index.js.original.js
+* sudo cp volumiomod/index.js.audiotop.js /volumio/app/plugins/audio_interface/alsa_controller/index.js
+
+
 ## Install Touch Display plugin
 
 * Install from the volumio UI available plugins
