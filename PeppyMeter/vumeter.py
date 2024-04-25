@@ -25,7 +25,7 @@ from random import randrange
 from meterfactory import MeterFactory
 from screensavermeter import ScreensaverMeter
 from configfileparser import METER, METER_NAMES, RANDOM_METER_INTERVAL, USE_CACHE, SCREEN_RECT, SCREEN_INFO, FRAME_RATE
-
+NOSTATUS = -1
 STOPPED = 0
 STARTPLAYING = 2
 PLAYING =3
@@ -48,7 +48,7 @@ class Vumeter(ScreensaverMeter):
             if self.metadata['status'] == 'play':
                 if self.playerstatus == STOPPED:
                     self.playerstatus = STARTPLAYING
-                elif self.playerstatus== STARTPLAYING:
+                else:
                     self.playerstatus = PLAYING
             else:
                 if self.playerstatus==PLAYING:
@@ -74,7 +74,7 @@ class Vumeter(ScreensaverMeter):
         
         :param util: utility class
         """
-        self.playerstatus=STOPPED
+        self.playerstatus=NOSTATUS
         self.metadata = {}
         self.autoswitchmeter = autoswitchmeter
         self.switchmeter = switchmeter
@@ -181,6 +181,7 @@ class Vumeter(ScreensaverMeter):
 
         self.frames = 0
         self.meter.stop()
+        self.sio.emit('getState', {})
         if hasattr(self, "callback_stop"):
             self.callback_stop(self.meter)
 

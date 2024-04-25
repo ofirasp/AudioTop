@@ -23,7 +23,7 @@ import logging
 import pickle
 from meterutil import MeterUtil
 from pygame.time import Clock
-from vumeter import Vumeter,PLAYING,STOPPING,STOPPED,STARTPLAYING
+from vumeter import Vumeter,PLAYING
 from datasource import DataSource, SOURCE_NOISE, SOURCE_PIPE, SOURCE_HTTP
 from serialinterface import SerialInterface
 from i2cinterface import I2CInterface
@@ -247,18 +247,11 @@ class Peppymeter(ScreensaverMeter):
                             self.running = False
                     except Exception as ex:
                         self.switchmeter()
-            if self.meter.playerstatus == STARTPLAYING:
-                self.meter.restart()
-            elif self.meter.playerstatus == PLAYING:
+            if self.meter.playerstatus == PLAYING:
                 areas = self.meter.run()
                 pygame.display.update(areas)
                 self.refresh()
-            elif self.meter.playerstatus==STOPPING:
-                self.meter.stop()
-                time.sleep(0.5)
-                areas = self.meter.run()
-                pygame.display.update(areas)
-                self.refresh()
+
             clock.tick(self.util.meter_config[FRAME_RATE])
         if self.util.meter_config[STOP_DISPLAY_ON_TOUCH]:
             self.meter.stop()
