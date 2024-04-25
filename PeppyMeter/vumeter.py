@@ -45,6 +45,7 @@ class Vumeter(ScreensaverMeter):
                 self.currentalbum=self.metadata['album']
                 self.albumupdate=True
         if self.metadata != None and "status" in self.metadata:
+
             if self.metadata['status'] == 'play':
                 if self.playerstatus == STOPPED:
                     self.playerstatus = STARTPLAYING

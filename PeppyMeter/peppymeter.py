@@ -247,10 +247,10 @@ class Peppymeter(ScreensaverMeter):
                             self.running = False
                     except Exception as ex:
                         self.switchmeter()
-            if self.meter.playerstatus == PLAYING:
+            if self.meter.playerstatus == PLAYING or self.meter.playerstatus==STOPPING:
                 self.refresh()
-            elif self.meter.playerstatus == STARTPLAYING:
-                self.restart()
+            #elif self.meter.playerstatus == STARTPLAYING:
+                #self.restart()
             areas = self.meter.run()
             pygame.display.update(areas)
 
