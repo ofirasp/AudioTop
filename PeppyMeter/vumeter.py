@@ -231,7 +231,7 @@ class Vumeter(ScreensaverMeter):
             switch = True
         if switch:
             self.switchmeter()
-            self.restart()
+            #self.restart()
 
         if not self.timer_controlled_random_meter:
             return

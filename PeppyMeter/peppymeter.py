@@ -249,6 +249,8 @@ class Peppymeter(ScreensaverMeter):
                         self.switchmeter()
             if self.meter.playerstatus == PLAYING:
                 self.refresh()
+            elif self.meter.playerstatus == STARTPLAYING:
+                self.restart()
             areas = self.meter.run()
             pygame.display.update(areas)
 
