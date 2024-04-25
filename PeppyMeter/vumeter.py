@@ -26,6 +26,10 @@ from meterfactory import MeterFactory
 from screensavermeter import ScreensaverMeter
 from configfileparser import METER, METER_NAMES, RANDOM_METER_INTERVAL, USE_CACHE, SCREEN_RECT, SCREEN_INFO, FRAME_RATE
 
+STOPPED = 0
+STARTPLAYING = 2
+PLAYING =3
+STOPPING = 1
 class Vumeter(ScreensaverMeter):
 
     """ VU Meter plug-in. """
@@ -41,7 +45,17 @@ class Vumeter(ScreensaverMeter):
                 self.currentalbum=self.metadata['album']
                 self.albumupdate=True
         if self.metadata != None and "status" in self.metadata:
-            self.playing = self.metadata['status']=='play'
+            if self.metadata['status'] == 'play':
+                if self.playerstatus == STOPPED:
+                    self.playerstatus = STARTPLAYING
+                elif self.playerstatus== STARTPLAYING:
+                    self.playerstatus = PLAYING
+            else:
+                if self.playerstatus==PLAYING:
+                    self.playerstatus=STOPPING
+                else:
+                    self.playerstatus=STOPPED
+
 
 
 
@@ -60,7 +74,7 @@ class Vumeter(ScreensaverMeter):
         
         :param util: utility class
         """
-        self.playing=False
+        self.playerstatus=STOPPED
         self.metadata = {}
         self.autoswitchmeter = autoswitchmeter
         self.switchmeter = switchmeter
@@ -148,7 +162,7 @@ class Vumeter(ScreensaverMeter):
         self.meter = self.get_meter()
         self.meter.set_volume(self.current_volume)
         self.meter.start()
-
+        self.sio.emit('getState', {})
         if hasattr(self, "callback_start"):
             self.callback_start(self.meter)
 
