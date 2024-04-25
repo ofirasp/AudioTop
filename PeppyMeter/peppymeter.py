@@ -140,7 +140,7 @@ class Peppymeter(ScreensaverMeter):
         :data_source: data source
         :return: graphical VU Meter
         """
-        meter = Vumeter(self.util, data_source, self.timer_controlled_random_meter,self.autoswitchmeter)
+        meter = Vumeter(self.util, data_source, self.timer_controlled_random_meter,self.autoswitchmeter,self.switchmeter)
         self.current_image = None
         self.update_period = meter.get_update_period()
         
@@ -247,10 +247,10 @@ class Peppymeter(ScreensaverMeter):
                             self.running = False
                     except Exception as ex:
                         self.switchmeter()
-
-            areas = self.meter.run()
-            pygame.display.update(areas)
-            self.refresh()
+            if self.meter.playing :
+                areas = self.meter.run()
+                pygame.display.update(areas)
+                self.refresh()
             clock.tick(self.util.meter_config[FRAME_RATE])
         if self.util.meter_config[STOP_DISPLAY_ON_TOUCH]:
             self.meter.stop()

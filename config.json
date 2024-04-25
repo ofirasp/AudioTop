@@ -13,7 +13,7 @@
   },
   "config_switch_meter_on_album": {
     "type": "boolean",
-    "value": false
+    "value": true
   },
   "config_switch_meter_on_restart": {
     "type": "boolean",

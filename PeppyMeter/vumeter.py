@@ -40,6 +40,8 @@ class Vumeter(ScreensaverMeter):
             if self.currentalbum!=self.metadata['album']:
                 self.currentalbum=self.metadata['album']
                 self.albumupdate=True
+        if self.metadata != None and "status" in self.metadata:
+            self.playing = self.metadata['status']=='play'
 
 
 
@@ -53,13 +55,15 @@ class Vumeter(ScreensaverMeter):
 
     def diconnectsocketio(self):
         self.sio.disconnect()
-    def __init__(self, util, data_source, timer_controlled_random_meter=True,autoswitchmeter=None):
+    def __init__(self, util, data_source, timer_controlled_random_meter=True,autoswitchmeter=None,switchmeter=None):
         """ Initializer
         
         :param util: utility class
         """
+        self.playing=False
         self.metadata = {}
         self.autoswitchmeter = autoswitchmeter
+        self.switchmeter = switchmeter
         self.updatemetadata = False
         self.titleupdate = False
         self.albumupdate = False
@@ -122,7 +126,7 @@ class Vumeter(ScreensaverMeter):
         m = factory.create_meter()
 
         return m
-    def switchmeter(self):
+    def switchmeter1(self):
         self.list_meter_index = (self.list_meter_index + 1) % len(self.meterlist)
         self.util.meter_config[METER] = self.meterlist[self.list_meter_index]
         factory = MeterFactory(self.util, self.util.meter_config, self.data_source, self.mono_needle_cache,
