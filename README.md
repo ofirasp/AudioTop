@@ -110,7 +110,7 @@ xrandr --output HDMI-1 --rotate left
 
 EOL
 
-## Install dummy audio device fro DSD meter
+## Install dummy audio device for DSD meter
 cat >> /etc/rc.local <<EOL
 
 /sbin/modprobe snd-dummy index=7 pcm_substreams=1 fake_buffer=0
