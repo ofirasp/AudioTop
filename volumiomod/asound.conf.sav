@@ -4,10 +4,31 @@ pcm.!default {
 }
 
 pcm.volumio {
+  type plug
+  route_policy "duplicate"
+  slave.channels 4
+  slave.pcm {
+    type multi
+
+    slaves.a.pcm "mpd_peppyalsa"
+    slaves.a.channels 2
+    slaves.b.pcm "realdac"
+    slaves.b.channels 2
+
+    bindings.0 { slave a; channel 0; }
+    bindings.1 { slave a; channel 1; }
+    bindings.2 { slave b; channel 0; }
+    bindings.3 { slave b; channel 1; }
+  }
+}
+pcm.realdac {
+    type             copy
+    slave.pcm       "volumioHw"
+}
+pcm.mpd_peppyalsa {
     type             copy
     slave.pcm       "volumioOutput"
 }
-
 
 # There is always a plug before the hardware to be safe
 pcm.volumioOutput {
@@ -19,10 +40,16 @@ pcm.volumioHw {
     type hw
     card "DAC"
 }
+# null output
+pcm.dummy {
+  type hw
+	card Dummy
+	device 0
+}
 # PeppyAlsa section
 pcm.peppyalsa {
         type meter
-        slave.pcm "volumioHw"
+        slave.pcm "dummy"
         scopes.0 peppyalsa
 }
 

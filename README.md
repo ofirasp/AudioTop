@@ -97,6 +97,9 @@
 
 * sudo mv /volumio/app/plugins/audio_interface/alsa_controller/index.js /volumio/app/plugins/audio_interface/alsa_controller/index.js.original.js
 * sudo cp volumiomod/index.js.audiotop.js /volumio/app/plugins/audio_interface/alsa_controller/index.js
+* sudo mv /volumio/app/plugins/music_service/mpd/mpd.conf.tmpl /volumio/app/plugins/music_service/mpd/mpd.conf.tmpl.original
+* sudo cp volumiomod/mpd.conf.tmpl /volumio/app/plugins/music_service/mpd/mpd.conf.tmpl
+
 
 
 ## Install Touch Display plugin
@@ -112,5 +115,13 @@ cat >> /home/volumio/.config/openbox/autostart <<EOL
 xrandr --output HDMI-1 --rotate left
 
 EOL
+
+## Install dummy audio device fro DSD meter
+cat >> /etc/rc.local <<EOL
+
+/sbin/modprobe snd-dummy index=7 pcm_substreams=1 fake_buffer=0
+
+EOL
+
 * more info :https://www.waveshare.com/wiki/7.9inch_HDMI_LCD
 

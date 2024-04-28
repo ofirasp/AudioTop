@@ -59,12 +59,18 @@ resampler {
 audio_output {
 		type		"alsa"
 		name		"alsa"
-		device		"volumio"
+		device		"realdac"
 		dop			"yes"
-		
-		
-		
 
+}
+audio_output {
+ #       enabled     "no"
+        type        "alsa"
+        name        "mpd_peppyalsa"
+        device      "mpd_peppyalsa"
+        dop         "yes"
+        mixer_type  "none"
+        format      "44100:16:2"
 }
 
 

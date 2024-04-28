@@ -2120,21 +2120,48 @@ ControllerAlsa.prototype.internalUpdateALSAConfigFile = function () {
     asoundcontent += '}\n';
     asoundcontent += '\n';
 
-    var outPCM = 'volumio'
-    for(var i = 0; i < contributions.length; i++) {
-      var contribution = contributions[i];
+    // var outPCM = 'volumio'
+    // for(var i = 0; i < contributions.length; i++) {
+    //   var contribution = contributions[i];
+    //
+    //   asoundcontent += 'pcm.' + outPCM + ' {\n';
+    //   asoundcontent += '    type             copy\n';
+    //   asoundcontent += '    slave.pcm       "' + contribution.snippetDatum.inPCM + '"\n';
+    //   asoundcontent += '}\n';
+    //   asoundcontent += '\n';
+    //
+    //   asoundcontent += contribution.snippet;
+    //   asoundcontent += '\n';
+    //
+    //   outPCM = contribution.snippetDatum.outPCM;
+    // }
 
-      asoundcontent += 'pcm.' + outPCM + ' {\n';
-      asoundcontent += '    type             copy\n';
-      asoundcontent += '    slave.pcm       "' + contribution.snippetDatum.inPCM + '"\n';
-      asoundcontent += '}\n';
-      asoundcontent += '\n';
 
-      asoundcontent += contribution.snippet;
-      asoundcontent += '\n';
+    asoundcontent += 'pcm.volumio {\n';
+    asoundcontent += '    type plug\n';
+    asoundcontent += '    route_policy \"duplicate\"\n';
+     asoundcontent += '   slave.channels 4\n';
+    asoundcontent += '     slave.pcm {\n';
+    asoundcontent += '          type multi\n';
+    asoundcontent += '          slaves.a.pcm "mpd_peppyalsa"\n';
+    asoundcontent += '          slaves.a.channels 2\n';
+    asoundcontent += '          slaves.b.pcm \"realdac\"\n';
+    asoundcontent += '          slaves.b.channels 2\n';
+    asoundcontent += '          bindings.0 { slave a; channel 0; }\n';
+    asoundcontent += '          bindings.1 { slave a; channel 1; }\n';
+    asoundcontent += '          bindings.2 { slave b; channel 0; }\n';
+    asoundcontent += '          bindings.3 { slave b; channel 1; }\n';
+    asoundcontent += '     }\n';
+    asoundcontent += '}\n\n';
 
-      outPCM = contribution.snippetDatum.outPCM;
-    }
+    asoundcontent += 'pcm.realdac {\n';
+    asoundcontent += '    type copy\n';
+    asoundcontent += '    slave.pcm    \"volumioHw\"\n';
+    asoundcontent += '}\n\n';
+    asoundcontent += 'pcm.mpd_peppyalsa {\n';
+    asoundcontent += '    type copy\n';
+    asoundcontent += '    slave.pcm    \"volumioOutput\"\n';
+    asoundcontent += '}\n\n';
 
     var card = self.config.get('outputdevicecardname');
     var device = self.config.get('outputdevicealsadevice');
@@ -2153,10 +2180,16 @@ ControllerAlsa.prototype.internalUpdateALSAConfigFile = function () {
     }
     asoundcontent += '}\n';
 
+    asoundcontent += 'pcm.dummy {\n';
+    asoundcontent += '    type hw\n';
+    asoundcontent += '    card Dummy\n';
+    asoundcontent += '    device 0\n';
+    asoundcontent += '}\n';
+
     asoundcontent += '# PeppyAlsa section\n';
     asoundcontent += 'pcm.peppyalsa {\n';
     asoundcontent += '        type meter\n';
-    asoundcontent += '        slave.pcm \"volumioHw\"\n';
+    asoundcontent += '        slave.pcm \"dummy\"\n';
     asoundcontent += '        scopes.0 peppyalsa\n';
     asoundcontent += '}\n\n';
     asoundcontent += 'pcm.softvol_and_peppyalsa {\n';
