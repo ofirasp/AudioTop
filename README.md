@@ -61,6 +61,7 @@
 * Remote Music services tested and working with meter :
   * Tidal connect
   * Airplay
+* Theoretically support everything that works with the original volumio official os version
 
 
 #  Installation
