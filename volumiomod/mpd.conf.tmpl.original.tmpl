@@ -15,7 +15,7 @@ user				"mpd"
 group                          "audio"
 bind_to_address		"any"
 #port				"6600"
-log_level			"default"
+log_level			"${log_level}"
 #save_absolute_paths_in_playlists	"no"
 #metadata_to_use	"artist,album,title,track,name,genre,date,composer,performer,disc"
 auto_update    "no"
@@ -42,35 +42,25 @@ decoder {
 	enabled "no"
 }
 
- 
+"${ffmpeg}"
 
- 
+"${sacdiso}"
 
 ###############################################################################
 
 # Audio Output ################################################################
 
-resampler {      
-  		plugin "soxr"
-  		quality "high"
-  		threads "1"
-}
+${sox}
 
 audio_output {
 		type		"alsa"
 		name		"alsa"
-		device		"realdac"
-		dop			"yes"
+		device		"${device}"
+		dop			"${dop}"
+		${mixer}
+		${format}
+		${special_settings}
 
-}
-audio_output {
- #       enabled     "no"
-        type        "alsa"
-        name        "mpd_peppyalsa"
-        device      "mpd_peppyalsa"
-        dop         "yes"
-        mixer_type  "none"
-        format      "44100:16:2"
 }
 
 
@@ -87,11 +77,11 @@ audio_output {
 
 #replaygain			"album"
 #replaygain_preamp		"0"
-volume_normalization		"no"
+volume_normalization		"${volume_normalization}"
 ###############################################################################
 
 # MPD Internal Buffering ######################################################
-audio_buffer_size		"2048"
+audio_buffer_size		"${audio_buffer_size}"
 ###############################################################################
 
 

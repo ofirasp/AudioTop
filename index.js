@@ -165,6 +165,9 @@ audiotop.prototype.restroeVolumioAlsaSettings = function(){
     spawn('mv', ['/volumio/app/plugins/audio_interface/alsa_controller/index.js.original.js','/volumio/app/plugins/audio_interface/alsa_controller/index.js'], {
     		detached: true
         });
+    spawn('mv', ['/volumio/app/plugins/music_service/mpd/mpd.conf.tmpl.original.tmpl','/volumio/app/plugins/music_service/mpd/mpd.conf.tmpl'], {
+    		detached: true
+        });
     this.commandRouter.pushToastMessage('success', "audiotop", "Volumio Alsa setting has restored");
     return defer.promise;
 } ;
@@ -177,6 +180,14 @@ audiotop.prototype.restroeAudiotopAlsaSettings = function(){
     spawn('cp', ['/home/volumio/Audiotop/volumiomod/index.js.audiotop.js','/volumio/app/plugins/audio_interface/alsa_controller/index.js'], {
     		detached: true
         });
+
+    spawn('mv', ['/volumio/app/plugins/music_service/mpd/mpd.conf.tmpl','/volumio/app/plugins/music_service/mpd/mpd.conf.tmpl.original.tmpl'], {
+    		detached: true
+        });
+    spawn('cp', ['/home/volumio/Audiotop/volumiomod/mpd.conf.tmpl.audiotop.tmpl','/volumio/app/plugins/music_service/mpd/mpd.conf.tmpl'], {
+    		detached: true
+        });
+
     this.commandRouter.pushToastMessage('success', "audiotop", "Audiotop Alsa setting has restored");
     return defer.promise;
 } ;
