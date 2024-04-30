@@ -53,7 +53,7 @@ class CircularAnimator(object):
         
         :return: list of rectangles for update
         """
-        volume = min(self.get_data()*addfactor,100)
+        volume = self.get_data()
         n, a = self.set_sprite(volume)
         self.previous_index = int(n)
 

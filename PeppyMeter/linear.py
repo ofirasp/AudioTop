@@ -72,8 +72,8 @@ class LinearAnimator(object):
         d = self.data_source.get_current_data()
         areas = []
         try:
-            self.previous_rect_left, self.previous_volume_left, left = self.update_channel(min(d[0]*addfactor,100), self.components[1], self.previous_rect_left, self.previous_volume_left, True)
-            self.previous_rect_right, self.previous_volume_right, right = self.update_channel(min(d[1]*addfactor,100), self.components[2], self.previous_rect_right, self.previous_volume_right, False)
+            self.previous_rect_left, self.previous_volume_left, left = self.update_channel(d[0], self.components[1], self.previous_rect_left, self.previous_volume_left, True)
+            self.previous_rect_right, self.previous_volume_right, right = self.update_channel(d[1], self.components[2], self.previous_rect_right, self.previous_volume_right, False)
             areas = [left, right]
         except:
             pass

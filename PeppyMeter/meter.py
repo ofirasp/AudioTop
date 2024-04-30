@@ -208,21 +208,21 @@ class Meter(Container):
                                              self.data_source.get_current_mono_channel_data,
                                              self.meter_parameters[MONO_ORIGIN_X], self.meter_parameters[MONO_ORIGIN_Y])
 
-    def run(self,addfactor=1):
+    def run(self):
         """ Run the current meter
 
         :return: list of rectangles for update
         """
         if self.meter_type == TYPE_LINEAR:
             if hasattr(self, "animator") and self.animator:
-                return self.animator.run(addfactor)
+                return self.animator.run()
         elif self.meter_type == TYPE_CIRCULAR:
             if self.channels == 2:
                 if hasattr(self, "left") and self.left and hasattr(self, "right") and self.right:
-                    return [self.left.run(addfactor), self.right.run(addfactor)]
+                    return [self.left.run(), self.right.run()]
             else:
                 if hasattr(self, "mono") and self.mono:
-                    return [self.mono.run(addfactor)]
+                    return [self.mono.run()]
 
         return None
 
@@ -274,8 +274,6 @@ class MetaMeter(Meter):
         self.musicservices = {}
         self.codecs = {}
         self.codec = None
-        self.dsdaddfactor = util.meter_config['dsdaddfactor']
-        self.addfactor = 1
         self.musicservice = None
         self.playing = False
 
@@ -344,8 +342,7 @@ class MetaMeter(Meter):
         s = re.sub(pattern,fr'\1/{prefix}-on.png', comp.path)
         comp.content = self.load_image(s)
     def run(self):
-
-        r =  super().run(self.addfactor)
+        r =  super().run()
         if self.usepeak:
             left = self.data_source.get_current_left_channel_data()
             right = self.data_source.get_current_right_channel_data()
@@ -386,7 +383,7 @@ class MetaMeter(Meter):
                 if not codec in self.codecs:
                     codec='flac'
                 self.switchcomponent(self.codecs[codec])
-            self.addfactor = 1 if codec!='dsf' else self.dsdaddfactor
+
             self.switchcomponent(self.play, "on" if 'status' in metadata and self.playing else 'off')
             self.switchcomponent(self.rnd, "on" if 'random' in metadata and metadata['random']  else 'off')
             self.switchcomponent(self.rpt, "on" if 'repeat' in metadata and metadata['repeat']  else 'off')
@@ -610,7 +607,7 @@ class MetaSpectrumMeter(MetaMeter):
 
 class MetaMSpectrumWithMeter(MetaSpectrumMeter):
     def run(self):
-        r = Meter.run(self,self.addfactor)
+        r = Meter.run(self)
         self.reset_bgr_fgr(self.bgr)
         if self.fgr:
             self.reset_bgr_fgr(self.fgr)
