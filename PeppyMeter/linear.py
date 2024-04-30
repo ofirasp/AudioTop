@@ -64,7 +64,7 @@ class LinearAnimator(object):
         self.previous_rect_right = self.components[2].bounding_box.copy()
         self.previous_volume_left = self.previous_volume_right = 0.0        
     
-    def run(self):
+    def run(self,addfactor=1):
         """ Converts volume value into the mask width and displays corresponding mask. 
         
         :return: list of rectangles for update
@@ -72,8 +72,8 @@ class LinearAnimator(object):
         d = self.data_source.get_current_data()
         areas = []
         try:
-            self.previous_rect_left, self.previous_volume_left, left = self.update_channel(d[0], self.components[1], self.previous_rect_left, self.previous_volume_left, True)
-            self.previous_rect_right, self.previous_volume_right, right = self.update_channel(d[1], self.components[2], self.previous_rect_right, self.previous_volume_right, False)
+            self.previous_rect_left, self.previous_volume_left, left = self.update_channel(d[0]*addfactor, self.components[1], self.previous_rect_left, self.previous_volume_left, True)
+            self.previous_rect_right, self.previous_volume_right, right = self.update_channel(d[1]*addfactor, self.components[2], self.previous_rect_right, self.previous_volume_right, False)
             areas = [left, right]
         except:
             pass

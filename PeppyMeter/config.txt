@@ -2,6 +2,7 @@
 meter = metabarspectrum
 meter.list = metablue,metabar,metapioneercassete,metabarspectrum,metaspectrum
 metadatasourcedns = audiotop.local
+dsdaddfactor = 1.2
 random.meter.interval = 20
 base.folder =
 meter.folder = 1280x400

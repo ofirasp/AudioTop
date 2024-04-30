@@ -48,12 +48,12 @@ class CircularAnimator(object):
         self.origin_y = origin_y + meter_parameters[METER_Y]
         self.set_sprite(None, True)
         
-    def run(self):
+    def run(self,addfactor=1):
         """ Converts volume value into the needle angle and displays corresponding sprite. 
         
         :return: list of rectangles for update
         """
-        volume = self.get_data()
+        volume = self.get_data()*addfactor
         n, a = self.set_sprite(volume)
         self.previous_index = int(n)
 

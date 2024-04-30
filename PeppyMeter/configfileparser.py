@@ -184,6 +184,7 @@ class ConfigFileParser(object):
         self.meter_config[METER] = c.get(CURRENT, METER)
         self.meter_config["meter.list"] = c.get(CURRENT, "meter.list")
         self.meter_config["metadatasourcedns"] = c.get(CURRENT,"metadatasourcedns")
+        self.meter_config["dsdaddfactor"] = c.getfloat(CURRENT, "dsdaddfactor")
         self.meter_config[RANDOM_METER_INTERVAL] = c.getint(CURRENT, RANDOM_METER_INTERVAL)
         self.meter_config[EXIT_ON_TOUCH] = c.getboolean(CURRENT, EXIT_ON_TOUCH)
         self.meter_config[STOP_DISPLAY_ON_TOUCH] = c.getboolean(CURRENT, STOP_DISPLAY_ON_TOUCH)
