@@ -354,12 +354,14 @@ class MetaMeter(Meter):
                 self.switchcomponent(self.redleds[1], "on")
             else:
                 self.switchcomponent(self.redleds[1], "off")
-        self.redrawview()
+            self.redleds[1].draw()
+            self.redleds[0].draw()
+            #pygame.display.update(self.redleds[0],self.redleds[1])
+        #self.redrawview()
         return r
 
 
     def updateview(self,metadata):
-
         network = self.getnetwork()
         self.switchcomponent(self.wifi, "on" if network[0] else "off")
         self.switchcomponent(self.eth, "on" if network[1] else "off")
@@ -404,6 +406,7 @@ class MetaMeter(Meter):
                 self.metatext.seek=0
             if self.progressbar.progress>100:
                 self.progressbar.progress=0
+            self.redrawview()
     def isInternet(self):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -495,6 +498,8 @@ class MetaMeter(Meter):
         c = self.add_image(img, 0, 0, self.meter_bounding_box)
         c.content_x = x
         c.content_y = y
+        #r = img[1].get_rect()
+        #c.imagerect = pygame.Rect(x,y,r.w,r.h)
         c.path = "/"+path
         return c
 
@@ -576,7 +581,9 @@ class MetaCasseteMeter(MetaMeter):
         self.angleleft += self.rotation_speedleft * directionfactor
         if self.angleleft >= 360:
             self.angleleft = 0
-
+        self.rightcomp.draw()
+        self.leftcomp.draw()
+       # pygame.display.update([self.rightcomp.imagerect,self.leftcomp.imagerect])
 
 class MetaSpectrumMeter(MetaMeter):
     def __init__(self, util, meter_type, meter_parameters, data_source):
@@ -594,7 +601,7 @@ class MetaSpectrumMeter(MetaMeter):
         if self.framecount==3:
             self.framecount=0
             self.pm.get_data()
-        self.draw()
+        #self.draw()
         self.pm.clean_draw_update()
 
 

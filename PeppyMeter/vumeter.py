@@ -216,7 +216,6 @@ class Vumeter(ScreensaverMeter):
     
     def refresh(self):
         """ Refresh meter. Used to update random meter. """
-
         if(self.frames%self.util.meter_config[FRAME_RATE]==0):
             self.sio.emit('getState', {})
 
