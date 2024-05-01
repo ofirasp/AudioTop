@@ -267,7 +267,7 @@ class Peppymeter(ScreensaverMeter):
     def switchmeter(self,a=None,b=None):
         self.persiststate["meter.index"] = (self.persiststate["meter.index"] + 1) % len(self.meterlist)
         self.savepersiststate()
-        self.util.meter_config[METER] =   self.meterlist[3]#self.meterlist[self.persiststate["meter.index"]] #
+        self.util.meter_config[METER] =   self.meterlist[self.persiststate["meter.index"]] #self.meterlist[3]#
         self.meter.stop()
         time.sleep(0.2)  # let threads stop
         self.meter.meter = None

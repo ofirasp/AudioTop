@@ -356,8 +356,9 @@ class MetaMeter(Meter):
                 self.switchcomponent(self.redleds[1], "off")
             self.redleds[1].draw()
             self.redleds[0].draw()
-            #pygame.display.update(self.redleds[0],self.redleds[1])
-        #self.redrawview()
+            pygame.display.update([pygame.Rect(self.redleds[1].content_x, self.redleds[1].content_y, 25, 25),
+                                   pygame.Rect(self.redleds[0].content_x,self.redleds[1].content_y, 25, 25)])
+         #self.redrawview()
         return r
 
 
@@ -520,9 +521,12 @@ class MetaCasseteMeter(MetaMeter):
         self.prevprogress = self.progressbar.progress
         super().updateview(metadata)
     def run(self):
-        r = super().run()
+        r = Meter.run(self)
         if self.playing:
             self.casseteAnimation()
+            self.leftcomp.draw()
+            self.rightcomp.draw()
+            pygame.display.update([self.area])
         return r
 
 
@@ -533,6 +537,11 @@ class MetaCasseteMeter(MetaMeter):
         self.image_rectleft = self.image.get_rect(center=self.config['icons.casstewheelleft.position'])
         self.leftcomp = self.add_image_component(self.config['icons.casstewheel'], 266, 136)
         self.rightcomp = self.add_image_component(self.config['icons.casstewheel'], 579, 136)
+        self.area = pygame.Rect(self.image_rectleft.x, self.image_rectleft.y,
+                           self.image_rectright.x + self.image_rectright.w ,
+                           self.image_rectleft.h)
+        pygame.display.update([self.area])
+
         self.casseteclear = self.add_image_component(self.config['icons.casseteclear'],
                                                      *self.config['icons.casseteclear.position'])
         self.clearstartx = self.casseteclear.content_x
@@ -583,9 +592,7 @@ class MetaCasseteMeter(MetaMeter):
         self.angleleft += self.rotation_speedleft * directionfactor
         if self.angleleft >= 360:
             self.angleleft = 0
-        self.rightcomp.draw()
-        self.leftcomp.draw()
-       # pygame.display.update([self.rightcomp.imagerect,self.leftcomp.imagerect])
+        #pygame.display.update([pygame.Rect(0, 0, 1200, 800)])
 
 class MetaSpectrumMeter(MetaMeter):
     def __init__(self, util, meter_type, meter_parameters, data_source):
