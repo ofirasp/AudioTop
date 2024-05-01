@@ -524,6 +524,8 @@ class MetaCasseteMeter(MetaMeter):
         if self.playing:
             self.casseteAnimation()
         return r
+
+
     def add_foreground(self, image_name):
         super().add_foreground(image_name)
         self.image = self.load_image(self.config['icons.casstewheel'])[1]
@@ -589,6 +591,7 @@ class MetaSpectrumMeter(MetaMeter):
     def __init__(self, util, meter_type, meter_parameters, data_source):
         super().__init__(util, meter_type, meter_parameters, data_source)
         self.pm = Spectrum(None, True,self.util,self.config)
+
         #self.pm.callback_start = lambda x: self.pm.clean_draw_update()
         self.pm.start()
         self.framecount=0
@@ -596,21 +599,26 @@ class MetaSpectrumMeter(MetaMeter):
 
 
     def run(self):
-
-        self.framecount+=1
-        if self.framecount==3:
-            self.framecount=0
+        self.framecount += 1
+        if self.framecount == 3:
+            self.framecount = 0
             self.pm.get_data()
+            self.pm.clean_draw_update()
         #self.draw()
-        self.pm.clean_draw_update()
 
 
         if self.pm.seconds >= self.pm.config[UPDATE_PERIOD]:
             self.pm.seconds = 0
-            #self.pm.refresh()
-        pygame.display.update()
+            # self.pm.refresh()
+        #pygame.display.update()
         self.pm.seconds += 0.1
-
+    def redrawview(self):
+        self.reset_bgr_fgr(self.bgr)
+        if self.fgr:
+            self.reset_bgr_fgr(self.fgr)
+        self.draw()
+        self.pm.clean_draw_update()
+        pygame.display.update()
 
 class MetaMSpectrumWithMeter(MetaSpectrumMeter):
     def run(self):
