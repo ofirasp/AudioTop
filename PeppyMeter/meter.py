@@ -357,7 +357,7 @@ class MetaMeter(Meter):
             self.redleds[1].draw()
             self.redleds[0].draw()
             pygame.display.update([pygame.Rect(self.redleds[1].content_x, self.redleds[1].content_y, 25, 25),
-                                   pygame.Rect(self.redleds[0].content_x,self.redleds[1].content_y, 25, 25)])
+                                   pygame.Rect(self.redleds[0].content_x,self.redleds[0].content_y, 25, 25)])
          #self.redrawview()
         return r
 
