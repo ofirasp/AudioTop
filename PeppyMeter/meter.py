@@ -276,8 +276,7 @@ class MetaMeter(Meter):
         self.codec = None
         self.musicservice = None
         self.playing = False
-
-
+        self.network = None
 
     def add_foreground(self, image_name):
         if (image_name):
@@ -363,22 +362,37 @@ class MetaMeter(Meter):
 
 
     def updateview(self,metadata,titletime):
+        redrawneeded = False
+
+        osversion = self.getosversion()
+        if self.metatext.osversion != osversion:
+            self.metatext.osversion = osversion
+            redrawneeded = True
+
         network = self.getnetwork()
-        self.switchcomponent(self.wifi, "on" if network[0] else "off")
-        self.switchcomponent(self.eth, "on" if network[1] else "off")
-        self.switchcomponent(self.inet, "on" if self.isInternet() else 'off')
-        if self.metatext.duration<=titletime:
-            self.metatext.seek = titletime
-            self.progressbar.progress = self.metatext.seek / 1000 / self.metatext.duration * 100 if self.metatext.duration != 0 else 0
-        if self.progressbar.progress > 100:
-            self.progressbar.progress = 0
-        if metadata and 'seek' in metadata and 'status' in metadata and self.metatext.seek != metadata['seek']:
-            self.playing = metadata['status'] == 'play'
+        if self.network != network:
+            self.network = network
+            self.switchcomponent(self.wifi, "on" if network[0] else "off")
+            self.switchcomponent(self.eth, "on" if network[1] else "off")
+            self.switchcomponent(self.inet, "on" if network[2] else 'off')
+            redrawneeded = True
+
+        if self.metatext.seek!=titletime:
+            if self.metatext.duration<=titletime:
+                self.metatext.seek = titletime
+                self.progressbar.progress = self.metatext.seek / 1000 / self.metatext.duration * 100 if self.metatext.duration != 0 else 0
+            if self.progressbar.progress > 100:
+                self.progressbar.progress = 0
+            redrawneeded = True
+        if metadata :
+            if 'status' in metadata:
+                self.playing = metadata['status'] == 'play'
             codec='flac'
             if self.usesingle:
-                codec = self.getcodec(metadata)
-                self.switchiconpath(self.codec,codec)
-                self.switchiconpath(self.musicservice, metadata['service'])
+                if 'service' in metadata:
+                    codec = self.getcodec(metadata)
+                    self.switchiconpath(self.codec,codec)
+                    self.switchiconpath(self.musicservice, metadata['service'])
             else:
                 for s in self.musicservices:
                     self.switchcomponent(self.musicservices[s], "off")
@@ -391,27 +405,24 @@ class MetaMeter(Meter):
                     codec='flac'
                 self.switchcomponent(self.codecs[codec])
 
-            self.switchcomponent(self.play, "on" if 'status' in metadata and self.playing else 'off')
+            self.switchcomponent(self.play, "on" if self.playing else 'off')
             self.switchcomponent(self.rnd, "on" if 'random' in metadata and metadata['random']  else 'off')
             self.switchcomponent(self.rpt, "on" if 'repeat' in metadata and metadata['repeat']  else 'off')
 
-            self.cover.content = self.getalbumart(metadata['albumart'])
+            if 'albumart' in metadata:
+                self.cover.content = self.getalbumart(metadata['albumart'])
 
             self.metatext.album =  metadata['album'] if 'album' in metadata else '---'
             self.metatext.artist = metadata['artist'] if 'artist' in metadata else '---'
             self.metatext.title = metadata['title'] if 'title' in metadata else '---'
-            self.metatext.seek = metadata['seek'] if 'seek' in metadata else 0
             self.metatext.duration = metadata['duration'] if 'duration' in metadata else 0
             if 'samplerate' in metadata and metadata['samplerate'] and 'bitdepth' in metadata and metadata['bitdepth']:
                 self.metatext.bitrate = metadata['samplerate'].replace(' ','')  + " " + metadata['bitdepth'].replace(' ','')
-            self.metatext.osversion = self.getosversion();
-            # if self.metatext.seek:
-            #     self.progressbar.progress = self.metatext.seek/1000/self.metatext.duration*100 if self.metatext.duration!=0 else 0
-            # else:
-            #     self.metatext.seek=0
-            # if self.progressbar.progress>100:
-            #     self.progressbar.progress=0
-        self.redrawview()
+
+            redrawneeded = True
+
+        if redrawneeded:
+            self.redrawview()
     def isInternet(self):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -423,11 +434,12 @@ class MetaMeter(Meter):
             return False
     def getnetwork(self):
         allint = ni.interfaces()
-        net = [False,False]
+        net = [False,False,False]
         if 'eth0' in allint:
             net[1] = AF_INET in ni.ifaddresses('eth0')
         if 'wlan0' in allint:
             net[0] = AF_INET in ni.ifaddresses('wlan0')
+        net[2] = self.isInternet()
         return net
     def getosversion(self):
         try:

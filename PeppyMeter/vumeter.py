@@ -38,8 +38,8 @@ class Vumeter(ScreensaverMeter):
         self.updatemetadata = True
         if self.metadata != None:
             if "seek" in self.metadata:
-               self.titleseek = self.metadata['seek']
-               self.seekupdate=True
+               self.titletime = self.metadata['seek']
+               #self.seekupdate=True
             if "title" in self.metadata:
                 if self.currenttitle!=self.metadata['title']:
                     self.currenttitle=self.metadata['title']
@@ -85,7 +85,7 @@ class Vumeter(ScreensaverMeter):
         self.updatemetadata = False
         self.titleupdate = False
         self.albumupdate = False
-        self.seekupdate = False
+        #self.seekupdate = False
         self.currenttitle =''
         self.currentalbum = ''
         self.util = util
@@ -102,7 +102,7 @@ class Vumeter(ScreensaverMeter):
         self.list_meter = False
         self.list_meter_index = 0
         self.titletime=0
-        self.titleseek=0
+        #self.titleseek=0
 
         if self.util.meter_config[METER] == "random":
             self.random_meter = True
@@ -224,12 +224,13 @@ class Vumeter(ScreensaverMeter):
         """ Refresh meter. Used to update random meter. """
         if(self.frames%self.util.meter_config[FRAME_RATE]==0):
             #self.sio.emit('getState', {})
-            self.titletime += 1000
+            if self.playerstatus == STARTPLAYING or self.playerstatus == PLAYING:
+                self.titletime += 1000
             self.meter.updateview(self.metadata if self.updatemetadata else None,self.titletime)
             self.updatemetadata=False
-        if self.seekupdate:
-            self.seekupdate = False
-            self.titletime = self.titleseek
+        # if self.seekupdate:
+        #     self.seekupdate = False
+        #     self.titletime = self.titleseek
 
         switch = False
         if self.autoswitchmeter['title'] and self.titleupdate:
