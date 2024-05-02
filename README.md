@@ -12,6 +12,12 @@
  * Linear Power supply 5V 3.5A
  * 2TB SSD 
 
+
+# version 1.0.0
+## 1.5.2024
+* Significant performance improvements for CPU usage
+* Bugs fix
+
 # version 0.0.3
 ## 28.4.2024
 * Add DSD support for meter animations
