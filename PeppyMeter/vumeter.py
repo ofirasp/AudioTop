@@ -36,26 +36,29 @@ class Vumeter(ScreensaverMeter):
     def on_message(self,data):
         self.metadata = data
         self.updatemetadata = True
-        if self.metadata!=None and "title" in self.metadata:
-            if self.currenttitle!=self.metadata['title']:
-                self.currenttitle=self.metadata['title']
-                self.titleupdate=True
-        if self.metadata!=None and "album" in self.metadata:
-            if self.currentalbum!=self.metadata['album']:
-                self.currentalbum=self.metadata['album']
-                self.albumupdate=True
-        if self.metadata != None and "status" in self.metadata:
-
-            if self.metadata['status'] == 'play':
-                if self.playerstatus == STOPPED:
-                    self.playerstatus = STARTPLAYING
+        if self.metadata != None:
+            if "seek" in self.metadata:
+               self.titleseek = self.metadata['seek']
+               self.seekupdate=True
+            if "title" in self.metadata:
+                if self.currenttitle!=self.metadata['title']:
+                    self.currenttitle=self.metadata['title']
+                    self.titleupdate=True
+            if  "album" in self.metadata:
+                if self.currentalbum!=self.metadata['album']:
+                    self.currentalbum=self.metadata['album']
+                    self.albumupdate=True
+            if "status" in self.metadata:
+                if self.metadata['status'] == 'play':
+                    if self.playerstatus == STOPPED:
+                        self.playerstatus = STARTPLAYING
+                    else:
+                        self.playerstatus = PLAYING
                 else:
-                    self.playerstatus = PLAYING
-            else:
-                if self.playerstatus==PLAYING:
-                    self.playerstatus=STOPPING
-                else:
-                    self.playerstatus=STOPPED
+                    if self.playerstatus==PLAYING:
+                        self.playerstatus=STOPPING
+                    else:
+                        self.playerstatus=STOPPED
 
 
 
@@ -82,6 +85,7 @@ class Vumeter(ScreensaverMeter):
         self.updatemetadata = False
         self.titleupdate = False
         self.albumupdate = False
+        self.seekupdate = False
         self.currenttitle =''
         self.currentalbum = ''
         self.util = util
@@ -97,7 +101,9 @@ class Vumeter(ScreensaverMeter):
         self.random_meter = False
         self.list_meter = False
         self.list_meter_index = 0
-        
+        self.titletime=0
+        self.titleseek=0
+
         if self.util.meter_config[METER] == "random":
             self.random_meter = True
             self.random_meter_names = copy.copy(self.meter_names)
@@ -217,10 +223,13 @@ class Vumeter(ScreensaverMeter):
     def refresh(self):
         """ Refresh meter. Used to update random meter. """
         if(self.frames%self.util.meter_config[FRAME_RATE]==0):
-            self.sio.emit('getState', {})
-
-            self.meter.updateview(self.metadata if self.updatemetadata else None)
+            #self.sio.emit('getState', {})
+            self.titletime += 1000
+            self.meter.updateview(self.metadata if self.updatemetadata else None,self.titletime)
             self.updatemetadata=False
+        if self.seekupdate:
+            self.seekupdate = False
+            self.titletime = self.titleseek
 
         switch = False
         if self.autoswitchmeter['title'] and self.titleupdate:

@@ -258,7 +258,7 @@ class Meter(Container):
             else:
                 self.mono = None
 
-    def updateview(self,metadata):
+    def updateview(self,metadata,titletime):
         pass
 
 
@@ -362,12 +362,16 @@ class MetaMeter(Meter):
         return r
 
 
-    def updateview(self,metadata):
+    def updateview(self,metadata,titletime):
         network = self.getnetwork()
         self.switchcomponent(self.wifi, "on" if network[0] else "off")
         self.switchcomponent(self.eth, "on" if network[1] else "off")
         self.switchcomponent(self.inet, "on" if self.isInternet() else 'off')
-
+        if self.metatext.duration<=titletime:
+            self.metatext.seek = titletime
+            self.progressbar.progress = self.metatext.seek / 1000 / self.metatext.duration * 100 if self.metatext.duration != 0 else 0
+        if self.progressbar.progress > 100:
+            self.progressbar.progress = 0
         if metadata and 'seek' in metadata and 'status' in metadata and self.metatext.seek != metadata['seek']:
             self.playing = metadata['status'] == 'play'
             codec='flac'
@@ -401,13 +405,13 @@ class MetaMeter(Meter):
             if 'samplerate' in metadata and metadata['samplerate'] and 'bitdepth' in metadata and metadata['bitdepth']:
                 self.metatext.bitrate = metadata['samplerate'].replace(' ','')  + " " + metadata['bitdepth'].replace(' ','')
             self.metatext.osversion = self.getosversion();
-            if self.metatext.seek:
-                self.progressbar.progress = self.metatext.seek/1000/self.metatext.duration*100 if self.metatext.duration!=0 else 0
-            else:
-                self.metatext.seek=0
-            if self.progressbar.progress>100:
-                self.progressbar.progress=0
-            self.redrawview()
+            # if self.metatext.seek:
+            #     self.progressbar.progress = self.metatext.seek/1000/self.metatext.duration*100 if self.metatext.duration!=0 else 0
+            # else:
+            #     self.metatext.seek=0
+            # if self.progressbar.progress>100:
+            #     self.progressbar.progress=0
+        self.redrawview()
     def isInternet(self):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -517,16 +521,14 @@ class MetaCasseteMeter(MetaMeter):
         self.clearstatus = 0
         self.prevprogress = 0
 
-    def updateview(self, metadata):
+    def updateview(self, metadata,titletime):
         self.prevprogress = self.progressbar.progress
-        super().updateview(metadata)
+        super().updateview(metadata,titletime)
     def run(self):
         r = Meter.run(self)
         if self.playing:
             self.casseteAnimation()
-            self.leftcomp.draw()
-            self.rightcomp.draw()
-            pygame.display.update([self.area])
+
         return r
 
 
@@ -540,8 +542,6 @@ class MetaCasseteMeter(MetaMeter):
         self.area = pygame.Rect(self.image_rectleft.x, self.image_rectleft.y,
                            self.image_rectright.x + self.image_rectright.w ,
                            self.image_rectleft.h)
-        pygame.display.update([self.area])
-
         self.casseteclear = self.add_image_component(self.config['icons.casseteclear'],
                                                      *self.config['icons.casseteclear.position'])
         self.clearstartx = self.casseteclear.content_x
@@ -566,6 +566,7 @@ class MetaCasseteMeter(MetaMeter):
             self.clearstatus = self.prevprogress / 100 * self.clearwidth
             self.rotation_speedleft = 20
             self.rotation_speedright = 20
+            self.redrawview()
         else:
             self.clearstatus = self.progressbar.progress / 100 * self.clearwidth
             self.casseteclear.content_x = self.clearstartx - self.clearstatus
@@ -592,6 +593,12 @@ class MetaCasseteMeter(MetaMeter):
         self.angleleft += self.rotation_speedleft * directionfactor
         if self.angleleft >= 360:
             self.angleleft = 0
+
+        self.leftcomp.draw()
+        self.rightcomp.draw()
+        self.casseteclear.draw()
+
+        pygame.display.update([self.area])
         #pygame.display.update([pygame.Rect(0, 0, 1200, 800)])
 
 class MetaSpectrumMeter(MetaMeter):
