@@ -9,7 +9,9 @@ import psutil
 import socketio
 import threading
 from PeppyMeter import settings
-sys.stderr = open("audiotop.log","wt")
+sys.stderr = open("/data/plugins/user_interface/audiotop/audiotop.log","wt")
+
+print(f"Starting audiotop {datetime.now()}",file=sys.stderr,flush=True)
 settings = settings.Settings()
 settings.retreive()
 
@@ -71,9 +73,10 @@ while running:
         #print(info)
     except Exception  as ex:
         time.sleep(5)
-        print(ex,file=sys.stderr)
+        print(ex,file=sys.stderr,flush=True)
 
 else:
     sio.disconnect()
     closepeppy()
 
+print(f"Sopping audiotop {datetime.now()}",file=sys.stderr,flush=True)
