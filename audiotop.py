@@ -53,15 +53,16 @@ peppy = None
 running = True
 info={}
 sockectworker = threading.Thread(target=startsockio)
-time.sleep(2)
+time.sleep(1)
 sockectworker.start()
 signal.signal(signal.SIGUSR1, shutdown)
 os.chdir("/data/plugins/user_interface/audiotop/PeppyMeter")
 lasttime = datetime.now()
-time.sleep(2)
+time.sleep(1)
 while running:
     try:
-        #sio.emit('getState', {})
+        if not info:
+            sio.emit('getState', {})
         if 'status' in info and info['status'] == "play":
             if not peppy or not process_status(peppy.pid):
                 #peppy = Popen(["../vvenv/bin/python", "peppymeter.py"])
