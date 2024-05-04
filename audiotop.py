@@ -43,6 +43,7 @@ def on_message(data):
 def startsockio():
     sio.connect(f"http://{settings['config_metadata_url']['value']}:3000")
     sio.emit('getState', {})
+    print("Listening...", file=sys.stderr, flush=True)
     sio.wait()
 
 
@@ -52,11 +53,12 @@ peppy = None
 running = True
 info={}
 sockectworker = threading.Thread(target=startsockio)
+time.sleep(2)
 sockectworker.start()
 signal.signal(signal.SIGUSR1, shutdown)
 os.chdir("/data/plugins/user_interface/audiotop/PeppyMeter")
 lasttime = datetime.now()
-
+time.sleep(2)
 while running:
     try:
         #sio.emit('getState', {})
