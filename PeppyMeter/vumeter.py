@@ -67,7 +67,7 @@ class Vumeter(ScreensaverMeter):
         try:
             self.sio.connect(f'http://{self.metadatasourcedns}:3000')
             self.sio.emit('getState', {})
-            self.sio.wait()
+         #   self.sio.wait()
         except Exception as ex:
             logging.error(ex)
 
@@ -122,9 +122,9 @@ class Vumeter(ScreensaverMeter):
         self.right_rect_cache = {}
         self.sio = socketio.Client()
         self.sio.on('pushState', self.on_message)
-        x = threading.Thread(target=self.startsockio)
-        x.start()
-    
+        #x = threading.Thread(target=self.startsockio)
+        #x.start()
+        self.startsockio()
     def get_meter(self):
         """ Creates meter using meter factory. """  
               
