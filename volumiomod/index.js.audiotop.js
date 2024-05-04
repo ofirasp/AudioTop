@@ -2120,39 +2120,39 @@ ControllerAlsa.prototype.internalUpdateALSAConfigFile = function () {
     asoundcontent += '}\n';
     asoundcontent += '\n';
 
-    // var outPCM = 'volumio'
-    // for(var i = 0; i < contributions.length; i++) {
-    //   var contribution = contributions[i];
-    //
-    //   asoundcontent += 'pcm.' + outPCM + ' {\n';
-    //   asoundcontent += '    type             copy\n';
-    //   asoundcontent += '    slave.pcm       "' + contribution.snippetDatum.inPCM + '"\n';
-    //   asoundcontent += '}\n';
-    //   asoundcontent += '\n';
-    //
-    //   asoundcontent += contribution.snippet;
-    //   asoundcontent += '\n';
-    //
-    //   outPCM = contribution.snippetDatum.outPCM;
-    // }
+    var outPCM = 'volumio'
+    for(var i = 0; i < contributions.length; i++) {
+      var contribution = contributions[i];
+
+      asoundcontent += 'pcm.' + outPCM + ' {\n';
+      asoundcontent += '    type             copy\n';
+      asoundcontent += '    slave.pcm       "' + contribution.snippetDatum.inPCM + '"\n';
+      asoundcontent += '}\n';
+      asoundcontent += '\n';
+
+      asoundcontent += contribution.snippet;
+      asoundcontent += '\n';
+
+      outPCM = contribution.snippetDatum.outPCM;
+    }
 
 
-    asoundcontent += 'pcm.volumio {\n';
-    asoundcontent += '    type plug\n';
-    asoundcontent += '    route_policy \"duplicate\"\n';
-     asoundcontent += '   slave.channels 4\n';
-    asoundcontent += '     slave.pcm {\n';
-    asoundcontent += '          type multi\n';
-    asoundcontent += '          slaves.a.pcm "mpd_peppyalsa"\n';
-    asoundcontent += '          slaves.a.channels 2\n';
-    asoundcontent += '          slaves.b.pcm \"realdac\"\n';
-    asoundcontent += '          slaves.b.channels 2\n';
-    asoundcontent += '          bindings.0 { slave a; channel 0; }\n';
-    asoundcontent += '          bindings.1 { slave a; channel 1; }\n';
-    asoundcontent += '          bindings.2 { slave b; channel 0; }\n';
-    asoundcontent += '          bindings.3 { slave b; channel 1; }\n';
-    asoundcontent += '     }\n';
-    asoundcontent += '}\n\n';
+    // asoundcontent += 'pcm.volumio {\n';
+    // asoundcontent += '    type plug\n';
+    // asoundcontent += '    route_policy \"duplicate\"\n';
+    //  asoundcontent += '   slave.channels 4\n';
+    // asoundcontent += '     slave.pcm {\n';
+    // asoundcontent += '          type multi\n';
+    // asoundcontent += '          slaves.a.pcm "mpd_peppyalsa"\n';
+    // asoundcontent += '          slaves.a.channels 2\n';
+    // asoundcontent += '          slaves.b.pcm \"realdac\"\n';
+    // asoundcontent += '          slaves.b.channels 2\n';
+    // asoundcontent += '          bindings.0 { slave a; channel 0; }\n';
+    // asoundcontent += '          bindings.1 { slave a; channel 1; }\n';
+    // asoundcontent += '          bindings.2 { slave b; channel 0; }\n';
+    // asoundcontent += '          bindings.3 { slave b; channel 1; }\n';
+    // asoundcontent += '     }\n';
+    // asoundcontent += '}\n\n';
 
     asoundcontent += 'pcm.realdac {\n';
     asoundcontent += '    type copy\n';
@@ -2160,16 +2160,21 @@ ControllerAlsa.prototype.internalUpdateALSAConfigFile = function () {
     asoundcontent += '}\n\n';
     asoundcontent += 'pcm.mpd_peppyalsa {\n';
     asoundcontent += '    type copy\n';
-    asoundcontent += '    slave.pcm    \"volumioOutput\"\n';
+    asoundcontent += '    slave.pcm    \"volumioOutputMPD\"\n';
     asoundcontent += '}\n\n';
 
     var card = self.config.get('outputdevicecardname');
     var device = self.config.get('outputdevicealsadevice');
 
     asoundcontent += '# There is always a plug before the hardware to be safe\n';
-    asoundcontent += 'pcm.volumioOutput {\n';
+    asoundcontent += 'pcm.volumioOutputMPD {\n';
     asoundcontent += '    type plug\n';
     asoundcontent += '    slave.pcm \"peppyalsa\"\n';
+    asoundcontent += '}\n\n';
+
+    asoundcontent += 'pcm.volumioOutput {\n';
+    asoundcontent += '    type plug\n';
+    asoundcontent += '    slave.pcm \"peppyalsavolumio\"\n';
     asoundcontent += '}\n\n';
 
     asoundcontent += 'pcm.volumioHw {\n';
@@ -2190,6 +2195,11 @@ ControllerAlsa.prototype.internalUpdateALSAConfigFile = function () {
     asoundcontent += 'pcm.peppyalsa {\n';
     asoundcontent += '        type meter\n';
     asoundcontent += '        slave.pcm \"dummy\"\n';
+    asoundcontent += '        scopes.0 peppyalsa\n';
+    asoundcontent += '}\n\n';
+    asoundcontent += 'pcm.peppyalsavolumio {\n';
+    asoundcontent += '        type meter\n';
+    asoundcontent += '        slave.pcm \"volumioHw\"\n';
     asoundcontent += '        scopes.0 peppyalsa\n';
     asoundcontent += '}\n\n';
     asoundcontent += 'pcm.softvol_and_peppyalsa {\n';
