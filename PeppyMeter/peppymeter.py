@@ -249,7 +249,7 @@ class Peppymeter(ScreensaverMeter):
                         self.switchmeter()
             if self.meter.playerstatus == PLAYING or self.meter.playerstatus==STOPPING:
                 self.refresh()
-            elif self.meter.playerstatus == STOPPED:
+            elif self.meter.playerstatus == STOPPED and self.meter.meter:
                 self.meter.meter.playing = False
             #elif self.meter.playerstatus == STARTPLAYING:
                 #self.restart()
