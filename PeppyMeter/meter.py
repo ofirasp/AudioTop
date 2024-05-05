@@ -479,6 +479,7 @@ class MetaMeter(Meter):
         if self.fgr:
             self.reset_bgr_fgr(self.fgr)
         self.draw()
+
         pygame.display.update()
     def loadimagefromurl(self,imageurl):
         try:
@@ -622,8 +623,9 @@ class MetaSpectrumMeter(MetaMeter):
         self.pm.start()
         self.framecount=0
 
-
-
+    def stop(self):
+        super().stop()
+        self.pm.stop()
     def run(self):
         self.framecount += 1
         if self.framecount == 3:
