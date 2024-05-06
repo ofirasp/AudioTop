@@ -82,6 +82,7 @@ class Peppymeter(ScreensaverMeter):
                         format='[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s',
                         handlers=log_handlers
                     )
+                    logging.info("Peppymeter started")
                 except:
                     pass
             else:
@@ -91,7 +92,7 @@ class Peppymeter(ScreensaverMeter):
         try:
             with  open("state.p", "rb") as f:
                 self.persiststate = pickle.load(f)
-                if self.autoswitchmeter["restart"]:
+                if  not self.autoswitchmeter["album"] and not self.autoswitchmeter["title"] and self.autoswitchmeter["restart"]:
                     self.persiststate["meter.index"] = (self.persiststate["meter.index"] + 1) % len(self.meterlist)
 
                 self.util.meter_config[METER] = self.meterlist[self.persiststate["meter.index"]]

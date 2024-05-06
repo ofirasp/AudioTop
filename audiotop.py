@@ -27,9 +27,10 @@ def peppyisalive(sigpid,name):
     global alivelasttime
     alivelasttime = datetime.now()
 
+
 def checkpeppylive():
     global alivelasttime
-    if (datetime.now() - alivelasttime).total_seconds() > TIMETOSPING:
+    if peppy and (datetime.now() - alivelasttime).total_seconds() > TIMETOSPING:
         print(f"Peppy is hang, shut it down {datetime.now()}",file=sys.stderr,flush=True)
         alivelasttime = datetime.now()
         closepeppy()
@@ -94,12 +95,16 @@ while running:
                 peppy = Popen(python,stdin=subprocess.PIPE)
                 peppy.stdin.write(f"{os.getpid()}\n".encode())
                 peppy.stdin.close()
+            else:
+                checkpeppylive()
             lasttime = datetime.now()
         else:
-            if TIMETOSLEEP>0 and (datetime.now() - lasttime).total_seconds() > TIMETOSLEEP:
+            alivelasttime = datetime.now()
+            timenotplaying = (datetime.now() - lasttime).total_seconds()
+            if TIMETOSLEEP>0 and timenotplaying > TIMETOSLEEP:
                 closepeppy()
         time.sleep(2)
-        checkpeppylive()
+
     except Exception  as ex:
         time.sleep(5)
         print(ex,file=sys.stderr,flush=True)
