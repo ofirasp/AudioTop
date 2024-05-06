@@ -244,7 +244,7 @@ class Vumeter(ScreensaverMeter):
         if self.autoswitchmeter['album'] and self.albumupdate:
             self.albumupdate = False
             switch = True
-        if switch and self.playerstatus != STOPPED and self.playerstatus != STOPPED:
+        if switch and self.playerstatus == PLAYING:
             self.switchmeter()
             #self.restart()
 

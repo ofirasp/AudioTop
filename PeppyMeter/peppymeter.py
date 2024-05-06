@@ -57,22 +57,19 @@ class Peppymeter(ScreensaverMeter):
             self.util = util
         else:
             self.util = MeterUtil()
-        signal.signal(signal.SIGUSR1, self.gotosleep)
-        signal.signal(signal.SIGUSR2, self.switchmeter)
+
         self.running = False
         self.use_vu_meter = getattr(self.util, USE_VU_METER, None)
         
         self.name = "peppymeter"
-
-        self.audiotopPID = int(input())
-
 
         parser = ConfigFileParser()
         self.util.meter_config = parser.meter_config
         self.util.exit_function = self.exit
         self.outputs = {}
         self.timer_controlled_random_meter = timer_controlled_random_meter
-        
+
+        self.audiotopPID = int(input())
         if standalone:
             if self.util.meter_config[USE_LOGGING]:
                 log_handlers = []
@@ -131,6 +128,10 @@ class Peppymeter(ScreensaverMeter):
             self.outputs[OUTPUT_HTTP] = HTTPInterface(self.util.meter_config, self.data_source)
 
         self.start_interface_outputs()
+
+        signal.signal(signal.SIGUSR1, self.gotosleep)
+        signal.signal(signal.SIGUSR2, self.switchmeter)
+
         logging.debug("PeppyMeter initialized")
     def gotosleep(self,a,b):
         print(a,b)
