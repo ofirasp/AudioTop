@@ -1,40 +1,59 @@
 #! /usr/bin/python3
+import subprocess
 import sys
 from subprocess import Popen
 import os
 import time
 from datetime import datetime
 import signal
-import psutil
 import socketio
-import threading
 from PeppyMeter import settings
+
+basedir = '/data/plugins/user_interface/audiotop' if "linux" in sys.platform else '.'
+sys.stderr = open(basedir+"/audiotop.log","at")
+print(f"Starting audiotop {datetime.now()}",file=sys.stderr,flush=True)
 
 peppy = None
 running = True
 info={}
-
-
-sys.stderr = open("/data/plugins/user_interface/audiotop/audiotop.log","wt")
-print(f"Starting audiotop {datetime.now()}",file=sys.stderr,flush=True)
-
 settings = settings.Settings()
 settings.retreive()
 TIMETOSLEEP =  settings['config_sleep_timer']['value']
+TIMETOSPING = 15
+RETRIES = 5
 
-def process_status(pid):
-    return [ps for ps in psutil.process_iter(['pid', 'name']) if ps.pid == pid and ps.status() != 'zombie']
+def peppyisalive(sigpid,name):
+    global alivelasttime
+    alivelasttime = datetime.now()
+
+def checkpeppylive():
+    global alivelasttime
+    if (datetime.now() - alivelasttime).total_seconds() > TIMETOSPING:
+        print(f"Peppy is hang, shut it down {datetime.now()}",file=sys.stderr,flush=True)
+        alivelasttime = datetime.now()
+        closepeppy()
 
 def shutdown(sigid,name):
     global running
-    print(f"Shutting diwn audiotop {datetime.now()}",sigid,name,file=sys.stderr,flush=True)
+    print(f"Shutting down audiotop {datetime.now()}",sigid,name,file=sys.stderr,flush=True)
     running=False
 
 def closepeppy():
     global peppy
     if peppy:
-        os.kill(peppy.pid, signal.SIGUSR1)
-        peppy.wait()
+        peppy.send_signal(signal.SIGUSR1)
+        #os.kill(peppy.pid, signal.SIGUSR1)
+        try:
+            peppy.wait(timeout=TIMETOSPING)
+            print(f"stopping peppymeter {datetime.now()}", file=sys.stderr, flush=True)
+        except:
+            try:
+                peppy.send_signal(signal.SIGKILL)
+                #os.kill(peppy.pid, signal.SIGKILL)
+                peppy.wait(timeout=TIMETOSPING)
+                print(f"killing peppymeter {datetime.now()}", file=sys.stderr, flush=True)
+            except:
+                print(f"error on killing peppymeter {datetime.now()}", file=sys.stderr, flush=True)
         peppy = None
 
 sio = socketio.Client()
@@ -43,41 +62,48 @@ def on_message(data):
     global info, isupdateinfo
     info = data
 def startsockio():
-    sio.connect(f"http://{settings['config_metadata_url']['value']}:3000")
-    sio.emit('getState', {})
-    print("Listening...", file=sys.stderr, flush=True)
-    #sio.wait()
+    trycount = 0
+    while trycount< RETRIES:
+        try:
+            sio.connect(f"http://{settings['config_metadata_url']['value']}:3000")
+            sio.emit('getState', {})
+            print("Listening...", file=sys.stderr, flush=True)
+            break
+        except Exception as ex:
+            trycount+=1
+            time.sleep(0.5)
+            print(f"error on starting socketio {datetime.now()} ex:{ex}", file=sys.stderr, flush=True)
+    else:
+        print(f"error on starting socketio, exceeded max retries exit plugin", file=sys.stderr, flush=True)
+        exit(1)
 
-#sockectworker = threading.Thread(target=startsockio)
-#time.sleep(1)
-#sockectworker.start()
 signal.signal(signal.SIGUSR1, shutdown)
-os.chdir("/data/plugins/user_interface/audiotop/PeppyMeter")
+signal.signal(signal.SIGINFO, peppyisalive)
+
+os.chdir(basedir+"/PeppyMeter")
+
 lasttime = datetime.now()
-time.sleep(1)
+alivelasttime = lasttime
+
 startsockio()
 while running:
     try:
-        if not info:
-            sio.emit('getState', {})
         if 'status' in info and info['status'] == "play":
-            if not peppy or peppy.poll() != None: # or not process_status(peppy.pid):
-                #peppy = Popen(["../vvenv/bin/python", "peppymeter.py"])
-                peppy = Popen(["./peppymeter.py"])
-
+            if not peppy or peppy.poll() != None:
+                peppy = Popen(["../vvenv/bin/python", "peppymeter.py"],stdin=subprocess.PIPE)
+                peppy.stdin.write(f"{os.getpid()}\n".encode())
+                peppy.stdin.close()
             lasttime = datetime.now()
         else:
             if TIMETOSLEEP>0 and (datetime.now() - lasttime).total_seconds() > TIMETOSLEEP:
                 closepeppy()
-
         time.sleep(2)
-        #print(info)
+        checkpeppylive()
     except Exception  as ex:
         time.sleep(5)
         print(ex,file=sys.stderr,flush=True)
-
 else:
     sio.disconnect()
     closepeppy()
 
-print(f"Sopping audiotop {datetime.now()}",file=sys.stderr,flush=True)
+print(f"Stopping audiotop {datetime.now()}",file=sys.stderr,flush=True)

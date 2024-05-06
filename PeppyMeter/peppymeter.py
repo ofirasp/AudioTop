@@ -64,6 +64,9 @@ class Peppymeter(ScreensaverMeter):
         
         self.name = "peppymeter"
 
+        self.audiotopPID = int(input())
+
+
         parser = ConfigFileParser()
         self.util.meter_config = parser.meter_config
         self.util.exit_function = self.exit
@@ -141,6 +144,7 @@ class Peppymeter(ScreensaverMeter):
         :return: graphical VU Meter
         """
         meter = Vumeter(self.util, data_source, self.timer_controlled_random_meter,self.autoswitchmeter,self.switchmeter)
+        meter.audiotopPID = self.audiotopPID
         self.current_image = None
         self.update_period = meter.get_update_period()
         

@@ -20,6 +20,8 @@ import time
 import copy
 import pygame
 import socketio
+import signal
+import os
 import threading
 from random import randrange
 from meterfactory import MeterFactory
@@ -223,7 +225,10 @@ class Vumeter(ScreensaverMeter):
     def refresh(self):
         """ Refresh meter. Used to update random meter. """
         if(self.frames%self.util.meter_config[FRAME_RATE]==0):
-            #self.sio.emit('getState', {})
+
+            os.kill(self.audiotopPID, signal.SIGINFO)
+
+            self.sio.emit('getState', {})
             if self.playerstatus == STARTPLAYING or self.playerstatus == PLAYING:
                 self.titletime += 1000
             self.meter.updateview(self.metadata if self.updatemetadata else None,self.titletime)
@@ -239,7 +244,7 @@ class Vumeter(ScreensaverMeter):
         if self.autoswitchmeter['album'] and self.albumupdate:
             self.albumupdate = False
             switch = True
-        if switch:
+        if switch and self.playerstatus != STOPPED and self.playerstatus != STOPPED:
             self.switchmeter()
             #self.restart()
 

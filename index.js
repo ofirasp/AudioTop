@@ -76,10 +76,23 @@ function stopAudiotop() {
     var waitTimestamp = new Date(new Date().getTime() + 450);
     while(waitTimestamp > new Date()){};
 
+    spawn('/usr/bin/killall', ['-9','audiotop.py'], {
+    	detached: true
+    });
+    // Wait some time for '/usr/bin/killall' to complete
+    var waitTimestamp = new Date(new Date().getTime() + 450);
+    while(waitTimestamp > new Date()){};
+
     spawn('/usr/bin/killall', ['peppymeter.py'], {
     	detached: true
     });
     // Wait some time for '/usr/bin/killall' to complete
+    var waitTimestamp = new Date(new Date().getTime() + 450);
+    while(waitTimestamp > new Date()){};
+
+    spawn('/usr/bin/killall', ['-9','peppymeter.py'], {
+    	detached: true
+    });
     var waitTimestamp = new Date(new Date().getTime() + 450);
     while(waitTimestamp > new Date()){};
 }
