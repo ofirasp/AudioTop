@@ -226,7 +226,7 @@ class Vumeter(ScreensaverMeter):
         """ Refresh meter. Used to update random meter. """
         if(self.frames%self.util.meter_config[FRAME_RATE]==0):
 
-            os.kill(self.audiotopPID, signal.SIGINFO)
+            os.kill(self.audiotopPID, signal.SIGALRM)
 
             self.sio.emit('getState', {})
             if self.playerstatus == STARTPLAYING or self.playerstatus == PLAYING:

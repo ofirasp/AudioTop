@@ -10,6 +10,7 @@ import socketio
 from PeppyMeter import settings
 
 basedir = '/data/plugins/user_interface/audiotop' if "linux" in sys.platform else '.'
+python = 'python3' if 'linux' in sys.platform else '../vvenv/bin/python'
 sys.stderr = open(basedir+"/audiotop.log","at")
 print(f"Starting audiotop {datetime.now()}",file=sys.stderr,flush=True)
 
@@ -78,7 +79,7 @@ def startsockio():
         exit(1)
 
 signal.signal(signal.SIGUSR1, shutdown)
-signal.signal(signal.SIGINFO, peppyisalive)
+signal.signal(signal.SIGALRM, peppyisalive)
 
 os.chdir(basedir+"/PeppyMeter")
 
@@ -90,7 +91,8 @@ while running:
     try:
         if 'status' in info and info['status'] == "play":
             if not peppy or peppy.poll() != None:
-                peppy = Popen(["../vvenv/bin/python", "peppymeter.py"],stdin=subprocess.PIPE)
+                #peppy = Popen([python, "peppymeter.py"],stdin=subprocess.PIPE)
+                peppy = Popen(["./peppymeter.py"])
                 peppy.stdin.write(f"{os.getpid()}\n".encode())
                 peppy.stdin.close()
             lasttime = datetime.now()
