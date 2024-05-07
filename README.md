@@ -17,6 +17,8 @@
 ## 1.5.2024
 * Significant performance improvements for CPU usage
 * Bugs fix
+* Add Marantz skin
+![alt text](samples/s6.jpg)
 
 # version 0.0.3
 ## 28.4.2024
