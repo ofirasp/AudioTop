@@ -25,7 +25,7 @@ import netifaces as ni
 import socket
 import math
 
-from component import Component, TextComponent, ProgressBarComponent
+from component import Component, TextComponent, ProgressBarComponent,TextTunerComponent,TunerProgressBarComponent
 from container import Container
 from configfileparser import *
 from linear import LinearAnimator
@@ -314,14 +314,12 @@ class MetaMeter(Meter):
                 "mqa": self.add_image_component('../icons/mqa-off.png', *self.config['icons.mqa.position']),
                 "flac": self.add_image_component('../icons/flac-off.png', *self.config['icons.flac.position']),
                 "dsf": self.add_image_component('../icons/dsf-off.png', *self.config['icons.dsf.position']),
+                "dff": self.add_image_component('../icons/dsf-off.png', *self.config['icons.dsf.position']),
                 "mp3": self.add_image_component('../icons/mp3-off.png', *self.config['icons.mp3.position'])
             }
 
-        self.metatext = TextComponent(self.util)
-        self.components.append(self.metatext)
-
-        self.progressbar = ProgressBarComponent(self.util)
-        self.components.append(self.progressbar)
+        self.addTextComponent()
+        self.addProgressComponent()
     def switchcomponent(self, comp, state=None):
         pattern = r'/(.*-)(on|off)(.png)'
         rec = re.compile(pattern)
@@ -335,7 +333,13 @@ class MetaMeter(Meter):
             else:
                 s = rec.sub(fr'\1{state}\3', comp.path)
             comp.content = self.load_image(s)
+    def addTextComponent(self):
+        self.metatext = TextComponent(self.util)
+        self.components.append(self.metatext)
 
+    def addProgressComponent(self):
+        self.progressbar = ProgressBarComponent(self.util)
+        self.components.append(self.progressbar)
     def switchiconpath(self, comp,prefix):
         pattern = r'/(.*)(/.*-on.png)'
         s = re.sub(pattern,fr'\1/{prefix}-on.png', comp.path)
@@ -360,7 +364,10 @@ class MetaMeter(Meter):
          #self.redrawview()
         return r
 
-
+    def stop(self):
+        super().stop()
+        self.clean()
+        self.redrawview()
     def updateview(self,metadata,titletime):
         redrawneeded = False
 
@@ -417,7 +424,14 @@ class MetaMeter(Meter):
             self.metatext.title = metadata['title'] if 'title' in metadata else '---'
             self.metatext.duration = metadata['duration'] if 'duration' in metadata else 0
             if 'samplerate' in metadata and metadata['samplerate'] and 'bitdepth' in metadata and metadata['bitdepth']:
-                self.metatext.bitrate = metadata['samplerate'].replace(' ','')  + " " + metadata['bitdepth'].replace(' ','')
+                if "11.28" in metadata['samplerate']:
+                    self.metatext.bitrate = "DSD 256"
+                elif "5.64" in metadata['samplerate']:
+                    self.metatext.bitrate = "DSD 128"
+                elif "2.82" in metadata['samplerate']:
+                    self.metatext.bitrate = "DSD 64"
+                else:
+                    self.metatext.bitrate = metadata['samplerate'].replace(' ','')  + " " + metadata['bitdepth'].replace(' ','')
 
             redrawneeded = True
 
@@ -454,6 +468,8 @@ class MetaMeter(Meter):
         if metadata['service'] == 'airplay_emulation':
             return  'aac'
         if metadata['service'] == 'mpd' and 'trackType' in metadata and metadata['trackType'] != 'tidal':
+            if metadata['trackType']=='dff':
+                metadata['trackType']='dsf'
             return metadata['trackType']
         if metadata['service'] == 'tidalconnect' and 'trackType' in metadata:
             return metadata['codec']
@@ -656,3 +672,36 @@ class MetaMSpectrumWithMeter(MetaSpectrumMeter):
             self.reset_bgr_fgr(self.fgr)
         super().run()
         return r
+
+class TunerSpectrumWithMeter(MetaMSpectrumWithMeter):
+    def add_foreground(self, image_name):
+        super().add_foreground(image_name)
+
+        self.tunerimage = self.load_image('tunerneedle.png')[1]
+        self.tunerimage_rect = self.tunerimage.get_rect(center=(340,95))
+        self.tunercomp = self.add_image_component('tunerneedle.png', 340, 95)
+
+        self.tunerAnimation()
+        self.redrawview()
+    def addTextComponent(self):
+        self.metatext = TextTunerComponent(self.util)
+        self.components.append(self.metatext)
+
+    def addProgressComponent(self):
+        self.progressbar = TunerProgressBarComponent(self.util)
+        self.components.append(self.progressbar)
+    def tunerAnimation(self):
+
+        addx =340+ (self.progressbar.progress/100)*300
+
+        self.tunercomp.content_x =addx
+
+    def run(self):
+        r = super().run()
+        if self.playing:
+            self.tunerAnimation()
+
+        return r
+    def updateview(self, metadata,titletime):
+        self.prevprogress = self.progressbar.progress
+        super().updateview(metadata,titletime)

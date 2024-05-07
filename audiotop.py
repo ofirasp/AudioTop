@@ -20,7 +20,7 @@ info={}
 settings = settings.Settings()
 settings.retreive()
 TIMETOSLEEP =  settings['config_sleep_timer']['value']
-TIMETOSPING = 15
+TIMETOSPING = 8
 RETRIES = 5
 
 def peppyisalive(sigpid,name):

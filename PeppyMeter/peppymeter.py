@@ -35,7 +35,7 @@ import time
 import signal
 import os
 import settings
-
+testMode = not "linux" in sys.platform
 try:
     os.chdir("/data/plugins/user_interface/audiotop/PeppyMeter")
 except:
@@ -69,7 +69,7 @@ class Peppymeter(ScreensaverMeter):
         self.outputs = {}
         self.timer_controlled_random_meter = timer_controlled_random_meter
 
-        self.audiotopPID = int(input())
+        self.audiotopPID = 0 if testMode else int(input())
         if standalone:
             if self.util.meter_config[USE_LOGGING]:
                 log_handlers = []
@@ -147,6 +147,7 @@ class Peppymeter(ScreensaverMeter):
         """
         meter = Vumeter(self.util, data_source, self.timer_controlled_random_meter,self.autoswitchmeter,self.switchmeter)
         meter.audiotopPID = self.audiotopPID
+        meter.testMode = testMode
         self.current_image = None
         self.update_period = meter.get_update_period()
         

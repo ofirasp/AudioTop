@@ -56,7 +56,7 @@ class Component(object):
         """ Clean component by filling its bounding box by background color """
 
         if not self.visible: return
-        self.draw_rect(self.bgr, self.bounding_box)
+        self.draw_rect( f=(0,0,0),r=self.bounding_box)
 
     def draw(self):
         """ Dispatcher drawing method.
@@ -66,7 +66,7 @@ class Component(object):
         if not self.visible: return
 
         if isinstance(self.content, pygame.Rect):
-            self.draw_rect(self.bgr, r=self.content)
+            self.draw_rect(f=(0,0,0), r=self.content)
         else:
             self.draw_image(self.content, self.content_x, self.content_y)
 
@@ -140,25 +140,25 @@ class TextComponent(Component):
         self.durfont = pygame.font.Font('fonts/digital-7 (mono).ttf', self.config['metatext.durfontsize'])
         self.clockstart = 0
         self.iscenter = self.config['metatext.iscenter']
-    def drawDynamicText(self,text,fonts,trimval,size):
+    def drawDynamicText(self,text,fonts,trimval,size,color):
         font = fonts[1] if self.hasHeb(text) else fonts[0]
-        textsurface = font.render(self.pyHebText(text)[:trimval], True, self.fontcolor)
+        textsurface = font.render(self.pyHebText(text)[:trimval], True,color )
         textsurface.set_colorkey((0, 0, 0))
         r = textsurface.get_rect(center=size) if  self.iscenter else size
         self.screen.blit(textsurface,r)
-    def drawText(self,text,font,size):
-        textsurface = font.render(text, True, self.textcolor)
+    def drawText(self,text,font,size,color):
+        textsurface = font.render(text, True, color)
         textsurface.set_colorkey((0, 0, 0))
         self.screen.blit(textsurface, textsurface.get_rect(center=size))
 
     def draw(self):
-        self.drawDynamicText(self.title,(self.bigfont, self.bighebfont),  self.config['metatext.trimtitle'],self.config['metatext.title'])
-        self.drawDynamicText(self.artist,(self.bigfont, self.bighebfont),  self.config['metatext.trimartist'],self.config['metatext.artist'])
-        self.drawDynamicText( self.album,(self.smallfont, self.smallhebfont), self.config['metatext.trimalbum'],self.config['metatext.album'])
-        self.drawText(self.bitrate,self.bitratefont,self.config['metatext.bitrate'])
+        self.drawDynamicText(self.title,(self.bigfont, self.bighebfont),  self.config['metatext.trimtitle'],self.config['metatext.title'],self.fontcolor)
+        self.drawDynamicText(self.artist,(self.bigfont, self.bighebfont),  self.config['metatext.trimartist'],self.config['metatext.artist'],self.fontcolor)
+        self.drawDynamicText( self.album,(self.smallfont, self.smallhebfont), self.config['metatext.trimalbum'],self.config['metatext.album'],self.fontcolor)
+        self.drawText(self.bitrate,self.bitratefont,self.config['metatext.bitrate'],self.textcolor)
         t = self.getSeekTime()
-        self.drawText(f"{t[0]} - {t[1]}",self.durfont,  self.config['metatext.duration'])
-        self.drawText(f"OS Version: {self.osversion}",self.tinyfont,  self.config['metatext.osversion'])
+        self.drawText(f"{t[0]} - {t[1]}",self.durfont,  self.config['metatext.duration'],self.textcolor)
+        self.drawText(f"OS Version: {self.osversion}",self.tinyfont,  self.config['metatext.osversion'],self.textcolor)
 
     def getSeekTime(self):
         m =0
@@ -191,8 +191,22 @@ class TextComponent(Component):
         if not type(txtString) is str: return False
         return any("\u0590" <= c <= "\u05EA" for c in txtString)
 
+class TextTunerComponent(TextComponent):
+    def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
+        super().__init__(util,c,x,y,bb,fgr,bgr,v)
+        self.durationtextcolor = (255,255,255)
+    def draw(self):
+        self.drawDynamicText(self.title,(self.bigfont, self.bighebfont),  self.config['metatext.trimtitle'],self.config['metatext.title'],self.fontcolor)
+        self.drawDynamicText(self.artist,(self.bigfont, self.bighebfont),  self.config['metatext.trimartist'],self.config['metatext.artist'],self.fontcolor)
+        self.drawDynamicText( self.album,(self.smallfont, self.smallhebfont), self.config['metatext.trimalbum'],self.config['metatext.album'],self.fontcolor)
+        self.drawText(self.bitrate,self.bitratefont,self.config['metatext.bitrate'],self.textcolor)
+        t = self.getSeekTime()
+        self.drawText(f"{t[0]}",self.durfont,  self.config['metatext.duration'],self.durationtextcolor)
+        pos = list(self.config['metatext.duration'])
+        pos[1]+=60
+        self.drawText(f"{t[1]}", self.durfont, pos, self.durationtextcolor)
 
-
+        self.drawText(f"OS Version: {self.osversion}",self.tinyfont,  self.config['metatext.osversion'],self.textcolor)
 
 class ProgressBarComponent(Component):
     def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
@@ -214,3 +228,24 @@ class ProgressBarComponent(Component):
      except Exception as ex:
         pass
 
+class TunerProgressBarComponent(ProgressBarComponent):
+    def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
+        super().__init__(util, c, x, y, bb, fgr, bgr, v)
+        m = util.meter_config[util.meter_config['meter']]
+        self.width = m['progressbar.width']
+        self.height = m['progressbar.height']
+        self.bar_color = m['progressbar.bar_color']
+        self.background_color = m['progressbar.background_color']
+        self.corner_radius = m['progressbar.corner_radius']
+        self.y = m['progressbar.y']
+        self.x = m['progressbar.x']
+        self.progress = 0
+
+    def draw(self):
+        try:
+            # ,border_radius= self.corner_radius   only > python 3.8
+            #pygame.draw.rect(self.screen, self.background_color, (self.x, self.y, self.width, self.height))
+            pygame.draw.rect(self.screen, self.bar_color,
+                             (self.x, self.y, self.width * (self.progress / 100), self.height))
+        except Exception as ex:
+            pass

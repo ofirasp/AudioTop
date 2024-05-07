@@ -139,6 +139,7 @@ TYPE_METACIRCULAR = "metacircular"
 TYPE_METACASSETE = "metacassete"
 TYPE_METALINEARSPECTRUM = "metalinearspectrum"
 TYPE_METACIRCLESSPECTRUM = "metacirclespectrum"
+TYPE_TUNERCIRCLESSPECTRUM = "tunercirclespectrum"
 WEB_SERVER = "web.server"
 HTTP_PORT = "http.port"
 
@@ -263,7 +264,7 @@ class ConfigFileParser(object):
                 self.meter_config[section] = self.get_matalinear_section(c, section, meter_type)
             elif meter_type == TYPE_METALINEARSPECTRUM:
                 self.meter_config[section] = self.get_matalinearspectrum_section(c, section, meter_type)
-            elif meter_type == TYPE_METACIRCLESSPECTRUM:
+            elif meter_type == TYPE_METACIRCLESSPECTRUM or meter_type == TYPE_TUNERCIRCLESSPECTRUM:
                 self.meter_config[section] = self.get_matacirclesspectrum_section(c, section, meter_type)
             elif meter_type == TYPE_METACASSETE:
                 self.meter_config[section] = self.get_cassete_section(c, section, meter_type)
