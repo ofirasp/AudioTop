@@ -19,6 +19,8 @@
 * Bugs fix
 * Add Marantz skin
 ![alt text](samples/s6.jpg)
+* CPU and MEM usage with the marantz meter
+![alt text](samples/cpu1.png)
 
 # version 0.0.3
 ## 28.4.2024
