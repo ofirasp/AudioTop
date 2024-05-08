@@ -39,8 +39,9 @@ class Vumeter(ScreensaverMeter):
         self.metadata = data
         self.updatemetadata = True
         if self.metadata != None:
-            if "seek" in self.metadata:
+            if "seek" in self.metadata and type(self.metadata['seek']) is int :
                self.titletime = self.metadata['seek']
+
                #self.seekupdate=True
             if "title" in self.metadata:
                 if self.currenttitle!=self.metadata['title']:
