@@ -204,7 +204,7 @@ class DataSource(object):
         self.previous_left = new_left
         self.previous_right = new_right
         self.previous_mono = new_mono
-
+        #return(50,50,50)
         return (left, right, mono)
     
     def get_smooth_value(self, index):
@@ -304,7 +304,11 @@ class DataSource(object):
             logging.debug(e)
         
         return (self.previous_left, self.previous_right, self.previous_mono)
-    
+
+    def addfactor(self,val):
+        return min(99,val*1.3)
+
+
     def get_mono(self, left, right):
         """ Create mono signal from stereo using particular algorithm """ 
                       
