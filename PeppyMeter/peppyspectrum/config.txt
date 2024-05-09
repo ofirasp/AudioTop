@@ -34,9 +34,9 @@ exit.on.touch = False
 use.logging = False
 use.test.data =
 spectrum.position.x = 627
-spectrum.position.y = 215
-spectrum.width = 275
-spectrum.height = 150
+spectrum.position.y = 222
+spectrum.width = 272
+spectrum.height = 130
 
 [s.9]
 spectrum = s.9
