@@ -26,17 +26,17 @@ update.period = 10
 add.factor = 1.4
 max.value = 100
 pipe.name = /home/volumio/myfifosa
-size = 20
+size = 12
 update.ui.interval = 0.04
 frame.rate = 30
 depth = 32
 exit.on.touch = False
 use.logging = False
 use.test.data =
-spectrum.position.x = 445
-spectrum.position.y = 342
-spectrum.width = 667
-spectrum.height = 50
+spectrum.position.x = 627
+spectrum.position.y = 215
+spectrum.width = 275
+spectrum.height = 150
 
 [s.9]
 spectrum = s.9
