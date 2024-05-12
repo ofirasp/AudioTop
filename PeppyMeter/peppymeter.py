@@ -279,9 +279,32 @@ class Peppymeter(ScreensaverMeter):
         self.util.meter_config[METER] =   self.meterlist[self.persiststate["meter.index"]] #self.meterlist[3]#
         self.meter.stop()
         time.sleep(0.2)  # let threads stop
+        current = self.meter.util.PYGAME_SCREEN.copy()
+##################################
         self.meter.meter = None
         self.meter.start()
-        pygame.display.update()
+##############################################
+        next = self.meter.util.PYGAME_SCREEN.copy()
+        # Running the transition
+        self.fadein(current, next)
+        pygame.display.flip()
+
+    # Function to create a fade in effect
+    def fadein(self,surface1, surface2, steps=20):
+        screen = self.meter.util.PYGAME_SCREEN
+        for alpha in range(0, 255, steps):
+            # Set the alpha of the second surface
+            surface2.set_alpha(alpha)
+            # Draw the first surface
+            screen.blit(surface1, (0, 0))
+            # Draw the second surface on top with increasing alpha
+            screen.blit(surface2, (0, 0))
+            # Update the display
+            pygame.display.flip()
+            pygame.time.delay(60)
+        screen.blit(surface2, (0, 0))
+        pygame.display.flip()
+
     def savepersiststate(self):
         with open("state.p", "wb") as f:
             pickle.dump(self.persiststate, f)
