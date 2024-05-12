@@ -279,13 +279,17 @@ class Peppymeter(ScreensaverMeter):
         self.util.meter_config[METER] =   self.meterlist[self.persiststate["meter.index"]] #self.meterlist[3]#
         self.meter.stop()
         time.sleep(0.2)  # let threads stop
-        current = self.meter.util.PYGAME_SCREEN.copy()
-##################################
+        current = self.meter.util.PYGAME_SCREEN
+        self.meter.util.PYGAME_SCREEN = self.meter.util.PYGAME_SCREEN.copy()
         self.meter.meter = None
         self.meter.start()
-##############################################
         next = self.meter.util.PYGAME_SCREEN.copy()
-        # Running the transition
+        self.meter.util.PYGAME_SCREEN = current
+        for comp in self.meter.meter.components:
+            comp.screen = current
+        if hasattr(self.meter.meter, "pm"):
+            for comp in self.meter.meter.pm.components:
+                comp.screen = current
         self.fadein(current, next)
         pygame.display.flip()
 

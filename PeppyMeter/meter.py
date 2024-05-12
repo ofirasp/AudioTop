@@ -183,7 +183,6 @@ class Meter(Container):
             self.reset_mask(self.components[2])
 
         if self.fgr: self.reset_bgr_fgr(self.fgr)
-
         super(Meter, self).draw()
         needles = (self.left_needle_sprites, self.right_needle_sprites, self.mono_needle_sprites)
         rects = (self.left_needle_rects, self.right_needle_rects, self.mono_needle_rects)
@@ -639,6 +638,9 @@ class MetaSpectrumMeter(MetaMeter):
         self.pm.start()
         self.framecount=0
 
+    def start(self):
+        super().start()
+        self.pm.draw()
     def stop(self):
         super().stop()
         self.pm.stop()
