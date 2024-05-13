@@ -25,7 +25,7 @@ import netifaces as ni
 import socket
 import math
 
-from component import Component, TextComponent, ProgressBarComponent,TextTunerComponent,TunerProgressBarComponent
+from component import Component, TextComponent, ProgressBarComponent,TextTunerComponent,TunerProgressBarComponent,TextNadDeckComponent
 from container import Container
 from configfileparser import *
 from linear import LinearAnimator
@@ -417,6 +417,13 @@ class MetaMeter(Meter):
 
             if 'albumart' in metadata:
                 self.cover.content = self.getalbumart(metadata['albumart'])
+                # self.cover.content[1].set_alpha(0)
+                # for alpha in range(0, 255, 1):
+                #     self.cover.content[1].set_alpha(alpha)
+                #     r = self.cover.content[1].get_rect()
+                #     pygame.display.update([pygame.Rect(self.cover.content_x, self.cover.content_y, r.w, r.h)])
+
+
 
             self.metatext.album =  metadata['album'] if 'album' in metadata else '---'
             self.metatext.artist = metadata['artist'] if 'artist' in metadata else '---'
@@ -556,10 +563,7 @@ class MetaCasseteMeter(MetaMeter):
         r = Meter.run(self)
         if self.playing:
             self.casseteAnimation()
-
         return r
-
-
     def add_foreground(self, image_name):
         super().add_foreground(image_name)
         self.image = self.load_image(self.config['icons.casstewheel'])[1]
@@ -628,7 +632,10 @@ class MetaCasseteMeter(MetaMeter):
 
         pygame.display.update([self.area])
         #pygame.display.update([pygame.Rect(0, 0, 1200, 800)])
-
+class MetaNadDeckMeter(MetaCasseteMeter):
+    def addTextComponent(self):
+        self.metatext = TextNadDeckComponent(self.util)
+        self.components.append(self.metatext)
 class MetaSpectrumMeter(MetaMeter):
     def __init__(self, util, meter_type, meter_parameters, data_source):
         super().__init__(util, meter_type, meter_parameters, data_source)

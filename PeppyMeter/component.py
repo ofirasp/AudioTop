@@ -207,6 +207,21 @@ class TextTunerComponent(TextComponent):
         self.drawText(f"{t[1]}", self.durfont, pos, self.durationtextcolor)
 
         self.drawText(f"OS Version: {self.osversion}",self.tinyfont,  self.config['metatext.osversion'],self.textcolor)
+class TextNadDeckComponent(TextComponent):
+    def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
+        super().__init__(util,c,x,y,bb,fgr,bgr,v)
+        self.durationtextcolor = (255,255,255)
+    def draw(self):
+        self.drawDynamicText(self.title,(self.bigfont, self.bighebfont),  self.config['metatext.trimtitle'],self.config['metatext.title'],self.fontcolor)
+        self.drawDynamicText(self.artist,(self.bigfont, self.bighebfont),  self.config['metatext.trimartist'],self.config['metatext.artist'],self.fontcolor)
+        self.drawDynamicText( self.album,(self.smallfont, self.smallhebfont), self.config['metatext.trimalbum'],self.config['metatext.album'],self.fontcolor)
+        self.drawText(self.bitrate,self.bitratefont,self.config['metatext.bitrate'],self.textcolor)
+        t = self.getSeekTime()
+        self.drawText(f"{t[0]}",self.durfont,  self.config['metatext.duration'],self.durationtextcolor)
+        pos = list(self.config['metatext.duration'])
+        pos[1] += 47
+        self.drawText(f"{t[1]}", self.durfont, pos, self.durationtextcolor)
+        self.drawText(f"OS Version: {self.osversion}",self.tinyfont,  self.config['metatext.osversion'],self.textcolor)
 
 class ProgressBarComponent(Component):
     def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):

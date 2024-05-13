@@ -17,7 +17,7 @@
 
 import logging
 
-from meter import Meter,MetaMeter,MetaCasseteMeter,MetaSpectrumMeter,MetaMSpectrumWithMeter,TunerSpectrumWithMeter
+from meter import Meter,MetaMeter,MetaCasseteMeter,MetaSpectrumMeter,MetaMSpectrumWithMeter,TunerSpectrumWithMeter,MetaNadDeckMeter
 from maskfactory import MaskFactory
 from needlefactory import NeedleFactory
 from configfileparser import *
@@ -328,7 +328,10 @@ class MeterFactory(object):
         config = self.meter_config[name]
 
         if config[CHANNELS] == 2:
-            meter = MetaCasseteMeter(self.util, TYPE_LINEAR, config, self.data_source)
+            if name=='naddeck':
+                meter = MetaNadDeckMeter(self.util, TYPE_LINEAR, config, self.data_source)
+            else:
+                meter = MetaCasseteMeter(self.util, TYPE_LINEAR, config, self.data_source)
             meter.channels = 2
             meter.left_x = config[LEFT_X]
             meter.left_y = config[LEFT_Y]

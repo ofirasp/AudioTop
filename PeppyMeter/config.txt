@@ -1,6 +1,6 @@
 [current]
-meter = metabarspectrum
-meter.list = marantz,metablue,metapioneercassete,blue,metabar,metabarspectrum,metaspectrum
+meter = naddeck
+meter.list = naddeck,marantz,metablue,metapioneercassete,blue,metabar,metabarspectrum,metaspectrum
 metadatasourcedns = audiotop.local
 dsdaddfactor = 1.4
 random.meter.interval = 20
