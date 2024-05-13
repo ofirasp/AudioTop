@@ -313,7 +313,7 @@ class MetaMeter(Meter):
                 "mqa": self.add_image_component('../icons/mqa-off.png', *self.config['icons.mqa.position']),
                 "flac": self.add_image_component('../icons/flac-off.png', *self.config['icons.flac.position']),
                 "dsf": self.add_image_component('../icons/dsf-off.png', *self.config['icons.dsf.position']),
-                "dff": self.add_image_component('../icons/dsf-off.png', *self.config['icons.dsf.position']),
+                #"dff": self.add_image_component('../icons/dsf-off.png', *self.config['icons.dsf.position']),
                 "mp3": self.add_image_component('../icons/mp3-off.png', *self.config['icons.mp3.position'])
             }
 

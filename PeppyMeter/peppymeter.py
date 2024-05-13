@@ -248,9 +248,9 @@ class Peppymeter(ScreensaverMeter):
                         knobmeterfrom = self.util.meter_config[self.util.meter_config[METER]]["knobs.selectmeterfrom"]
                         knobpowerto = self.util.meter_config[self.util.meter_config[METER]]["knobs.powerto"]
                         knobpowerfrom = self.util.meter_config[self.util.meter_config[METER]]["knobs.powerfrom"]
-                        if knobmeterfrom< pos < knobmeterto:
+                        if (knobmeterfrom[0]< pos[0] < knobmeterto[0]) and (knobmeterfrom[1]< pos[1] < knobmeterto[1]):
                             self.switchmeter()
-                        elif knobpowerfrom < pos < knobpowerto:
+                        if (knobpowerfrom[0] < pos[0] < knobpowerto[0]) and (knobpowerfrom[1] < pos[1] < knobpowerto[1]):
                             self.running = False
                     except Exception as ex:
                         self.switchmeter()
