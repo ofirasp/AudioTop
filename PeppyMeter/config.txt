@@ -1,6 +1,6 @@
 [current]
-meter = pioreel
-meter.list = pioreel
+meter = naddeck
+meter.list = naddeck,pioreel,marantz,metablue,metapioneercassete,blue,metabar,metabarspectrum,metaspectrum
 metadatasourcedns = localhost
 dsdaddfactor = 1.4
 random.meter.interval = 20
