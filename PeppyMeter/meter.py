@@ -25,7 +25,7 @@ import netifaces as ni
 import socket
 import math
 
-from component import Component, TextComponent, ProgressBarComponent,TextTunerComponent,TunerProgressBarComponent,TextNadDeckComponent
+from component import Component, TextComponent, ProgressBarComponent,TextTunerComponent,TunerProgressBarComponent,TextNadDeckComponent,ProgressReelComponent
 from container import Container
 from configfileparser import *
 from linear import LinearAnimator
@@ -288,8 +288,7 @@ class MetaMeter(Meter):
         self.rpt = self.add_image_component('../icons/rpt-off.png', *self.config['icons.rpt.position'])
         self.play = self.add_image_component('../icons/play-off.png', *self.config['icons.play.position'])
         if self.usepeak:
-            self.redleds = self.add_image_component('../icons/redled-off.png', *self.config['icons.redledleft.position']), self.add_image_component(
-                '../icons/redled-off.png', *self.config['icons.redledright.position'])
+            self.addpeakicons()
         if self.usesingle:
             self.codec = self.add_image_component('../icons/flac-on.png', *self.config['icons.flac.position'])
             self.musicservice = self.add_image_component('../icons/volumio-on.png', *self.config['icons.volumio.position'])
@@ -335,6 +334,10 @@ class MetaMeter(Meter):
     def addTextComponent(self):
         self.metatext = TextComponent(self.util)
         self.components.append(self.metatext)
+    def addpeakicons(self):
+        self.redleds = self.add_image_component('../icons/redled-off.png',
+                                                *self.config['icons.redledleft.position']), self.add_image_component(
+            '../icons/redled-off.png', *self.config['icons.redledright.position'])
 
     def addProgressComponent(self):
         self.progressbar = ProgressBarComponent(self.util)
@@ -560,7 +563,7 @@ class MetaCasseteMeter(MetaMeter):
         self.prevprogress = self.progressbar.progress
         super().updateview(metadata,titletime)
     def run(self):
-        r = Meter.run(self)
+        r = super().run()
         if self.playing:
             self.casseteAnimation()
         return r
@@ -625,17 +628,78 @@ class MetaCasseteMeter(MetaMeter):
         self.angleleft += self.rotation_speedleft * directionfactor
         if self.angleleft >= 360:
             self.angleleft = 0
-
         self.leftcomp.draw()
         self.rightcomp.draw()
         self.casseteclear.draw()
-
         pygame.display.update([self.area])
         #pygame.display.update([pygame.Rect(0, 0, 1200, 800)])
 class MetaNadDeckMeter(MetaCasseteMeter):
     def addTextComponent(self):
         self.metatext = TextNadDeckComponent(self.util)
         self.components.append(self.metatext)
+class MetaPioReelMeter(MetaCasseteMeter):
+    def casseteAnimation(self):
+        self.rotatecomp(self.rightcomp, self.angleright, self.image_rectright)
+        self.rotatecomp(self.leftcomp, self.angleleft, self.image_rectleft)
+
+        progdiff = self.progressbar.progress - self.prevprogress
+        directionfactor = 1 if progdiff >= 0 else -1
+        clearspeed = 10
+        if math.fabs(progdiff) > 10:
+            self.prevprogress += clearspeed * directionfactor
+            self.rotation_speedleft = 20
+            self.rotation_speedright = 20
+            self.redrawview()
+        else:
+            directionfactor = 1
+            if self.progressbar.progress < 20:
+                self.rotation_speedleft = 1
+                self.rotation_speedright = 5
+            elif self.progressbar.progress < 35:
+                self.rotation_speedleft = 2
+                self.rotation_speedright = 4
+            elif self.progressbar.progress < 50:
+                self.rotation_speedleft = 3
+                self.rotation_speedright = 3
+            elif self.progressbar.progress < 65:
+                self.rotation_speedleft = 4
+                self.rotation_speedright = 2
+            else:
+                self.rotation_speedleft = 5
+                self.rotation_speedright = 1
+        self.angleright += self.rotation_speedright * directionfactor
+        if self.angleright >= 360:
+            self.angleright = 0
+        self.angleleft += self.rotation_speedleft * directionfactor
+        if self.angleleft >= 360:
+            self.angleleft = 0
+
+        self.reset_bgr_fgr(self.bgr)
+        self.draw()
+        pygame.display.update([self.area])
+
+    def addpeakicons(self):
+        self.redleds = self.add_image_component('../icons/pioled-off.png',
+                                                *self.config['icons.redledleft.position']), self.add_image_component(
+            '../icons/pioled-off.png', *self.config['icons.redledright.position'])
+
+    def addProgressComponent(self):
+        self.progressbar = ProgressReelComponent(self.util)
+        self.components.append(self.progressbar)
+
+    def add_foreground(self, image_name):
+        MetaMeter.add_foreground(self,image_name)
+        self.image = self.load_image(self.config['icons.casstewheel'])[1]
+        self.image_rectright = self.image.get_rect(center=self.config['icons.casstewheelright.position'])
+        self.image_rectleft = self.image.get_rect(center=self.config['icons.casstewheelleft.position'])
+        self.leftcomp = self.add_image_component(self.config['icons.casstewheel'], 266, 136)
+        self.rightcomp = self.add_image_component(self.config['icons.casstewheel'], 579, 136)
+        self.area = pygame.Rect(self.image_rectleft.x, self.image_rectleft.y,
+                                self.image_rectright.x + self.image_rectright.w,
+                                self.image_rectleft.h)
+        self.casseteAnimation()
+        self.redrawview()
+
 class MetaSpectrumMeter(MetaMeter):
     def __init__(self, util, meter_type, meter_parameters, data_source):
         super().__init__(util, meter_type, meter_parameters, data_source)

@@ -17,7 +17,7 @@
 
 import logging
 
-from meter import Meter,MetaMeter,MetaCasseteMeter,MetaSpectrumMeter,MetaMSpectrumWithMeter,TunerSpectrumWithMeter,MetaNadDeckMeter
+from meter import Meter,MetaMeter,MetaCasseteMeter,MetaSpectrumMeter,MetaMSpectrumWithMeter,TunerSpectrumWithMeter,MetaNadDeckMeter,MetaPioReelMeter
 from maskfactory import MaskFactory
 from needlefactory import NeedleFactory
 from configfileparser import *
@@ -66,6 +66,8 @@ class MeterFactory(object):
             return self.create_metacircular_meter(meter_name)
         elif meter_config_section[METER_TYPE] == TYPE_METACASSETE:
             return self.create_metacassete_meter(meter_name)
+        elif meter_config_section[METER_TYPE] == TYPE_METACASSETECIRCLE:
+            return self.create_metacircular_meter(meter_name)
         elif meter_config_section[METER_TYPE] == TYPE_METALINEARSPECTRUM:
             return self.create_metalinearspectrum_meter(meter_name)
         elif meter_config_section[METER_TYPE] == TYPE_METACIRCLESSPECTRUM:
@@ -173,7 +175,10 @@ class MeterFactory(object):
         config = self.meter_config[name]
 
         if config[CHANNELS] == 2:
-            meter = MetaMeter(self.util, TYPE_CIRCULAR, config, self.data_source)
+            if name == 'pioreel':
+                meter = MetaPioReelMeter(self.util, TYPE_CIRCULAR, config, self.data_source)
+            else:
+                meter = MetaMeter(self.util, TYPE_CIRCULAR, config, self.data_source)
             meter.channels = 2
         else:
             meter = Meter(self.util, TYPE_CIRCULAR, config, self.data_source)
@@ -319,6 +324,8 @@ class MeterFactory(object):
         
         return meter
 
+    # def create_metacassetecircle_meter(self,name):
+    #     meter = MetaPioReelMeter(self.util, TYPE_CIRCULAR, config, self.data_source)
 
     def create_metacassete_meter(self, name):
         """ Create linear method

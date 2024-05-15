@@ -242,7 +242,16 @@ class ProgressBarComponent(Component):
         pygame.draw.rect(self.screen, self.bar_color, (self.x, self.y, self.width*(self.progress/100), self.height))
      except Exception as ex:
         pass
-
+class ProgressReelComponent(Component):
+    def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
+        super().__init__(util, c, x, y, bb, fgr, bgr, v)
+        self.progress = 0
+    def draw(self):
+     try:
+         pygame.draw.circle(self.screen, (0, 0, 0), (649, 155), 100 * (1 - self.progress / 100)+40, 0)
+         pygame.draw.circle(self.screen, (0, 0, 0), (1119, 155), 100 * (self.progress / 100)+40, 0)
+     except Exception as ex:
+        pass
 class TunerProgressBarComponent(ProgressBarComponent):
     def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
         super().__init__(util, c, x, y, bb, fgr, bgr, v)

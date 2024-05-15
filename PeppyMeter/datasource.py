@@ -186,7 +186,7 @@ class DataSource(object):
     
     def get_noise_value(self):
         """ Generate random value for all channels. """
-
+        #return (100, 100, 100)
         new_left =  uniform(self.min, self.max_in_ui) #50
         new_right =  uniform(self.min, self.max_in_ui) #50
         new_mono = self.get_mono(new_left, new_right)

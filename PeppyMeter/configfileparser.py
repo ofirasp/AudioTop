@@ -137,6 +137,7 @@ TYPE_METALINEAR = "metalinear"
 TYPE_CIRCULAR = "circular"
 TYPE_METACIRCULAR = "metacircular"
 TYPE_METACASSETE = "metacassete"
+TYPE_METACASSETECIRCLE = "metacassetecircle"
 TYPE_METALINEARSPECTRUM = "metalinearspectrum"
 TYPE_METACIRCLESSPECTRUM = "metacirclespectrum"
 TYPE_TUNERCIRCLESSPECTRUM = "tunercirclespectrum"
@@ -268,6 +269,8 @@ class ConfigFileParser(object):
                 self.meter_config[section] = self.get_matacirclesspectrum_section(c, section, meter_type)
             elif meter_type == TYPE_METACASSETE:
                 self.meter_config[section] = self.get_cassete_section(c, section, meter_type)
+            elif meter_type == TYPE_METACASSETECIRCLE:
+                self.meter_config[section] = self.get_cassetecircle_section(c, section, meter_type)
         if "," in self.meter_config[METER]:
             names = self.meter_config[METER].split(",")
             available_meter_names = list(map(str.strip, names))
@@ -401,7 +404,16 @@ class ConfigFileParser(object):
         d['icons.casseteclear.width'] = config_file.getint(section, 'icons.casseteclear.width')
 
         return d
+    def get_cassetecircle_section(self, config_file, section, meter_type):
+        d = self.get_metacircular_section(config_file, section, meter_type)
+        d['icons.casstewheel'] = config_file.get(section, 'icons.casstewheel')
+        d['icons.casseteclear'] = config_file.get(section, 'icons.casseteclear')
+        d['icons.casstewheelleft.position'] = make_tuple(config_file.get(section, 'icons.casstewheelleft.position'))
+        d['icons.casstewheelright.position'] = make_tuple(config_file.get(section, 'icons.casstewheelright.position'))
+        d['icons.casseteclear.position'] = make_tuple(config_file.get(section, 'icons.casseteclear.position'))
+        d['icons.casseteclear.width'] = config_file.getint(section, 'icons.casseteclear.width')
 
+        return d
 
     def get_linear_section(self, config_file, section, meter_type):
         """ Parser for linear meter
