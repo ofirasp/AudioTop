@@ -558,11 +558,13 @@ class MetaCasseteMeter(MetaMeter):
         self.clearstartx = 0
         self.clearstatus = 0
         self.prevprogress = 0
+        self.frames = 0
 
     def updateview(self, metadata,titletime):
         self.prevprogress = self.progressbar.progress
         super().updateview(metadata,titletime)
     def run(self):
+        self.frames += 1
         r = super().run()
         if self.playing:
             self.casseteAnimation()
@@ -639,6 +641,8 @@ class MetaNadDeckMeter(MetaCasseteMeter):
         self.components.append(self.metatext)
 class MetaPioReelMeter(MetaCasseteMeter):
     def casseteAnimation(self):
+        if self.frames % 2 != 0:
+            return
         self.rotatecomp(self.rightcomp, self.angleright, self.image_rectright)
         self.rotatecomp(self.leftcomp, self.angleleft, self.image_rectleft)
 
@@ -667,6 +671,8 @@ class MetaPioReelMeter(MetaCasseteMeter):
             else:
                 self.rotation_speedleft = 5
                 self.rotation_speedright = 1
+        self.rotation_speedright*=2
+        self.rotation_speedleft*=2
         self.angleright += self.rotation_speedright * directionfactor
         if self.angleright >= 360:
             self.angleright = 0
