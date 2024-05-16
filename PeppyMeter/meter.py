@@ -574,8 +574,8 @@ class MetaCasseteMeter(MetaMeter):
         self.image = self.load_image(self.config['icons.casstewheel'])[1]
         self.image_rectright = self.image.get_rect(center=self.config['icons.casstewheelright.position'])
         self.image_rectleft = self.image.get_rect(center=self.config['icons.casstewheelleft.position'])
-        self.leftcomp = self.add_image_component(self.config['icons.casstewheel'], 266, 136)
-        self.rightcomp = self.add_image_component(self.config['icons.casstewheel'], 579, 136)
+        self.leftcomp = self.add_image_component(self.config['icons.casstewheel'], self.image_rectleft.x,self.image_rectleft.y)
+        self.rightcomp = self.add_image_component(self.config['icons.casstewheel'], self.image_rectright.x, self.image_rectright.y)
         self.area = pygame.Rect(self.image_rectleft.x, self.image_rectleft.y,
                            self.image_rectright.x + self.image_rectright.w ,
                            self.image_rectleft.h)
@@ -682,7 +682,7 @@ class MetaPioReelMeter(MetaCasseteMeter):
 
         self.reset_bgr_fgr(self.bgr)
         self.draw()
-        pygame.display.update([self.area])
+        pygame.display.update([self.image_rectright,self.image_rectleft])
 
     def addpeakicons(self):
         self.redleds = self.add_image_component('../icons/pioled-off.png',
@@ -698,8 +698,9 @@ class MetaPioReelMeter(MetaCasseteMeter):
         self.image = self.load_image(self.config['icons.casstewheel'])[1]
         self.image_rectright = self.image.get_rect(center=self.config['icons.casstewheelright.position'])
         self.image_rectleft = self.image.get_rect(center=self.config['icons.casstewheelleft.position'])
-        self.leftcomp = self.add_image_component(self.config['icons.casstewheel'], 266, 136)
-        self.rightcomp = self.add_image_component(self.config['icons.casstewheel'], 579, 136)
+        self.leftcomp = self.add_image_component(self.config['icons.casstewheel'], self.image_rectleft.x,self.image_rectleft.y)
+        self.rightcomp = self.add_image_component(self.config['icons.casstewheel'], self.image_rectright.x,self.image_rectright.y)
+
         self.area = pygame.Rect(self.image_rectleft.x, self.image_rectleft.y,
                                 self.image_rectright.x + self.image_rectright.w,
                                 self.image_rectleft.h)
