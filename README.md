@@ -102,14 +102,14 @@
 * chmod 777 /home/volumio/myfifosa
 ## Install Audiotop plugin
 * cd /home/volumio
-* git clone  --branch spectrom https://github.com/ofirasp/AudioTop.git
+* git clone  --branch spectrum https://github.com/ofirasp/AudioTop.git
 * cd Audiotop
 * volumio plugin install
 
 * sudo mv /volumio/app/plugins/audio_interface/alsa_controller/index.js /volumio/app/plugins/audio_interface/alsa_controller/index.js.original.js
-* sudo cp volumiomod/index.js.audiotop.js /volumio/app/plugins/audio_interface/alsa_controller/index.js
+* sudo cp /home/volumio/AudioTop/volumiomod/index.js.audiotop.js /volumio/app/plugins/audio_interface/alsa_controller/index.js
 * sudo mv /volumio/app/plugins/music_service/mpd/mpd.conf.tmpl /volumio/app/plugins/music_service/mpd/mpd.conf.tmpl.original
-* sudo cp volumiomod/mpd.conf.tmpl /volumio/app/plugins/music_service/mpd/mpd.conf.tmpl
+* sudo cp /home/volumio/AudioTop/volumiomod/mpd.conf.tmpl.audiotop.tmpl /volumio/app/plugins/music_service/mpd/mpd.conf.tmpl
 
 
 
