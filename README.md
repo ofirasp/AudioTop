@@ -12,7 +12,11 @@
  * Linear Power supply 5V 3.5A
  * 2TB SSD 
 
-# version 1.0.1
+# version 1.0.2
+## 18.5.2024
+* Fix some typo mistakes in this document
+* # version 1.0.1
+## 15.5.2024
 * Add NAD Deck skin
 ![alt text](samples/s7.png)
 * Add Pioneer 707 skin
