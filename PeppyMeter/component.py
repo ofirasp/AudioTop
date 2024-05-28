@@ -266,8 +266,8 @@ class ProgressReelComponent(Component):
         self.progress = 0
     def draw(self):
      try:
-         pygame.draw.circle(self.screen, (0, 0, 0), self.leftcenter,self.radfactor* int(100 * (1 - self.progress / 100) + self.startwidth), 0)
-         pygame.draw.circle(self.screen, (0, 0, 0), self.rightcenter, self.radfactor*int(100 * (self.progress / 100) + self.startwidth), 0)
+         pygame.draw.circle(self.screen, (0, 0, 0), self.leftcenter,int(self.radfactor*100 * (1 - self.progress / 100) + self.startwidth), 0)
+         pygame.draw.circle(self.screen, (0, 0, 0), self.rightcenter,int(self.radfactor*100 * (self.progress / 100) + self.startwidth), 0)
         # pygame.draw.circle(self.screen, (0, 0, 0), (649, 155), int(100 * (1 - self.progress / 100)+40), 0)
         # pygame.draw.circle(self.screen, (0, 0, 0), (1119, 155), int(100 * (self.progress / 100)+40), 0)
      except Exception as ex:

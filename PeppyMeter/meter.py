@@ -795,11 +795,7 @@ class TunerSpectrumWithMeter(MetaMSpectrumWithMeter):
 
 
 class MetaAkaiDeckMeter(MetaPioReelMeter,MetaMSpectrumWithMeter):
-    def run(self):
 
-        r = MetaCasseteMeter.run(self)
-        MetaSpectrumMeter.run(self)
-        return r
     def add_foreground(self, image_name):
         right = self.config['icons.casstewheelright.position']
         left = self.config['icons.casstewheelleft.position']
@@ -827,6 +823,3 @@ class MetaAkaiDeckMeter(MetaPioReelMeter,MetaMSpectrumWithMeter):
     def addProgressComponent(self):
         pass
 
-    def casseteAnimation1(self):
-        super().casseteAnimation()
-        self.pm.clean_draw_update()
