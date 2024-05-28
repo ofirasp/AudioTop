@@ -227,7 +227,7 @@ class TextAkaiDeckComponent(TextComponent):
     def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
         super().__init__(util,c,x,y,bb,fgr,bgr,v)
         self.durationtextcolor = (255,255,255)
-        self.tinyfont = pygame.font.Font('fonts/Arial.ttf')
+        self.tinyfont = pygame.font.Font('fonts/Arial.ttf', self.config['metatext.tinyfontsize'])
     def draw(self):
 
         self.drawDynamicText(f"{self.album}:{self.title}",(self.bigfont, self.bighebfont),  self.config['metatext.trimtitle'],self.config['metatext.title'],self.fontcolor)
