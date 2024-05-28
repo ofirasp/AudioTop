@@ -827,6 +827,6 @@ class MetaAkaiDeckMeter(MetaPioReelMeter,MetaMSpectrumWithMeter):
     def addProgressComponent(self):
         pass
 
-    def casseteAnimation(self):
+    def casseteAnimation1(self):
         super().casseteAnimation()
         self.pm.clean_draw_update()
