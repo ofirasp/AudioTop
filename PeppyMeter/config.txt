@@ -1,6 +1,6 @@
 [current]
-meter = akaideck
-meter.list =  akaideck
+meter = naddeck
+meter.list = naddeck,akaideck,pioreel,marantz,metablue,metapioneercassete,blue,metabar,metabarspectrum,metaspectrum
 metadatasourcedns = upper.local
 dsdaddfactor = 1.4
 random.meter.interval = 20
