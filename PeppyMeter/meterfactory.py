@@ -17,7 +17,7 @@
 
 import logging
 
-from meter import Meter,MetaMeter,MetaCasseteMeter,MetaSpectrumMeter,MetaMSpectrumWithMeter,TunerSpectrumWithMeter,MetaNadDeckMeter,MetaPioReelMeter
+from meter import Meter,MetaMeter,MetaCasseteMeter,MetaSpectrumMeter,MetaMSpectrumWithMeter,TunerSpectrumWithMeter,MetaNadDeckMeter,MetaPioReelMeter,MetaAkaiDeckMeter
 from maskfactory import MaskFactory
 from needlefactory import NeedleFactory
 from configfileparser import *
@@ -64,7 +64,7 @@ class MeterFactory(object):
             return self.create_circular_meter(meter_name)
         elif meter_config_section[METER_TYPE] == TYPE_METACIRCULAR:
             return self.create_metacircular_meter(meter_name)
-        elif meter_config_section[METER_TYPE] == TYPE_METACASSETE:
+        elif meter_config_section[METER_TYPE] == TYPE_METACASSETE or meter_config_section[METER_TYPE] == TYPE_METACASSETEWITHSPECTRUM :
             return self.create_metacassete_meter(meter_name)
         elif meter_config_section[METER_TYPE] == TYPE_METACASSETECIRCLE:
             return self.create_metacircular_meter(meter_name)
@@ -337,6 +337,8 @@ class MeterFactory(object):
         if config[CHANNELS] == 2:
             if name=='naddeck':
                 meter = MetaNadDeckMeter(self.util, TYPE_LINEAR, config, self.data_source)
+            elif name=='akaideck':
+                meter = MetaAkaiDeckMeter(self.util, TYPE_LINEAR, config, self.data_source)
             else:
                 meter = MetaCasseteMeter(self.util, TYPE_LINEAR, config, self.data_source)
             meter.channels = 2

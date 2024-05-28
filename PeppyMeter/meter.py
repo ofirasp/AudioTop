@@ -25,7 +25,7 @@ import netifaces as ni
 import socket
 import math
 
-from component import Component, TextComponent, ProgressBarComponent,TextTunerComponent,TunerProgressBarComponent,TextNadDeckComponent,ProgressReelComponent
+from component import Component, TextComponent, ProgressBarComponent,TextTunerComponent,TunerProgressBarComponent,TextNadDeckComponent,ProgressReelComponent,TextAkaiDeckComponent
 from container import Container
 from configfileparser import *
 from linear import LinearAnimator
@@ -280,6 +280,8 @@ class MetaMeter(Meter):
     def add_foreground(self, image_name):
         if (image_name):
             super().add_foreground(image_name)
+
+        self.iconcolor = self.config['icons.color']
         self.cover = self.add_image_component('../icons/albumart.jpg', *self.config['cover.position'], True)
         self.eth = self.add_image_component('../icons/eth-off.png', *self.config['icons.eth.position'])
         self.wifi = self.add_image_component('../icons/wifi-off.png', *self.config['icons.wifi.position'])
@@ -290,8 +292,8 @@ class MetaMeter(Meter):
         if self.usepeak:
             self.addpeakicons()
         if self.usesingle:
-            self.codec = self.add_image_component('../icons/flac-on.png', *self.config['icons.flac.position'])
-            self.musicservice = self.add_image_component('../icons/volumio-on.png', *self.config['icons.volumio.position'])
+            self.codec = self.add_image_component(f'../icons/flac-on{self.iconcolor}.png', *self.config['icons.flac.position'])
+            self.musicservice = self.add_image_component(f'../icons/volumio-on{self.iconcolor}.png', *self.config['icons.volumio.position'])
             self.musicservices = {
                 "airplay_emulation": None,
                 "tidalconnect": None,
@@ -319,7 +321,7 @@ class MetaMeter(Meter):
         self.addTextComponent()
         self.addProgressComponent()
     def switchcomponent(self, comp, state=None):
-        pattern = r'/(.*-)(on|off)(.png)'
+        pattern = r'/(.*-)(on|off).*(.png)'
         rec = re.compile(pattern)
         m = rec.search(comp.path)
         if m:
@@ -342,9 +344,9 @@ class MetaMeter(Meter):
     def addProgressComponent(self):
         self.progressbar = ProgressBarComponent(self.util)
         self.components.append(self.progressbar)
-    def switchiconpath(self, comp,prefix):
-        pattern = r'/(.*)(/.*-on.png)'
-        s = re.sub(pattern,fr'\1/{prefix}-on.png', comp.path)
+    def switchiconpath(self, comp,prefix,postfix):
+        pattern = r'/(.*)(/.*-on.*\.png)'
+        s = re.sub(pattern,fr'\1/{prefix}-on{postfix}.png', comp.path)
         comp.content = self.load_image(s)
     def run(self):
         r =  super().run()
@@ -400,8 +402,8 @@ class MetaMeter(Meter):
             if self.usesingle:
                 if 'service' in metadata:
                     codec = self.getcodec(metadata)
-                    self.switchiconpath(self.codec,codec)
-                    self.switchiconpath(self.musicservice, metadata['service'])
+                    self.switchiconpath(self.codec,codec,postfix=self.iconcolor)
+                    self.switchiconpath(self.musicservice, metadata['service'],postfix=self.iconcolor)
             else:
                 for s in self.musicservices:
                     self.switchcomponent(self.musicservices[s], "off")
@@ -491,6 +493,7 @@ class MetaMeter(Meter):
         if not metadata['service'] in self.musicservices:
             metadata['service'] = 'volumio'
         elif 'trackType' in metadata and metadata['trackType'] == 'tidal':
+            metadata['service'] = 'tidal'
             return 'flac'
         return 'flac'
     def getalbumart(self,albumart):
@@ -568,6 +571,8 @@ class MetaCasseteMeter(MetaMeter):
         r = super().run()
         if self.playing:
             self.casseteAnimation()
+            if self.fgr:
+                self.reset_bgr_fgr(self.fgr)
         return r
     def add_foreground(self, image_name):
         super().add_foreground(image_name)
@@ -684,17 +689,18 @@ class MetaPioReelMeter(MetaCasseteMeter):
         self.draw()
         pygame.display.update([self.image_rectright,self.image_rectleft])
 
+
     def addpeakicons(self):
         self.redleds = self.add_image_component('../icons/pioled-off.png',
                                                 *self.config['icons.redledleft.position']), self.add_image_component(
             '../icons/pioled-off.png', *self.config['icons.redledright.position'])
 
     def addProgressComponent(self):
-        self.progressbar = ProgressReelComponent(self.util)
+        self.progressbar = ProgressReelComponent(self.util,(649, 155),(1119, 155),40,1)
         self.components.append(self.progressbar)
 
     def add_foreground(self, image_name):
-        MetaMeter.add_foreground(self,image_name)
+        MetaMeter.add_foreground(self, image_name)
         self.image = self.load_image(self.config['icons.casstewheel'])[1]
         self.image_rectright = self.image.get_rect(center=self.config['icons.casstewheelright.position'])
         self.image_rectleft = self.image.get_rect(center=self.config['icons.casstewheelleft.position'])
@@ -705,6 +711,7 @@ class MetaPioReelMeter(MetaCasseteMeter):
                                 self.image_rectright.x + self.image_rectright.w,
                                 self.image_rectleft.h)
         self.casseteAnimation()
+
         self.redrawview()
 
 class MetaSpectrumMeter(MetaMeter):
@@ -785,3 +792,41 @@ class TunerSpectrumWithMeter(MetaMSpectrumWithMeter):
     def updateview(self, metadata,titletime):
         self.prevprogress = self.progressbar.progress
         super().updateview(metadata,titletime)
+
+
+class MetaAkaiDeckMeter(MetaPioReelMeter,MetaMSpectrumWithMeter):
+    def run(self):
+
+        r = MetaCasseteMeter.run(self)
+        MetaSpectrumMeter.run(self)
+        return r
+    def add_foreground(self, image_name):
+        right = self.config['icons.casstewheelright.position']
+        left = self.config['icons.casstewheelleft.position']
+        self.progressbar = ProgressReelComponent(self.util,left,right, 10, 0.6)
+        self.components.append(self.progressbar)
+        self.image = self.load_image(self.config['icons.casstewheel'])[1]
+        self.image_rectright = self.image.get_rect(center=right)
+        self.image_rectleft = self.image.get_rect(center=left)
+        self.leftcomp = self.add_image_component(self.config['icons.casstewheel'], self.image_rectleft.x,
+                                                 self.image_rectleft.y)
+        self.rightcomp = self.add_image_component(self.config['icons.casstewheel'], self.image_rectright.x,
+                                                  self.image_rectright.y)
+
+        self.area = pygame.Rect(self.image_rectleft.x, self.image_rectleft.y,
+                                self.image_rectright.x + self.image_rectright.w,
+                                self.image_rectleft.h)
+
+        MetaMeter.add_foreground(self, image_name)
+        self.casseteAnimation()
+
+        self.redrawview()
+    def addTextComponent(self):
+        self.metatext = TextAkaiDeckComponent(self.util)
+        self.components.append(self.metatext)
+    def addProgressComponent(self):
+        pass
+
+    def casseteAnimation(self):
+        super().casseteAnimation()
+        self.pm.clean_draw_update()

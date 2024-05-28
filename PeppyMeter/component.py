@@ -223,6 +223,20 @@ class TextNadDeckComponent(TextComponent):
         self.drawText(f"{t[1]}", self.durfont, pos, self.durationtextcolor)
         self.drawText(f"OS Version: {self.osversion}",self.tinyfont,  self.config['metatext.osversion'],self.textcolor)
 
+class TextAkaiDeckComponent(TextComponent):
+    def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
+        super().__init__(util,c,x,y,bb,fgr,bgr,v)
+        self.durationtextcolor = (255,255,255)
+        self.tinyfont = pygame.font.Font('fonts/Arial.ttf')
+    def draw(self):
+
+        self.drawDynamicText(f"{self.album}:{self.title}",(self.bigfont, self.bighebfont),  self.config['metatext.trimtitle'],self.config['metatext.title'],self.fontcolor)
+        self.drawDynamicText(self.artist,(self.bigfont, self.bighebfont),  self.config['metatext.trimartist'],self.config['metatext.artist'],self.fontcolor)
+        #self.drawDynamicText( self.album,(self.smallfont, self.smallhebfont), self.config['metatext.trimalbum'],self.config['metatext.album'],self.fontcolor)
+        self.drawText(self.bitrate,self.bitratefont,self.config['metatext.bitrate'],self.fontcolor)
+        t = self.getSeekTime()
+        self.drawText(f"{t[0]}-{t[1]}",self.durfont,  self.config['metatext.duration'],self.fontcolor)
+        self.drawText(f"OS Version: {self.osversion}",self.tinyfont,  self.config['metatext.osversion'],self.textcolor)
 class ProgressBarComponent(Component):
     def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
         super().__init__(util, c, x, y, bb, fgr, bgr, v)
@@ -243,13 +257,19 @@ class ProgressBarComponent(Component):
      except Exception as ex:
         pass
 class ProgressReelComponent(Component):
-    def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
+    def __init__(self, util,leftcenter,rightcenter,startwidth,radfactor ,c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
         super().__init__(util, c, x, y, bb, fgr, bgr, v)
+        self.leftcenter=leftcenter
+        self.rightcenter=rightcenter
+        self.startwidth=startwidth
+        self.radfactor=radfactor
         self.progress = 0
     def draw(self):
      try:
-         pygame.draw.circle(self.screen, (0, 0, 0), (649, 155), int(100 * (1 - self.progress / 100)+40), 0)
-         pygame.draw.circle(self.screen, (0, 0, 0), (1119, 155), int(100 * (self.progress / 100)+40), 0)
+         pygame.draw.circle(self.screen, (0, 0, 0), self.leftcenter,self.radfactor* int(100 * (1 - self.progress / 100) + self.startwidth), 0)
+         pygame.draw.circle(self.screen, (0, 0, 0), self.rightcenter, self.radfactor*int(100 * (self.progress / 100) + self.startwidth), 0)
+        # pygame.draw.circle(self.screen, (0, 0, 0), (649, 155), int(100 * (1 - self.progress / 100)+40), 0)
+        # pygame.draw.circle(self.screen, (0, 0, 0), (1119, 155), int(100 * (self.progress / 100)+40), 0)
      except Exception as ex:
         pass
 class TunerProgressBarComponent(ProgressBarComponent):

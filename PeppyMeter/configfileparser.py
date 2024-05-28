@@ -137,6 +137,7 @@ TYPE_METALINEAR = "metalinear"
 TYPE_CIRCULAR = "circular"
 TYPE_METACIRCULAR = "metacircular"
 TYPE_METACASSETE = "metacassete"
+TYPE_METACASSETEWITHSPECTRUM="metacassetewithspectrum"
 TYPE_METACASSETECIRCLE = "metacassetecircle"
 TYPE_METALINEARSPECTRUM = "metalinearspectrum"
 TYPE_METACIRCLESSPECTRUM = "metacirclespectrum"
@@ -269,6 +270,8 @@ class ConfigFileParser(object):
                 self.meter_config[section] = self.get_matacirclesspectrum_section(c, section, meter_type)
             elif meter_type == TYPE_METACASSETE:
                 self.meter_config[section] = self.get_cassete_section(c, section, meter_type)
+            elif meter_type  ==TYPE_METACASSETEWITHSPECTRUM:
+                self.meter_config[section] = self.get_cassetewithspectrum_section(c, section, meter_type)
             elif meter_type == TYPE_METACASSETECIRCLE:
                 self.meter_config[section] = self.get_cassetecircle_section(c, section, meter_type)
         if "," in self.meter_config[METER]:
@@ -369,6 +372,7 @@ class ConfigFileParser(object):
         d['icons.flac.position'] = make_tuple(config_file.get(section, 'icons.flac.position'))
         d['icons.dsf.position'] = make_tuple(config_file.get(section, 'icons.dsf.position'))
         d['icons.mp3.position'] = make_tuple(config_file.get(section, 'icons.mp3.position'))
+        d['icons.color'] = config_file.get(section, 'icons.color')
         d['knobs.selectmeterfrom'] = make_tuple(config_file.get(section, 'knobs.selectmeterfrom'))
         d['knobs.selectmeterto'] = make_tuple(config_file.get(section, 'knobs.selectmeterto'))
         d['knobs.powerfrom'] = make_tuple(config_file.get(section, 'knobs.powerfrom'))
@@ -403,6 +407,10 @@ class ConfigFileParser(object):
         d['icons.casseteclear.position'] = make_tuple(config_file.get(section, 'icons.casseteclear.position'))
         d['icons.casseteclear.width'] = config_file.getint(section, 'icons.casseteclear.width')
 
+        return d
+    def get_cassetewithspectrum_section(self, config_file, section, meter_type):
+        d = self.get_cassete_section(config_file, section, meter_type)
+        d['spectrum.type'] = config_file.get(section, 'spectrum.type')
         return d
     def get_cassetecircle_section(self, config_file, section, meter_type):
         d = self.get_metacircular_section(config_file, section, meter_type)

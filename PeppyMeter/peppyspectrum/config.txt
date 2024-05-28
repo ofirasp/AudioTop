@@ -58,6 +58,26 @@ spectrum.position.y = 285
 spectrum.width = 400
 spectrum.height = 80
 
+[s.10]
+spectrum = s.10
+base.folder =
+spectrum.folder = 1280x400
+update.period = 10
+add.factor = 1.4
+max.value = 100
+pipe.name = /home/volumio/myfifosa
+size = 15
+update.ui.interval = 0.04
+frame.rate = 30
+depth = 32
+exit.on.touch = False
+use.logging = False
+use.test.data =
+spectrum.position.x = 890
+spectrum.position.y = 255
+spectrum.width = 310
+spectrum.height =125
+
 [sdl.env]
 framebuffer.device = /dev/fb1
 mouse.device = /dev/input/touchscreen
