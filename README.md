@@ -111,8 +111,9 @@
 * git clone  --branch spectrum https://github.com/ofirasp/AudioTop.git
 * cd Audiotop
 * volumio plugin install
-## (Note:
-Don't enable the Autiotop plugin yet)
+*
+ (Note:Don't enable the Autiotop plugin yet)
+*
 
 * sudo mv /volumio/app/plugins/audio_interface/alsa_controller/index.js /volumio/app/plugins/audio_interface/alsa_controller/index.js.original.js
 * sudo cp /home/volumio/AudioTop/volumiomod/index.js.audiotop.js /volumio/app/plugins/audio_interface/alsa_controller/index.js
