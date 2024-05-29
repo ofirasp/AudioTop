@@ -199,7 +199,9 @@ class TextTunerComponent(TextComponent):
         self.drawDynamicText(self.title,(self.bigfont, self.bighebfont),  self.config['metatext.trimtitle'],self.config['metatext.title'],self.fontcolor)
         self.drawDynamicText(self.artist,(self.bigfont, self.bighebfont),  self.config['metatext.trimartist'],self.config['metatext.artist'],self.fontcolor)
         self.drawDynamicText( self.album,(self.smallfont, self.smallhebfont), self.config['metatext.trimalbum'],self.config['metatext.album'],self.fontcolor)
-        self.drawText(self.bitrate,self.bitratefont,self.config['metatext.bitrate'],self.textcolor)
+
+        self.drawText(self.bitrate,self.bitratefont,self.config['metatext.bitrate'],self.fontcolor)
+
         t = self.getSeekTime()
         self.drawText(f"{t[0]}",self.durfont,  self.config['metatext.duration'],self.durationtextcolor)
         pos = list(self.config['metatext.duration'])

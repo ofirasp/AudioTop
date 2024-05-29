@@ -383,9 +383,9 @@ class MetaMeter(Meter):
         network = self.getnetwork()
         if self.network != network:
             self.network = network
-            self.switchcomponent(self.wifi, "on" if network[0] else "off")
-            self.switchcomponent(self.eth, "on" if network[1] else "off")
-            self.switchcomponent(self.inet, "on" if network[2] else 'off')
+            self.switchcomponent(self.wifi, f"on{self.iconcolor}" if network[0] else "off")
+            self.switchcomponent(self.eth, f"on{self.iconcolor}" if network[1] else "off")
+            self.switchcomponent(self.inet, f"on{self.iconcolor}" if network[2] else 'off')
             redrawneeded = True
 
         if self.metatext.seek!=titletime:
@@ -416,9 +416,9 @@ class MetaMeter(Meter):
                     codec='flac'
                 self.switchcomponent(self.codecs[codec])
 
-            self.switchcomponent(self.play, "on" if self.playing else 'off')
-            self.switchcomponent(self.rnd, "on" if 'random' in metadata and metadata['random']  else 'off')
-            self.switchcomponent(self.rpt, "on" if 'repeat' in metadata and metadata['repeat']  else 'off')
+            self.switchcomponent(self.play, f"on{self.iconcolor}" if self.playing else 'off')
+            self.switchcomponent(self.rnd, f"on{self.iconcolor}" if 'random' in metadata and metadata['random']  else 'off')
+            self.switchcomponent(self.rpt, f"on{self.iconcolor}" if 'repeat' in metadata and metadata['repeat']  else 'off')
 
             if 'albumart' in metadata:
                 self.cover.content = self.getalbumart(metadata['albumart'])
