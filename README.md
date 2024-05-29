@@ -12,6 +12,12 @@
  * Linear Power supply 5V 3.5A
  * 2TB SSD 
 
+# version 1.0.3
+## 29.5.2024
+* Edit some steps in the installation process
+* Add AKAI Deck skin
+![alt text](samples/s9.png)
+
 # version 1.0.2
 ## 18.5.2024
 * Fix some typo mistakes in this document
