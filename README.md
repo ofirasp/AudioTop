@@ -94,6 +94,7 @@
 
     (password:volumio)
 
+* sudo apt update
 * git clone https://github.com/project-owner/peppyalsa.git
 * sudo apt-get install build-essential autoconf automake libtool libasound2-dev libfftw3-dev
 * cd peppyalsa
@@ -110,34 +111,58 @@
 * git clone  --branch spectrum https://github.com/ofirasp/AudioTop.git
 * cd Audiotop
 * volumio plugin install
+## (Note:
+Don't enable the Autiotop plugin yet)
 
 * sudo mv /volumio/app/plugins/audio_interface/alsa_controller/index.js /volumio/app/plugins/audio_interface/alsa_controller/index.js.original.js
 * sudo cp /home/volumio/AudioTop/volumiomod/index.js.audiotop.js /volumio/app/plugins/audio_interface/alsa_controller/index.js
 * sudo mv /volumio/app/plugins/music_service/mpd/mpd.conf.tmpl /volumio/app/plugins/music_service/mpd/mpd.conf.tmpl.original
 * sudo cp /home/volumio/AudioTop/volumiomod/mpd.conf.tmpl.audiotop.tmpl /volumio/app/plugins/music_service/mpd/mpd.conf.tmpl
 
+* cd /data/plugins/user_interface/audiotop
+* python3 -m pip install -r requirements.txt
+* sudo tar -xzf depends/PIL.tar.gz  -C /usr/local/lib/python3.7/dist-packages
 
 
 ## Install Touch Display plugin
 
 * Install from the volumio UI available plugins
-* Set the orientation to 270
+* Enable the touch display plugin
+* Go to its settings and Set the orientation to 270
 ## Fix orientation for waveshare 1280X400 display
 
-mkdir /home/volumio/.config/openbox
+* mkdir /home/volumio/.config/openbox
 
-cat >> /home/volumio/.config/openbox/autostart <<EOL
+* cat >> /home/volumio/.config/openbox/autostart <<EOL
 
 xrandr --output HDMI-1 --rotate left
 
 EOL
 
+* sudo reboot
+
+* in case you don't see anything on the display after reboot, do the following:
+
+* nano /boot/userconfig.txt
+* add the following text
+  * hdmi_group=2
+    hdmi_mode=87
+    hdmi_timings=400 0 100 10 140 1280 10 20 20 2 0 0 0 60 0 43000000 3
+  * Seve and exit nano
+
+
+* sudo reboot
+
+* if no display go to see more info in :https://www.waveshare.com/wiki/7.9inch_HDMI_LCD
+
 ## Install dummy audio device for DSD meter
-cat >> /etc/rc.local <<EOL
+* sudo nano /etc/rc.local 
+* before the line exit 0 add:
+  * /sbin/modprobe snd-dummy index=7 pcm_substreams=1 fake_buffer=0 
+* save and exit 
+* enable the audiotop plugin
+* reboot
 
-/sbin/modprobe snd-dummy index=7 pcm_substreams=1 fake_buffer=0
 
-EOL
 
-* more info :https://www.waveshare.com/wiki/7.9inch_HDMI_LCD
 
