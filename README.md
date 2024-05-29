@@ -147,8 +147,8 @@ EOL
 * nano /boot/userconfig.txt
 * add the following text
   * hdmi_group=2
-    hdmi_mode=87
-    hdmi_timings=400 0 100 10 140 1280 10 20 20 2 0 0 0 60 0 43000000 3
+  * hdmi_mode=87
+  * hdmi_timings=400 0 100 10 140 1280 10 20 20 2 0 0 0 60 0 43000000 3
   * Seve and exit nano
 
 
