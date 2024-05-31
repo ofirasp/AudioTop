@@ -9,5 +9,5 @@ sudo apt-get -y install python3-pip
 sudo apt-get -y install python3-pygame
 sudo python3 -m pip install -r requirements.txt
 sudo tar -xzf depends/PIL.tar.gz  -C /usr/local/lib/python3.7/dist-packages
-
+cd py
 echo "plugininstalled"
