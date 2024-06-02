@@ -138,6 +138,7 @@ TYPE_CIRCULAR = "circular"
 TYPE_METACIRCULAR = "metacircular"
 TYPE_METACASSETE = "metacassete"
 TYPE_METACASSETEWITHSPECTRUM="metacassetewithspectrum"
+TYPE_METACASSETECIRCLEWITHSPECTRUM="metacassetecirclewithspectrum"
 TYPE_METACASSETECIRCLE = "metacassetecircle"
 TYPE_METALINEARSPECTRUM = "metalinearspectrum"
 TYPE_METACIRCLESSPECTRUM = "metacirclespectrum"
@@ -272,6 +273,9 @@ class ConfigFileParser(object):
                 self.meter_config[section] = self.get_cassete_section(c, section, meter_type)
             elif meter_type  ==TYPE_METACASSETEWITHSPECTRUM:
                 self.meter_config[section] = self.get_cassetewithspectrum_section(c, section, meter_type)
+            elif meter_type == TYPE_METACASSETECIRCLEWITHSPECTRUM:
+                self.meter_config[section] = self.get_cassetecirclewithspectrum_section(c, section, meter_type)
+
             elif meter_type == TYPE_METACASSETECIRCLE:
                 self.meter_config[section] = self.get_cassetecircle_section(c, section, meter_type)
         if "," in self.meter_config[METER]:
@@ -412,6 +416,12 @@ class ConfigFileParser(object):
         d = self.get_cassete_section(config_file, section, meter_type)
         d['spectrum.type'] = config_file.get(section, 'spectrum.type')
         return d
+
+    def get_cassetecirclewithspectrum_section(self, config_file, section, meter_type):
+        d = self.get_cassetecircle_section(config_file, section, meter_type)
+        d['spectrum.type'] = config_file.get(section, 'spectrum.type')
+        return d
+#
     def get_cassetecircle_section(self, config_file, section, meter_type):
         d = self.get_metacircular_section(config_file, section, meter_type)
         d['icons.casstewheel'] = config_file.get(section, 'icons.casstewheel')

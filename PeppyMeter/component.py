@@ -239,6 +239,20 @@ class TextAkaiDeckComponent(TextComponent):
         t = self.getSeekTime()
         self.drawText(f"{t[0]}-{t[1]}",self.durfont,  self.config['metatext.duration'],self.fontcolor)
         self.drawText(f"OS Version: {self.osversion}",self.tinyfont,  self.config['metatext.osversion'],self.textcolor)
+class TextTeacDeckComponent(TextComponent):
+    def draw(self):
+        self.drawDynamicText(f"{self.album}:{self.title}", (self.bigfont, self.bighebfont),
+                             self.config['metatext.trimtitle'], self.config['metatext.title'], self.fontcolor)
+        self.drawDynamicText(self.artist, (self.bigfont, self.bighebfont), self.config['metatext.trimartist'],
+                             self.config['metatext.artist'], self.fontcolor)
+        # self.drawDynamicText( self.album,(self.smallfont, self.smallhebfont), self.config['metatext.trimalbum'],self.config['metatext.album'],self.fontcolor)
+        self.drawText(self.bitrate, self.bitratefont, self.config['metatext.bitrate'], self.fontcolor)
+        t = self.getSeekTime()
+        pos = self.config['metatext.duration']
+        self.drawText(f"{t[0]}", self.durfont, pos, self.fontcolor)
+        self.drawText(f"{t[1]}", self.durfont, (pos[0]+140,pos[1]), self.fontcolor)
+        self.drawText(f"OS Version: {self.osversion}", self.tinyfont, self.config['metatext.osversion'], self.textcolor)
+
 class ProgressBarComponent(Component):
     def __init__(self, util, c=None, x=0, y=0, bb=None, fgr=(0, 0, 0), bgr=(0, 0, 0), v=True):
         super().__init__(util, c, x, y, bb, fgr, bgr, v)

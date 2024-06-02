@@ -25,7 +25,8 @@ import netifaces as ni
 import socket
 import math
 
-from component import Component, TextComponent, ProgressBarComponent,TextTunerComponent,TunerProgressBarComponent,TextNadDeckComponent,ProgressReelComponent,TextAkaiDeckComponent
+from component import Component, TextComponent, ProgressBarComponent,TextTunerComponent,TunerProgressBarComponent,\
+    TextNadDeckComponent,ProgressReelComponent,TextAkaiDeckComponent,TextTeacDeckComponent
 from container import Container
 from configfileparser import *
 from linear import LinearAnimator
@@ -823,3 +824,31 @@ class MetaAkaiDeckMeter(MetaPioReelMeter,MetaMSpectrumWithMeter):
     def addProgressComponent(self):
         pass
 
+class MetaTeacDeckMeter(MetaAkaiDeckMeter):
+
+    def add_foreground(self, image_name):
+        right = self.config['icons.casstewheelright.position']
+        left = self.config['icons.casstewheelleft.position']
+        self.progressbar = ProgressReelComponent(self.util,left,right, 30, 0.35)
+        self.components.append(self.progressbar)
+        self.image = self.load_image(self.config['icons.casstewheel'])[1]
+        self.image_rectright = self.image.get_rect(center=right)
+        self.image_rectleft = self.image.get_rect(center=left)
+        self.leftcomp = self.add_image_component(self.config['icons.casstewheel'], self.image_rectleft.x,
+                                                 self.image_rectleft.y)
+        self.rightcomp = self.add_image_component(self.config['icons.casstewheel'], self.image_rectright.x,
+                                                  self.image_rectright.y)
+
+        self.area = pygame.Rect(self.image_rectleft.x, self.image_rectleft.y,
+                                self.image_rectright.x + self.image_rectright.w,
+                                self.image_rectleft.h)
+
+        MetaMeter.add_foreground(self, image_name)
+        self.casseteAnimation()
+
+        self.redrawview()
+    def addTextComponent(self):
+        self.metatext = TextTeacDeckComponent(self.util)
+        self.components.append(self.metatext)
+    def addProgressComponent(self):
+        pass

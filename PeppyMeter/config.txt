@@ -1,7 +1,7 @@
 [current]
 meter = akaideck
-meter.list = akaideck,pioreel,marantz,metablue,metapioneercassete,blue,metabar,metabarspectrum,metaspectrum
-metadatasourcedns = localhost
+meter.list = akaideck,naddeck,teacdeck,pioreel,marantz,metablue,metapioneercassete,blue,metabar,metabarspectrum,metaspectrum
+metadatasourcedns = bedroom.local
 dsdaddfactor = 1.4
 random.meter.interval = 20
 base.folder =

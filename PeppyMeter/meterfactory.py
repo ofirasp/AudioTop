@@ -17,7 +17,7 @@
 
 import logging
 
-from meter import Meter,MetaMeter,MetaCasseteMeter,MetaSpectrumMeter,MetaMSpectrumWithMeter,TunerSpectrumWithMeter,MetaNadDeckMeter,MetaPioReelMeter,MetaAkaiDeckMeter
+from meter import Meter,MetaMeter,MetaCasseteMeter,MetaSpectrumMeter,MetaMSpectrumWithMeter,TunerSpectrumWithMeter,MetaNadDeckMeter,MetaPioReelMeter,MetaAkaiDeckMeter,MetaTeacDeckMeter
 from maskfactory import MaskFactory
 from needlefactory import NeedleFactory
 from configfileparser import *
@@ -70,7 +70,7 @@ class MeterFactory(object):
             return self.create_metacircular_meter(meter_name)
         elif meter_config_section[METER_TYPE] == TYPE_METALINEARSPECTRUM:
             return self.create_metalinearspectrum_meter(meter_name)
-        elif meter_config_section[METER_TYPE] == TYPE_METACIRCLESSPECTRUM:
+        elif meter_config_section[METER_TYPE] == TYPE_METACIRCLESSPECTRUM or meter_config_section[METER_TYPE] == TYPE_METACASSETECIRCLEWITHSPECTRUM:
             #return self.create_metacircular_meter(meter_name)
             return self.create_metacirclesspectrum_meter(meter_name)
         elif meter_config_section[METER_TYPE] == TYPE_TUNERCIRCLESSPECTRUM:
@@ -431,7 +431,10 @@ class MeterFactory(object):
         config = self.meter_config[name]
 
         if config[CHANNELS] == 2:
-            meter = MetaMSpectrumWithMeter(self.util, TYPE_CIRCULAR, config, self.data_source)
+            if name == 'teacdeck':
+                meter = MetaTeacDeckMeter(self.util, TYPE_CIRCULAR, config, self.data_source)
+            else:
+                meter = MetaMSpectrumWithMeter(self.util, TYPE_CIRCULAR, config, self.data_source)
             meter.channels = 2
         else:
             meter = Meter(self.util, TYPE_CIRCULAR, config, self.data_source)
