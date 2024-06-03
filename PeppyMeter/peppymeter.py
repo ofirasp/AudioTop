@@ -278,11 +278,12 @@ class Peppymeter(ScreensaverMeter):
         self.savepersiststate()
         self.util.meter_config[METER] =   self.meterlist[self.persiststate["meter.index"]] #self.meterlist[3]#
         self.meter.stop()
-        time.sleep(0.2)  # let threads stop
+        time.sleep(0.2)
         current = self.meter.util.PYGAME_SCREEN
         self.meter.util.PYGAME_SCREEN = self.meter.util.PYGAME_SCREEN.copy()
         self.meter.meter = None
         self.meter.start()
+        time.sleep(0.2)
         next = self.meter.util.PYGAME_SCREEN.copy()
         self.meter.util.PYGAME_SCREEN = current
         for comp in self.meter.meter.components:
