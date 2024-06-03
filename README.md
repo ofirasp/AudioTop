@@ -12,6 +12,11 @@
  * Linear Power supply 5V 3.5A
  * 2TB SSD 
 
+# version 1.0.4
+## 3.6.2024
+* Add Teac Deck skin
+![alt text](samples/s10.png)
+
 # version 1.0.3
 ## 29.5.2024
 * Edit some steps in the installation process
