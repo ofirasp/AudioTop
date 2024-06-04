@@ -1,6 +1,6 @@
 {
   "name": "audiotop",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "Plugin that integrates Peppymeter and volumio",
   "main": "index.js",
   "scripts": {

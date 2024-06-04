@@ -40,7 +40,7 @@
 * Significant performance improvements for CPU usage
 * Bugs fix
 * Add Marantz skin
-![alt text](samples/s6.jpg)
+![alt text](samples/s6.png)
 * CPU and MEM usage with the marantz meter
 ![alt text](samples/cpu1.png)
 
