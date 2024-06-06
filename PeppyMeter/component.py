@@ -17,6 +17,7 @@
 
 import pygame
 import time
+import math
 
 class Component(object):
     """ Represent the lowest UI component level.
@@ -292,12 +293,20 @@ class ProgressReelComponent(Component):
         self.startwidth=startwidth
         self.radfactor=radfactor
         self.progress = 0
+        self.inff = False
+        self.ffprogress=0
+        self.prevprog= 0
     def draw(self):
      try:
-         pygame.draw.circle(self.screen, (0, 0, 0), self.leftcenter,int(self.radfactor*100 * (1 - self.progress / 100) + self.startwidth), 0)
-         pygame.draw.circle(self.screen, (0, 0, 0), self.rightcenter,int(self.radfactor*100 * (self.progress / 100) + self.startwidth), 0)
-        # pygame.draw.circle(self.screen, (0, 0, 0), (649, 155), int(100 * (1 - self.progress / 100)+40), 0)
-        # pygame.draw.circle(self.screen, (0, 0, 0), (1119, 155), int(100 * (self.progress / 100)+40), 0)
+         progdiff = self.progress - self.prevprog
+         if math.fabs(progdiff) > 10:
+             self.inff=True
+         progress =  self.ffprogress  if self.inff else self.progress
+         pygame.draw.circle(self.screen, (0, 0, 0), self.leftcenter,int(self.radfactor*100 * (1 - progress / 100) + self.startwidth), 0)
+         pygame.draw.circle(self.screen, (0, 0, 0), self.rightcenter,int(self.radfactor*100 * (progress / 100) + self.startwidth), 0)
+
+         self.prevprog = self.progress
+
      except Exception as ex:
         pass
 class TunerProgressBarComponent(ProgressBarComponent):

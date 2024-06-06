@@ -656,11 +656,15 @@ class MetaPioReelMeter(MetaCasseteMeter):
         directionfactor = 1 if progdiff >= 0 else -1
         clearspeed = 10
         if math.fabs(progdiff) > 10:
+            self.progressbar.inff = True
             self.prevprogress += clearspeed * directionfactor
             self.rotation_speedleft = 20
             self.rotation_speedright = 20
+            self.progressbar.ffprogress += clearspeed * directionfactor
             self.redrawview()
         else:
+            self.progressbar.ffprogress = self.progressbar.progress
+            self.progressbar.inff = False
             directionfactor = 1
             if self.progressbar.progress < 20:
                 self.rotation_speedleft = 1
