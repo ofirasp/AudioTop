@@ -17,7 +17,7 @@
 
 import logging
 
-from meter import Meter,MetaMeter,MetaCasseteMeter,MetaSpectrumMeter,MetaMSpectrumWithMeter,TunerSpectrumWithMeter,MetaNadDeckMeter,MetaPioReelMeter,MetaAkaiDeckMeter,MetaTeacDeckMeter
+from meter import Meter,MetaMeter,MetaCasseteMeter,MetaSpectrumMeter,MetaMSpectrumWithMeter,TunerSpectrumWithMeter,MetaNadDeckMeter,MetaPioReelMeter,MetaAkaiDeckMeter,MetaTeacDeckMeter,MetaPioDeckMeter
 from maskfactory import MaskFactory
 from needlefactory import NeedleFactory
 from configfileparser import *
@@ -177,6 +177,8 @@ class MeterFactory(object):
         if config[CHANNELS] == 2:
             if name == 'pioreel':
                 meter = MetaPioReelMeter(self.util, TYPE_CIRCULAR, config, self.data_source)
+            elif name=='piodeck':
+                meter = MetaPioDeckMeter(self.util, TYPE_CIRCULAR, config, self.data_source)
             else:
                 meter = MetaMeter(self.util, TYPE_CIRCULAR, config, self.data_source)
             meter.channels = 2

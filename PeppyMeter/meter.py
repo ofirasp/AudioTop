@@ -26,7 +26,7 @@ import socket
 import math
 
 from component import Component, TextComponent, ProgressBarComponent,TextTunerComponent,TunerProgressBarComponent,\
-    TextNadDeckComponent,ProgressReelComponent,TextAkaiDeckComponent,TextTeacDeckComponent
+    TextNadDeckComponent,ProgressReelComponent,TextAkaiDeckComponent,TextTeacDeckComponent,TextPioDeckComponent
 from container import Container
 from configfileparser import *
 from linear import LinearAnimator
@@ -852,3 +852,43 @@ class MetaTeacDeckMeter(MetaAkaiDeckMeter):
         self.components.append(self.metatext)
     def addProgressComponent(self):
         pass
+
+class MetaPioDeckMeter(MetaPioReelMeter):
+    def addpeakicons(self):
+        self.redleds = self.add_image_component('../icons/piodeckled-off.png',
+                                                *self.config['icons.redledleft.position']), self.add_image_component(
+            '../icons/piodeckled-off.png', *self.config['icons.redledright.position'])
+    def add_foreground(self, image_name):
+        right = self.config['icons.casstewheelright.position']
+        left = self.config['icons.casstewheelleft.position']
+        self.progressbar = ProgressReelComponent(self.util,left,right, 30, 0.25)
+        self.components.append(self.progressbar)
+        self.image = self.load_image(self.config['icons.casstewheel'])[1]
+        self.image_rectright = self.image.get_rect(center=right)
+        self.image_rectleft = self.image.get_rect(center=left)
+        self.leftcomp = self.add_image_component(self.config['icons.casstewheel'], self.image_rectleft.x,
+                                                 self.image_rectleft.y)
+        self.rightcomp = self.add_image_component(self.config['icons.casstewheel'], self.image_rectright.x,
+                                                  self.image_rectright.y)
+
+        self.area = pygame.Rect(self.image_rectleft.x, self.image_rectleft.y,
+                                self.image_rectright.x + self.image_rectright.w,
+                                self.image_rectleft.h)
+
+        MetaMeter.add_foreground(self, image_name)
+        self.casseteAnimation()
+
+        self.redrawview()
+    def addTextComponent(self):
+        self.metatext = TextPioDeckComponent(self.util)
+        self.components.append(self.metatext)
+    def addProgressComponent(self):
+        pass
+
+    def run(self):
+        r = Meter.run(self)
+        self.reset_bgr_fgr(self.bgr)
+        if self.fgr:
+            self.reset_bgr_fgr(self.fgr)
+        super().run()
+        return r
