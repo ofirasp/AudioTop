@@ -11,6 +11,11 @@
  * Display - waveshare hdmi 7.9" 1280*400
  * Linear Power supply 5V 3.5A
  * 2TB SSD 
+ * 
+# version 1.0.5
+## 6.6.2024
+* Add Pioneer Deck skin
+![alt text](samples/s11.png)
 
 # version 1.0.4
 ## 3.6.2024
