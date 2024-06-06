@@ -14,6 +14,7 @@
  * 
 # version 1.0.5
 ## 6.6.2024
+* Fix Reel to Reel FF animation 
 * Add Pioneer Deck skin
 ![alt text](samples/s11.png)
 
