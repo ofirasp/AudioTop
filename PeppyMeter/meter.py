@@ -701,7 +701,7 @@ class MetaPioReelMeter(MetaCasseteMeter):
             '../icons/pioled-off.png', *self.config['icons.redledright.position'])
 
     def addProgressComponent(self):
-        self.progressbar = ProgressReelComponent(self.util,(649, 155),(1119, 155),40,1)
+        self.progressbar = ProgressReelComponent(self.util,(649, 155),(1119, 155),60,0.9)
         self.components.append(self.progressbar)
 
     def add_foreground(self, image_name):
