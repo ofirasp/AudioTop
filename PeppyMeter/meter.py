@@ -804,7 +804,7 @@ class MetaAkaiDeckMeter(MetaPioReelMeter,MetaMSpectrumWithMeter):
     def add_foreground(self, image_name):
         right = self.config['icons.casstewheelright.position']
         left = self.config['icons.casstewheelleft.position']
-        self.progressbar = ProgressReelComponent(self.util,left,right, 10, 0.6)
+        self.progressbar = ProgressReelComponent(self.util,left,right, 30, 0.4)
         self.components.append(self.progressbar)
         self.image = self.load_image(self.config['icons.casstewheel'])[1]
         self.image_rectright = self.image.get_rect(center=right)
