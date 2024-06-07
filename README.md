@@ -168,6 +168,10 @@ EOL
   * hdmi_timings=400 0 100 10 140 1280 10 20 20 2 0 0 0 60 0 43000000 3
 * Save and exit nano
 
+* in case touch creen display is not shutting off the dsiplay to sleep
+  * sudo nano /boot/userconfig.txt
+  * add
+  * hdmi_blanking=1
 
 * sudo reboot
 

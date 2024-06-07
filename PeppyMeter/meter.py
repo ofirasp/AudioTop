@@ -373,6 +373,14 @@ class MetaMeter(Meter):
         super().stop()
         self.clean()
         self.redrawview()
+    def fadein(self,surface1, surface2,position, steps=20):
+        for alpha in range(0, 255, steps):
+            surface2.set_alpha(alpha)
+            self.screen.blit(surface1, position)
+            self.screen.blit(surface2, position)
+            self.redrawview()
+            pygame.time.delay(60)
+
     def updateview(self,metadata,titletime):
         redrawneeded = False
 
@@ -422,14 +430,12 @@ class MetaMeter(Meter):
             self.switchcomponent(self.rpt, f"on{self.iconcolor}" if 'repeat' in metadata and metadata['repeat']  else 'off')
 
             if 'albumart' in metadata:
-                self.cover.content = self.getalbumart(metadata['albumart'])
-                # self.cover.content[1].set_alpha(0)
-                # for alpha in range(0, 255, 1):
-                #     self.cover.content[1].set_alpha(alpha)
-                #     r = self.cover.content[1].get_rect()
-                #     pygame.display.update([pygame.Rect(self.cover.content_x, self.cover.content_y, r.w, r.h)])
-
-
+               # self.cover.content = self.getalbumart(metadata['albumart'])
+                newcover = self.getalbumart(metadata['albumart'])
+                if self.cover.content[0] != newcover[0]:
+                    oldcover = self.cover.content[1]
+                    self.cover.content = newcover
+                    self.fadein(oldcover, newcover[1],(self.cover.content_x,self.cover.content_y))
 
             self.metatext.album =  metadata['album'] if 'album' in metadata else '---'
             self.metatext.artist = metadata['artist'] if 'artist' in metadata else '---'
