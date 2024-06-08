@@ -360,8 +360,7 @@ class MetaMeter(Meter):
             self.cover[(self.coverindex + 1) % 2].content[1].set_alpha(255 - self.alpha)
             self.cover[(self.coverindex + 1) % 2].draw()
             self.cover[self.coverindex].draw()
-            pygame.display.update([pygame.Rect(self.cover[self.coverindex].content_x, self.cover[self.coverindex].content_y, 25, 25),
-                                   pygame.Rect(self.cover[(self.coverindex + 1) % 2].content_x, self.cover[(self.coverindex + 1) % 2].content_y, 25, 25)])
+            pygame.display.update([pygame.Rect(self.cover[self.coverindex].content_x, self.cover[self.coverindex].content_y, self.coversize, self.coversize)])
             self.alpha += self.alphasteps
     def run(self):
         r =  super().run()
