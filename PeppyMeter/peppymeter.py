@@ -53,6 +53,11 @@ class Peppymeter(ScreensaverMeter):
         self.autoswitchmeter = {'title':settings["config_switch_meter_on_title"]['value'],
                                 'album':settings["config_switch_meter_on_album"]['value'],
                                 'restart':settings["config_switch_meter_on_restart"]['value']}
+
+        # self.autoswitchmeter = {'title': False,
+        #                         'album': False,
+        #                         'restart': False}
+
         if util:
             self.util = util
         else:

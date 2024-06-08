@@ -362,6 +362,11 @@ class MetaMeter(Meter):
             self.cover[self.coverindex].draw()
             pygame.display.update([pygame.Rect(self.cover[self.coverindex].content_x, self.cover[self.coverindex].content_y, self.coversize, self.coversize)])
             self.alpha += self.alphasteps
+        if self.alpha > 255:
+            self.cover[self.coverindex].content[1].set_alpha(255)
+            self.cover[(self.coverindex + 1) % 2].content[1].set_alpha(0)
+            self.alpha = 255
+
     def run(self):
         r =  super().run()
         self.fadecover()
@@ -439,15 +444,11 @@ class MetaMeter(Meter):
             if 'albumart' in metadata:
                # self.cover.content = self.getalbumart(metadata['albumart'])
 
-               self.coverindex = (self.coverindex + 1) % 2
-               self.cover[self.coverindex].content = self.getalbumart(metadata['albumart'])
-
-               if self.cover[self.coverindex].content[0] != self.cover[(self.coverindex + 1) % 2].content[0]:
+               cover = self.getalbumart(metadata['albumart'])
+               if cover[0] != self.cover[self.coverindex].content[0]:
+                   self.coverindex = (self.coverindex + 1) % 2
+                   self.cover[self.coverindex].content = cover
                    self.alpha = 0
-
-
-
-
 
             self.metatext.album =  metadata['album'] if 'album' in metadata else '---'
             self.metatext.artist = metadata['artist'] if 'artist' in metadata else '---'
