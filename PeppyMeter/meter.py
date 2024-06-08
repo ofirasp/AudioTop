@@ -358,15 +358,16 @@ class MetaMeter(Meter):
         if self.alpha < 255:
             self.cover[self.coverindex].content[1].set_alpha(self.alpha)
             self.cover[(self.coverindex + 1) % 2].content[1].set_alpha(255 - self.alpha)
-            self.cover[(self.coverindex + 1) % 2].draw()
-            self.cover[self.coverindex].draw()
-            pygame.display.update([pygame.Rect(self.cover[self.coverindex].content_x, self.cover[self.coverindex].content_y, self.coversize, self.coversize)])
             self.alpha += self.alphasteps
-        if self.alpha > 255:
-            self.cover[self.coverindex].content[1].set_alpha(255)
-            self.cover[(self.coverindex + 1) % 2].content[1].set_alpha(0)
-            self.alpha = 255
-
+            if self.alpha > 255:
+                self.cover[self.coverindex].content[1].set_alpha(255)
+                self.cover[(self.coverindex + 1) % 2].content[1].set_alpha(0)
+            self.updatecover()
+    def updatecover(self):
+        self.cover[(self.coverindex + 1) % 2].draw()
+        self.cover[self.coverindex].draw()
+        pygame.display.update([pygame.Rect(self.cover[self.coverindex].content_x, self.cover[self.coverindex].content_y,
+                                           self.coversize, self.coversize)])
     def run(self):
         r =  super().run()
         self.fadecover()
