@@ -294,7 +294,6 @@ class Peppymeter(ScreensaverMeter):
         self.fadein(current, next)
         pygame.display.flip()
 
-    # Function to create a fade in effect
     def fadein(self,surface1, surface2, steps=20):
         screen = self.meter.util.PYGAME_SCREEN
         for alpha in range(0, 255, steps):
@@ -309,7 +308,7 @@ class Peppymeter(ScreensaverMeter):
             pygame.time.delay(60)
         screen.blit(surface2, (0, 0))
         pygame.display.flip()
-
+    # Function to create a fade in effect
     def savepersiststate(self):
         with open("state.p", "wb") as f:
             pickle.dump(self.persiststate, f)
