@@ -270,9 +270,8 @@ class MetaMeter(Meter):
         self.usepeak = self.config['icons.usepeak']
         self.peakthreshold = self.config['icons.peakthreshold']
         self.coversize = self.config['cover.size']
-        self.coverindex = 0
         self.alpha = 0
-        self.alphasteps = 20
+        self.alphasteps = 10
         self.usesingle = self.config['icons.usesingle']
         self.musicservices = {}
         self.codecs = {}
@@ -355,18 +354,18 @@ class MetaMeter(Meter):
         s = re.sub(pattern,fr'\1/{prefix}-on{postfix}.png', comp.path)
         comp.content = self.load_image(s)
     def fadecover(self):
+        return
         if self.alpha < 255:
-            self.cover[self.coverindex].content[1].set_alpha(self.alpha)
-            self.cover[(self.coverindex + 1) % 2].content[1].set_alpha(255 - self.alpha)
+            self.cover[1].content[1].set_alpha(self.alpha)
             self.alpha += self.alphasteps
             if self.alpha > 255:
-                self.cover[self.coverindex].content[1].set_alpha(255)
-                self.cover[(self.coverindex + 1) % 2].content[1].set_alpha(0)
-            self.updatecover()
+                self.cover[0].content = (self.cover[1].content[0],self.cover[1].content[1].copy())
+                self.cover[1].content[1].set_alpha(0)
+            #self.updatecover()
     def updatecover(self):
-        self.cover[(self.coverindex + 1) % 2].draw()
-        self.cover[self.coverindex].draw()
-        pygame.display.update([pygame.Rect(self.cover[self.coverindex].content_x, self.cover[self.coverindex].content_y,
+        self.cover[1].draw()
+        #self.cover[self.coverindex].draw()
+        pygame.display.update([pygame.Rect(self.cover[0].content_x, self.cover[0].content_y,
                                            self.coversize, self.coversize)])
     def run(self):
         r =  super().run()
@@ -446,9 +445,9 @@ class MetaMeter(Meter):
                # self.cover.content = self.getalbumart(metadata['albumart'])
 
                cover = self.getalbumart(metadata['albumart'])
-               if cover[0] != self.cover[self.coverindex].content[0]:
-                   self.coverindex = (self.coverindex + 1) % 2
-                   self.cover[self.coverindex].content = cover
+               if cover[0] != self.cover[0].content[0]:
+                   #cover[1].set_alpha(0)
+                   self.cover[1].content = cover
                    self.alpha = 0
 
             self.metatext.album =  metadata['album'] if 'album' in metadata else '---'
@@ -520,9 +519,9 @@ class MetaMeter(Meter):
     def getalbumart(self,albumart):
         if not "http" in albumart:
             albumart = f"http://{self.metadatasourcedns}:3000" + albumart
-        if not self.cover[self.coverindex] or albumart != self.cover[self.coverindex].content[0]:
+        if not self.cover[0] or albumart != self.cover[0].content[0]:
             return self.loadimagefromurl(albumart)
-        return self.cover[self.coverindex].content
+        return self.cover[0].content
     def redrawview(self):
         self.reset_bgr_fgr(self.bgr)
         if self.fgr:
