@@ -270,8 +270,6 @@ class MetaMeter(Meter):
         self.usepeak = self.config['icons.usepeak']
         self.peakthreshold = self.config['icons.peakthreshold']
         self.coversize = self.config['cover.size']
-        self.alpha = 0
-        self.alphasteps = 10
         self.usesingle = self.config['icons.usesingle']
         self.musicservices = {}
         self.codecs = {}
@@ -285,9 +283,7 @@ class MetaMeter(Meter):
             super().add_foreground(image_name)
 
         self.iconcolor = self.config['icons.color']
-        self.cover = [self.add_image_component('../icons/albumart.jpg', *self.config['cover.position'], True),
-                      self.add_image_component('../icons/albumart.jpg', *self.config['cover.position'], True)]
-        self.cover[1].content[1].set_alpha(0)
+        self.cover = self.add_image_component('../icons/albumart.jpg', *self.config['cover.position'], True)
         self.eth = self.add_image_component('../icons/eth-off.png', *self.config['icons.eth.position'])
         self.wifi = self.add_image_component('../icons/wifi-off.png', *self.config['icons.wifi.position'])
         self.inet = self.add_image_component('../icons/inet-off.png', *self.config['icons.inet.position'])
@@ -353,24 +349,8 @@ class MetaMeter(Meter):
         pattern = r'/(.*)(/.*-on.*\.png)'
         s = re.sub(pattern,fr'\1/{prefix}-on{postfix}.png', comp.path)
         comp.content = self.load_image(s)
-    def fadecover(self):
-        return
-        if self.alpha < 255:
-            self.cover[1].content[1].set_alpha(self.alpha)
-            self.alpha += self.alphasteps
-            if self.alpha > 255:
-                self.cover[0].content = (self.cover[1].content[0],self.cover[1].content[1].copy())
-                self.cover[1].content[1].set_alpha(0)
-            #self.updatecover()
-    def updatecover(self):
-        self.cover[1].draw()
-        #self.cover[self.coverindex].draw()
-        pygame.display.update([pygame.Rect(self.cover[0].content_x, self.cover[0].content_y,
-                                           self.coversize, self.coversize)])
     def run(self):
         r =  super().run()
-        self.fadecover()
-
         if self.usepeak:
             left = self.data_source.get_current_left_channel_data()
             right = self.data_source.get_current_right_channel_data()
@@ -442,13 +422,14 @@ class MetaMeter(Meter):
             self.switchcomponent(self.rpt, f"on{self.iconcolor}" if 'repeat' in metadata and metadata['repeat']  else 'off')
 
             if 'albumart' in metadata:
-               # self.cover.content = self.getalbumart(metadata['albumart'])
+                self.cover.content = self.getalbumart(metadata['albumart'])
+                # self.cover.content[1].set_alpha(0)
+                # for alpha in range(0, 255, 1):
+                #     self.cover.content[1].set_alpha(alpha)
+                #     r = self.cover.content[1].get_rect()
+                #     pygame.display.update([pygame.Rect(self.cover.content_x, self.cover.content_y, r.w, r.h)])
 
-               cover = self.getalbumart(metadata['albumart'])
-               if cover[0] != self.cover[0].content[0]:
-                   #cover[1].set_alpha(0)
-                   self.cover[1].content = cover
-                   self.alpha = 0
+
 
             self.metatext.album =  metadata['album'] if 'album' in metadata else '---'
             self.metatext.artist = metadata['artist'] if 'artist' in metadata else '---'
@@ -519,9 +500,9 @@ class MetaMeter(Meter):
     def getalbumart(self,albumart):
         if not "http" in albumart:
             albumart = f"http://{self.metadatasourcedns}:3000" + albumart
-        if not self.cover[0] or albumart != self.cover[0].content[0]:
+        if not self.cover or albumart != self.cover.content[0]:
             return self.loadimagefromurl(albumart)
-        return self.cover[0].content
+        return self.cover.content
     def redrawview(self):
         self.reset_bgr_fgr(self.bgr)
         if self.fgr:
@@ -754,7 +735,6 @@ class MetaSpectrumMeter(MetaMeter):
         super().stop()
         self.pm.stop()
     def run(self):
-        self.fadecover()
         self.framecount += 1
         if self.framecount == 3:
             self.framecount = 0
