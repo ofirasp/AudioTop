@@ -278,6 +278,18 @@ class MetaMeter(Meter):
         self.playing = False
         self.network = None
 
+    def fade_in(self,  new_image, duration):
+        clock = pygame.time.Clock()
+        alpha = 0
+        step = 255 / (duration * 60)  # Assuming 60 FPS
+        while alpha < 255:
+            self.screen.blit(self.cover.content[1], (self.cover.content_x, self.cover.content_y))
+            temp_image = new_image[1].copy()
+            temp_image.fill((255, 255, 255, alpha), None, pygame.BLEND_RGBA_MULT)
+            self.screen.blit(temp_image, (self.cover.content_x, self.cover.content_y))
+            pygame.display.flip()
+            alpha += step
+            clock.tick(60)
     def add_foreground(self, image_name):
         if (image_name):
             super().add_foreground(image_name)
@@ -422,7 +434,11 @@ class MetaMeter(Meter):
             self.switchcomponent(self.rpt, f"on{self.iconcolor}" if 'repeat' in metadata and metadata['repeat']  else 'off')
 
             if 'albumart' in metadata:
-                self.cover.content = self.getalbumart(metadata['albumart'])
+
+                newcover = self.getalbumart(metadata['albumart'])
+                if newcover[0]!=self.cover.content[0]:
+                    self.fade_in(newcover,2)
+                    self.cover.content = newcover
                 # self.cover.content[1].set_alpha(0)
                 # for alpha in range(0, 255, 1):
                 #     self.cover.content[1].set_alpha(alpha)
