@@ -247,6 +247,7 @@ class Vumeter(ScreensaverMeter):
             switch = True
         if switch and self.playerstatus == PLAYING:
             self.switchmeter()
+            #self.meter.fade_in(self.meter.cover.content,2)
             #self.restart()
 
         if not self.timer_controlled_random_meter:

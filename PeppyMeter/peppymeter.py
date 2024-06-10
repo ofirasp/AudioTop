@@ -55,8 +55,8 @@ class Peppymeter(ScreensaverMeter):
                                 'restart':settings["config_switch_meter_on_restart"]['value']}
 
         # self.autoswitchmeter = {'title': False,
-        #                         'album': False,
-        #                         'restart': False}
+        #                          'album': False,
+        #                          'restart': False}
 
         if util:
             self.util = util
@@ -278,10 +278,11 @@ class Peppymeter(ScreensaverMeter):
             pygame.quit()
             time.sleep(0.5)
             self.exit()
+
     def switchmeter(self,a=None,b=None):
         self.persiststate["meter.index"] = (self.persiststate["meter.index"] + 1) % len(self.meterlist)
         self.savepersiststate()
-        self.util.meter_config[METER] =   self.meterlist[self.persiststate["meter.index"]] #self.meterlist[3]#
+        self.util.meter_config[METER] = self.meterlist[self.persiststate["meter.index"]]  # self.meterlist[3]#
         self.meter.stop()
         time.sleep(0.2)
         current = self.meter.util.PYGAME_SCREEN
@@ -291,12 +292,11 @@ class Peppymeter(ScreensaverMeter):
         time.sleep(0.2)
         next = self.meter.util.PYGAME_SCREEN.copy()
         self.meter.util.PYGAME_SCREEN = current
-        for comp in self.meter.meter.components:
-            comp.screen = current
-        if hasattr(self.meter.meter, "pm"):
-            for comp in self.meter.meter.pm.components:
-                comp.screen = current
         self.fadein(current, next)
+        #switch again to get all the component in the surface copy
+        self.meter.meter = None
+        self.meter.start()
+        time.sleep(0.2)
         pygame.display.flip()
 
     def fadein(self,surface1, surface2, steps=20):

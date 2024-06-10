@@ -277,19 +277,37 @@ class MetaMeter(Meter):
         self.musicservice = None
         self.playing = False
         self.network = None
+        self.infadecover = False
+        self.coveralpha = 0
 
-    def fade_in(self,  new_image, duration):
+    def fadecover(self):
+        if self.infadecover and self.coveralpha<255:
+            self.screen.blit(self.cover.content[1], (self.cover.content_x, self.cover.content_y))
+            temp_image = self.newcover[1].copy()
+            temp_image.fill((255, 255, 255, self.coveralpha), None, pygame.BLEND_RGBA_MULT)
+            self.screen.blit(temp_image, (self.cover.content_x, self.cover.content_y))
+            self.coveralpha += 10
+            pygame.display.flip()
+            if self.coveralpha>255:
+                self.infadecover = False
+                self.cover.content = self.newcover
+    def fade_in1(self, new_image, duration):
+        self.infadecover = True
+        self.newcover = new_image
+        self.coveralpha = 0
+
+    def fade_in(self, new_image, duration):
         clock = pygame.time.Clock()
         alpha = 0
         step = 255 / (duration * 60)  # Assuming 60 FPS
         while alpha < 255:
-            self.screen.blit(self.cover.content[1], (self.cover.content_x, self.cover.content_y))
             temp_image = new_image[1].copy()
             temp_image.fill((255, 255, 255, alpha), None, pygame.BLEND_RGBA_MULT)
             self.screen.blit(temp_image, (self.cover.content_x, self.cover.content_y))
             pygame.display.flip()
             alpha += step
             clock.tick(60)
+        self.cover.content = new_image
     def add_foreground(self, image_name):
         if (image_name):
             super().add_foreground(image_name)
@@ -379,6 +397,7 @@ class MetaMeter(Meter):
             pygame.display.update([pygame.Rect(self.redleds[1].content_x, self.redleds[1].content_y, 25, 25),
                                    pygame.Rect(self.redleds[0].content_x,self.redleds[0].content_y, 25, 25)])
          #self.redrawview()
+        #self.fadecover()
         return r
 
     def stop(self):
@@ -438,7 +457,7 @@ class MetaMeter(Meter):
                 newcover = self.getalbumart(metadata['albumart'])
                 if newcover[0]!=self.cover.content[0]:
                     self.fade_in(newcover,2)
-                    self.cover.content = newcover
+                    #self.cover.content = newcover
                 # self.cover.content[1].set_alpha(0)
                 # for alpha in range(0, 255, 1):
                 #     self.cover.content[1].set_alpha(alpha)
@@ -751,6 +770,7 @@ class MetaSpectrumMeter(MetaMeter):
         super().stop()
         self.pm.stop()
     def run(self):
+
         self.framecount += 1
         if self.framecount == 3:
             self.framecount = 0
@@ -778,7 +798,9 @@ class MetaMSpectrumWithMeter(MetaSpectrumMeter):
         self.reset_bgr_fgr(self.bgr)
         if self.fgr:
             self.reset_bgr_fgr(self.fgr)
+        #self.fadecover()
         super().run()
+
         return r
 
 class TunerSpectrumWithMeter(MetaMSpectrumWithMeter):
