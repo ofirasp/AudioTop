@@ -282,21 +282,20 @@ class MetaMeter(Meter):
 
     def fadecover(self):
         if self.infadecover and self.coveralpha<255:
-            self.screen.blit(self.cover.content[1], (self.cover.content_x, self.cover.content_y))
             temp_image = self.newcover[1].copy()
             temp_image.fill((255, 255, 255, self.coveralpha), None, pygame.BLEND_RGBA_MULT)
-            self.screen.blit(temp_image, (self.cover.content_x, self.cover.content_y))
+            self.cover.content = self.cover.content[0],temp_image
+            self.redrawview()
             self.coveralpha += 10
-            pygame.display.flip()
             if self.coveralpha>255:
                 self.infadecover = False
                 self.cover.content = self.newcover
-    def fade_in1(self, new_image, duration):
+    def fade_in(self, new_image, duration):
         self.infadecover = True
         self.newcover = new_image
         self.coveralpha = 0
 
-    def fade_in(self, new_image, duration):
+    def fade_in1(self, new_image, duration):
         clock = pygame.time.Clock()
         alpha = 0
         step = 255 / (duration * 60)  # Assuming 60 FPS
@@ -397,7 +396,7 @@ class MetaMeter(Meter):
             pygame.display.update([pygame.Rect(self.redleds[1].content_x, self.redleds[1].content_y, 25, 25),
                                    pygame.Rect(self.redleds[0].content_x,self.redleds[0].content_y, 25, 25)])
          #self.redrawview()
-        #self.fadecover()
+        self.fadecover()
         return r
 
     def stop(self):
@@ -798,7 +797,7 @@ class MetaMSpectrumWithMeter(MetaSpectrumMeter):
         self.reset_bgr_fgr(self.bgr)
         if self.fgr:
             self.reset_bgr_fgr(self.fgr)
-        #self.fadecover()
+        self.fadecover()
         super().run()
 
         return r
