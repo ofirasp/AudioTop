@@ -783,6 +783,7 @@ class MetaSpectrumMeter(MetaMeter):
             # self.pm.refresh()
         #pygame.display.update()
         self.pm.seconds += 0.1
+        self.fadecover()
     def redrawview(self):
         self.reset_bgr_fgr(self.bgr)
         if self.fgr:
@@ -797,7 +798,7 @@ class MetaMSpectrumWithMeter(MetaSpectrumMeter):
         self.reset_bgr_fgr(self.bgr)
         if self.fgr:
             self.reset_bgr_fgr(self.fgr)
-        self.fadecover()
+
         super().run()
 
         return r
