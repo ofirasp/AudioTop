@@ -934,3 +934,114 @@ class MetaPioDeckMeter(MetaPioReelMeter):
             self.reset_bgr_fgr(self.fgr)
         super().run()
         return r
+
+
+class MetaPhonoMeter(MetaMeter):
+    def addpeakicons(self):
+        self.redleds = self.add_image_component('../icons/pioled-off.png',
+                                                *self.config['icons.redledleft.position']), self.add_image_component(
+            '../icons/pioled-off.png', *self.config['icons.redledright.position'])
+    def __init__(self, util, meter_type, meter_parameters, data_source):
+        super().__init__(util, meter_type, meter_parameters, data_source)
+        self.prevprogress = 0
+        self.frames = 0
+        self.rotateangle = 0
+        self.turnarmstep = 0
+
+
+
+    def run(self):
+        self.frames += 1
+        r = super().run()
+        if self.playing and not self.infadecover :
+            self.phonoAnimation()
+        return r
+
+
+    def phonoAnimation(self):
+        if self.frames % 2 != 0:
+            return
+        self.rotateangle-=20
+        steps =12- 24*(self.progressbar.progress/100)
+        self.rotatecomp(self.cover, self.rotateangle, self.cover_rect,self.newcover[1],(0,0))
+        if self.frames % 20 == 0:
+            self.rotatecomp(self.turnarm, steps, self.turnarm_rect, self.turnarmorig, (-36+steps/2, 35+steps/2))
+        self.reset_bgr_fgr(self.fgr)
+        self.reset_bgr_fgr(self.bgr)
+        self.draw()
+        pygame.display.update([self.cover_rect,self.turnarm_rect])
+
+    def rotatecomp(self, comp, angle, rect,image,pivot=(0,0)):
+        rotated_image = pygame.transform.rotate(image, angle)
+        rotated_rect = rotated_image.get_rect(center=(rect.center[0]+pivot[0],rect.center[1]+pivot[1]))
+        comp.content_x = rotated_rect.x+pivot[0]
+        comp.content_y = rotated_rect.y+pivot[1]
+        comp.content = (comp.content[0], rotated_image)
+    def add_foreground(self, image_name):
+        self.iconcolor = self.config['icons.color']
+        self.cover = self.add_image_component('../icons/albumart.jpg', *self.config['cover.position'], True)
+        self.cover_rect = self.cover.content[1].get_rect(center=(197, 204))
+
+        self.eth = self.add_image_component('../icons/eth-off.png', *self.config['icons.eth.position'])
+        self.wifi = self.add_image_component('../icons/wifi-off.png', *self.config['icons.wifi.position'])
+        self.inet = self.add_image_component('../icons/inet-off.png', *self.config['icons.inet.position'])
+        self.rnd = self.add_image_component('../icons/rnd-off.png', *self.config['icons.rnd.position'])
+        self.rpt = self.add_image_component('../icons/rpt-off.png', *self.config['icons.rpt.position'])
+        self.play = self.add_image_component('../icons/play-off.png', *self.config['icons.play.position'])
+        if self.usepeak:
+            self.addpeakicons()
+        if self.usesingle:
+            self.codec = self.add_image_component(f'../icons/flac-on{self.iconcolor}.png',
+                                                  *self.config['icons.flac.position'])
+            self.musicservice = self.add_image_component(f'../icons/volumio-on{self.iconcolor}.png',
+                                                         *self.config['icons.volumio.position'])
+            self.musicservices = {
+                "airplay_emulation": None,
+                "tidalconnect": None,
+                "mpd": None,
+                "volumio": None,
+                "tidal": None
+            }
+        else:
+            self.musicservices = {
+                "airplay_emulation": self.add_image_component('../icons/airplay_emulation-off.png',
+                                                              *self.config['icons.airplay_emulation.position']),
+                "tidalconnect": self.add_image_component('../icons/tidalconnect-off.png',
+                                                         *self.config['icons.tidalconnect.position']),
+                "mpd": self.add_image_component('../icons/mpd-off.png', *self.config['icons.mpd.position']),
+                "volumio": self.add_image_component('../icons/volumio-off.png',
+                                                    *self.config['icons.volumio.position']),
+                "tidal": self.add_image_component('../icons/tidal-off.png', *self.config['icons.tidal.position'])
+            }
+            self.codecs = {
+                "aac": self.add_image_component('../icons/aac-off.png', *self.config['icons.aac.position']),
+                "mqa": self.add_image_component('../icons/mqa-off.png', *self.config['icons.mqa.position']),
+                "flac": self.add_image_component('../icons/flac-off.png', *self.config['icons.flac.position']),
+                "dsf": self.add_image_component('../icons/dsf-off.png', *self.config['icons.dsf.position']),
+                # "dff": self.add_image_component('../icons/dsf-off.png', *self.config['icons.dsf.position']),
+                "mp3": self.add_image_component('../icons/mp3-off.png', *self.config['icons.mp3.position'])
+            }
+
+        self.addTextComponent()
+        self.addProgressComponent()
+
+        if (image_name):
+            Meter.add_foreground(self,image_name)
+        self.turnarm = self.add_image_component('phono-turnarm3.png', 199, 28)
+        self.turnarmorig =  self.turnarm.content[1].copy()
+        self.turnarm_rect = self.turnarm.content[1].get_rect(center=(421, 108))
+        # self.image = self.load_image(self.config['icons.casstewheel'])[1]
+        # self.image_rectright = self.image.get_rect(center=self.config['icons.casstewheelright.position'])
+        # self.image_rectleft = self.image.get_rect(center=self.config['icons.casstewheelleft.position'])
+        # self.leftcomp = self.add_image_component(self.config['icons.casstewheel'], self.image_rectleft.x,self.image_rectleft.y)
+        # self.rightcomp = self.add_image_component(self.config['icons.casstewheel'], self.image_rectright.x, self.image_rectright.y)
+        # self.area = pygame.Rect(self.image_rectleft.x, self.image_rectleft.y,
+        #                    self.image_rectright.x + self.image_rectright.w ,
+        #                    self.image_rectleft.h)
+        # self.casseteclear = self.add_image_component(self.config['icons.casseteclear'],
+        #                                              *self.config['icons.casseteclear.position'])
+        # self.clearstartx = self.casseteclear.content_x
+
+        self.components.remove(self.progressbar)
+        #self.casseteAnimation()
+        #self.redrawview()
