@@ -962,10 +962,11 @@ class MetaPhonoMeter(MetaMeter):
         if self.frames % 2 != 0:
             return
         self.rotateangle-=20
-        steps =12- 24*(self.progressbar.progress/100)
+        steps = -24*(self.progressbar.progress/100)
+
         self.rotatecomp(self.cover, self.rotateangle, self.cover_rect,self.newcover[1],(0,0))
         if self.frames % 20 == 0:
-            self.rotatecomp(self.turnarm, steps, self.turnarm_rect, self.turnarmorig, (-36+steps/2, 35+steps/2))
+            self.rotatecomp(self.turnarm, steps, self.turnarm_rect, self.turnarmorig, (steps/2, steps/2))
         self.reset_bgr_fgr(self.fgr)
         self.reset_bgr_fgr(self.bgr)
         self.draw()
@@ -1027,9 +1028,9 @@ class MetaPhonoMeter(MetaMeter):
 
         if (image_name):
             Meter.add_foreground(self,image_name)
-        self.turnarm = self.add_image_component('phono-turnarm3.png', 199, 28)
+        self.turnarm = self.add_image_component('phono-turnarm4.png', 189, 10)
         self.turnarmorig =  self.turnarm.content[1].copy()
-        self.turnarm_rect = self.turnarm.content[1].get_rect(center=(421, 108))
+        self.turnarm_rect = self.turnarm.content[1].get_rect(center=(366, 187))
         # self.image = self.load_image(self.config['icons.casstewheel'])[1]
         # self.image_rectright = self.image.get_rect(center=self.config['icons.casstewheelright.position'])
         # self.image_rectleft = self.image.get_rect(center=self.config['icons.casstewheelleft.position'])
