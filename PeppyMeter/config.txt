@@ -1,7 +1,7 @@
 [current]
-meter = phono
-meter.list = phono
-metadatasourcedns = audiotop.local
+meter = akaideck
+meter.list = akaideck,phono,piodeck,naddeck,teacdeck,pioreel,marantz,metablue,metapioneercassete,blue,metabar,metabarspectrum,metaspectrum
+metadatasourcedns = localhost
 dsdaddfactor = 1.4
 random.meter.interval = 20
 base.folder =
