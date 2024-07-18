@@ -16,7 +16,7 @@
 ## 18.7.2024
 * Add fade effect between cover and skin transitions 
 * Add turntable animation 
-![alt text](samples/s11.png)
+![alt text](samples/p12.png)
 
 
 
