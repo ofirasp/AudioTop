@@ -11,7 +11,15 @@
  * Display - waveshare hdmi 7.9" 1280*400
  * Linear Power supply 5V 3.5A
  * 2TB SSD 
- * 
+
+# version 1.1.0
+## 18.7.2024
+* Add fade effect between cover and skin transitions 
+* Add turntable animation 
+![alt text](samples/s11.png)
+
+
+
 # version 1.0.5
 ## 6.6.2024
 * Fix Reel to Reel FF animation 
