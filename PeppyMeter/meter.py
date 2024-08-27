@@ -648,21 +648,22 @@ class MetaCasseteMeter(MetaMeter):
             self.clearstatus = self.progressbar.progress / 100 * self.clearwidth
             self.casseteclear.content_x = self.clearstartx - self.clearstatus
             directionfactor = 1
+            self.rotation_speedright = 2
             if self.progressbar.progress < 20:
                 self.rotation_speedleft = 1
-                self.rotation_speedright = 5
+                #self.rotation_speedright = 5
             elif self.progressbar.progress < 35:
                 self.rotation_speedleft = 2
-                self.rotation_speedright = 4
+               # self.rotation_speedright = 4
             elif self.progressbar.progress < 50:
                 self.rotation_speedleft = 3
-                self.rotation_speedright = 3
+               # self.rotation_speedright = 3
             elif self.progressbar.progress < 65:
                 self.rotation_speedleft = 4
-                self.rotation_speedright = 2
+               # self.rotation_speedright = 2
             else:
                 self.rotation_speedleft = 5
-                self.rotation_speedright = 1
+               # self.rotation_speedright = 1
         self.casseteclear.content_x = self.clearstartx - self.clearstatus
         self.angleright += self.rotation_speedright * directionfactor
         if self.angleright >= 360:
@@ -700,21 +701,22 @@ class MetaPioReelMeter(MetaCasseteMeter):
             self.progressbar.ffprogress = self.progressbar.progress
             self.progressbar.inff = False
             directionfactor = 1
+            self.rotation_speedright = 2
             if self.progressbar.progress < 20:
                 self.rotation_speedleft = 1
-                self.rotation_speedright = 5
+               # self.rotation_speedright = 5
             elif self.progressbar.progress < 35:
                 self.rotation_speedleft = 2
                 self.rotation_speedright = 4
             elif self.progressbar.progress < 50:
                 self.rotation_speedleft = 3
-                self.rotation_speedright = 3
+               # self.rotation_speedright = 3
             elif self.progressbar.progress < 65:
                 self.rotation_speedleft = 4
-                self.rotation_speedright = 2
+               # self.rotation_speedright = 2
             else:
                 self.rotation_speedleft = 5
-                self.rotation_speedright = 1
+               # self.rotation_speedright = 1
         self.rotation_speedright*=2
         self.rotation_speedleft*=2
         self.angleright += self.rotation_speedright * directionfactor
