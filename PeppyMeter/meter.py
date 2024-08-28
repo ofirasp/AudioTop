@@ -707,7 +707,7 @@ class MetaPioReelMeter(MetaCasseteMeter):
                # self.rotation_speedright = 5
             elif self.progressbar.progress < 35:
                 self.rotation_speedleft = 2
-                self.rotation_speedright = 4
+              #  self.rotation_speedright = 4
             elif self.progressbar.progress < 50:
                 self.rotation_speedleft = 3
                # self.rotation_speedright = 3
